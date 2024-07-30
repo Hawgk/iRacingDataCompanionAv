@@ -1,12 +1,15 @@
 #ifndef _CONSOLE_DISPLAY_H_
 #define _CONSOLE_DISPLAY_H_
 
+#include <windows.h>
+
 #include "IDisplay.h"
 
 class ConsoleDisplay : IDisplay
 {
 private:
     RaceData raceData;
+    HANDLE hDisplayThread;
 
     /**
      * @brief       Clear all console outputs.
@@ -24,7 +27,7 @@ private:
      * @brief       Thread that displays the Race Data to console.
      * @note        Implements interface.
      */
-    virtual void displayThread();
+    virtual DWORD WINAPI displayThread();
 
 public:
     /**

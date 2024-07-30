@@ -7,11 +7,18 @@ class DataCollector
 {
 private:
     HANDLE hDataValidEvent;
+    HANDLE hDataThread;
+
+    static DWORD WINAPI startDataThread(void *param)
+    {
+        DataCollector *self = (DataCollector *)param;
+        return self->dataThread();
+    }
 
     /**
      * @brief       Thread that collects the Race Data from API.
      */
-    void dataThread();
+    DWORD WINAPI dataThread();
 
 public:
     /**
