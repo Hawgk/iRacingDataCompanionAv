@@ -1,0 +1,82 @@
+@startuml
+
+class Main
+{
+    +int main()
+}
+
+class irsdk
+
+class DataCollector
+{
+    -HANDLE hDataValidEvent
+
+    -void dataThread()
+
+    +bool init()
+    +void deinit()
+    +void run()
+}
+
+interface IDisplay
+{
+    -virtual void displayThread()
+
+    +virtual bool init()
+    +virtual void setDisplaySettings()
+    +virtual void draw(RaceData raceData)
+}
+
+class ConsoleDisplay
+{
+    -void clearConsole()
+    -virtual void displayThread()
+
+    +virtual bool init()
+    +virtual void setDisplaySettings()
+    +virtual void draw(RaceData raceData)
+}
+
+class OpenGlDisplay
+{
+}
+
+class Settings
+{
+    -SettingsReader settingsReader
+
+    +Settings instance()
+
+    +void setSettingsPath(string path)
+    +void setDisplaySettings(DisplaySettings displaySettings)
+    +void setCollectorSettings(CollectorSettings collectorSettings)
+    +void setSettingsByName(string name)
+
+    +DisplaySettings getDisplaySettings()
+    +CollectorSettings getCollectorSettings()
+    +template <typename T> T getSettingsByName()
+}
+
+class SettingsReader
+{
+    -string settingsPath
+
+    +DisplaySettings readDisplaySettings()
+    +CollectorSettings readCollectorSettings()
+
+    +void writeDisplaySettings()
+    +void writeCollectorSettings()
+}
+
+ConsoleDisplay ..|> IDisplay
+OpenGlDisplay ..|> IDisplay
+IDisplay ..> Settings : uses
+
+Main -- DataCollector
+DataCollector .left.> irsdk
+DataCollector ..> Settings : uses
+DataCollector -right-> IDisplay : uses
+
+Settings ..> SettingsReader
+
+@enduml
