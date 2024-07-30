@@ -14,6 +14,7 @@ private:
 public:
     virtual ~IDisplay() { }
     virtual bool init();
+    virtual void run();
     virtual void setDisplaySettings(DisplaySettings displaySettings);
 };
 

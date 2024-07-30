@@ -34,6 +34,12 @@ public:
     virtual bool init();
 
     /**
+     * @brief       Called from main. Starts Threads.
+     * @note        Implements interface.
+     */
+    virtual void run();
+
+    /**
      * @brief       Set Display Settings for console output.
      * @note        Implements interface.
      * @param       displaySettings     Struct containing the display settings.
