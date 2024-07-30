@@ -30,6 +30,8 @@ private:
     virtual DWORD WINAPI displayThread();
 
 public:
+    ConsoleDisplay();
+    ~ConsoleDisplay();
     /**
      * @brief       Initialize console output.
      * @note        Implements interface.

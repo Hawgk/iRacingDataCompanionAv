@@ -10,7 +10,7 @@ typedef struct display_settings_s
 {
     uint32_t height;
     uint32_t width;
-    uint8_t refreshRate;
+    uint32_t refreshRate;
     bool visibility;
 } DisplaySettings;
 

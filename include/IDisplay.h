@@ -12,8 +12,8 @@ private:
     HANDLE hDisplayThread;
     RaceData raceData;
 
-    virtual DWORD WINAPI displayThread();
-    virtual void draw();
+    virtual DWORD WINAPI displayThread() = 0;
+    virtual void draw() = 0;
 
 public:
     static DWORD WINAPI startDisplayThread(void *param)
@@ -23,9 +23,9 @@ public:
     }
 
     virtual ~IDisplay() { }
-    virtual bool init();
-    virtual void run();
-    virtual void setDisplaySettings(DisplaySettings displaySettings);
+    virtual bool init() = 0;
+    virtual void run() = 0;
+    virtual void setDisplaySettings(DisplaySettings displaySettings) = 0;
 };
 
 #endif /* _DISPLAY_INTERFACE_H_ */

@@ -69,6 +69,8 @@ DWORD WINAPI DataCollector::dataThread()
             */
         }
     }
+
+    return 0;
 }
 
 void DataCollector::run()
@@ -76,6 +78,6 @@ void DataCollector::run()
     DWORD threadId;
 
     printf("DataCollector::run\n");
-    hDataThread = CreateThread(NULL, 0, startDataThread, (void *)this, 0, &threadId);
+    hDataThread = CreateThread(NULL, 0, &startDataThread, (void *)this, 0, &threadId);
     SetPriorityClass(hDataThread, HIGH_PRIORITY_CLASS);
 }

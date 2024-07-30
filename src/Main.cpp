@@ -8,7 +8,7 @@
 #include "DataCollector.h"
 #include "ConsoleDisplay.h"
 
-int main(int argc, char *argv[])
+int main()
 {
     DataCollector *dataCollector = new DataCollector();
     ConsoleDisplay *consoleDisplay = new ConsoleDisplay();
