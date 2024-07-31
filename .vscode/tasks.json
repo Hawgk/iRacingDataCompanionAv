@@ -15,7 +15,7 @@
                 "'cd scripts && ./build.sh'"
             ],
             "problemMatcher": [
-                "$msvc"
+                "$msCompile"
             ]
         }
     ]

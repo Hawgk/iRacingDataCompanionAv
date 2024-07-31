@@ -14,6 +14,7 @@ DataCollector::~DataCollector() {}
 bool DataCollector::init()
 {
     printf("DataCollector::init\n");
+    fflush(stdout);
     SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
     timeBeginPeriod(1);
     hDataValidEvent = CreateEvent(NULL, true, false, IRSDK_DATAVALIDEVENTNAME);
@@ -24,6 +25,7 @@ bool DataCollector::init()
 void DataCollector::deinit()
 {
     printf("DataCollector::deinit\n");
+    fflush(stdout);
     if (hDataValidEvent)
     {
         ResetEvent(hDataValidEvent);
@@ -34,12 +36,34 @@ void DataCollector::deinit()
     timeEndPeriod(1);
 }
 
+void monitorConnectionStatus()
+{
+	// keep track of connection status
+	static bool wasConnected = false;
+
+	bool isConnected = irsdkClient::instance().isConnected();
+	if(wasConnected != isConnected)
+	{
+		if(isConnected)
+		{
+			printf("Connected to iRacing\n");
+		}
+		else
+			printf("Lost connection to iRacing\n");
+
+		//****Note, put your connection handling here
+
+		wasConnected = isConnected;
+	}
+}
+
 DWORD WINAPI DataCollector::dataThread()
 {
     bool wasUpdated = false;
 
     printf("DataCollector::dataThread\n");
-    while (irsdkClient::instance().isConnected())
+    fflush(stdout);
+    while (true)
     {
         if (irsdkClient::instance().waitForData(16))
         {
@@ -68,6 +92,7 @@ DWORD WINAPI DataCollector::dataThread()
             updateDisplay();
             */
         }
+        monitorConnectionStatus();
     }
 
     return 0;
@@ -78,6 +103,7 @@ void DataCollector::run()
     DWORD threadId;
 
     printf("DataCollector::run\n");
+    fflush(stdout);
     hDataThread = CreateThread(NULL, 0, &startDataThread, (void *)this, 0, &threadId);
     SetPriorityClass(hDataThread, HIGH_PRIORITY_CLASS);
 }

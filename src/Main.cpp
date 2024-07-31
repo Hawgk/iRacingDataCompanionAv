@@ -8,6 +8,8 @@
 #include "DataCollector.h"
 #include "ConsoleDisplay.h"
 
+#define NO_STDIO_REDIRECT
+
 int main()
 {
     DataCollector *dataCollector = new DataCollector();
@@ -16,9 +18,8 @@ int main()
     if (dataCollector->init() && consoleDisplay->init())
     {
         printf("Waiting for iRacing connection\n");
-        while (!irsdkClient::instance().isConnected()) {}
+        fflush(stdout);
         
-        printf("iRacing connected\n");
         dataCollector->run();
         consoleDisplay->run();
     }

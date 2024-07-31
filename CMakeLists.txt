@@ -1,6 +1,4 @@
 cmake_minimum_required(VERSION 3.30.1)
-set(CMAKE_C_COMPILER gcc.exe)
-set(CMAKE_CXX_COMPILER g++.exe)
 
 project(iStopping)
 
@@ -22,17 +20,16 @@ file(GLOB_RECURSE DATA
     resources/*
 )
 
-add_executable(iStopping 
+add_executable(iStopping
     ${SOURCES}
     ${LIB_SOURCES}
 )
 
-target_compile_options(iStopping PUBLIC 
-    -std=c++17
+target_compile_options(iStopping PUBLIC
     -W4
 )
 
-target_include_directories(iStopping PUBLIC 
+target_include_directories(iStopping PUBLIC
     include
     lib/irsdk
 )
