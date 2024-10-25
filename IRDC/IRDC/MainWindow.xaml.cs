@@ -14,6 +14,7 @@ namespace IRDC
         {
             InitializeComponent();
             Background = _windowBackgroundFixed;
+
         }
 
         private void OnWindowDeactivated(object sender, EventArgs e)

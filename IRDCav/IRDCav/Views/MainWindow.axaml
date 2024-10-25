@@ -1,0 +1,187 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:IRDCav.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+        x:Class="IRDCav.Views.MainWindow"
+        x:DataType="vm:DataViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="iRacing Data Companion"
+        Deactivated="OnWindowDeactivated"
+		SizeToContent="Height"
+		Loaded="OnWindowLoaded"
+        KeyDown="OnKeyPressed"
+        PointerPressed="OnMouseDown"
+        Background="White"
+		SystemDecorations="None"
+		Width="800">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition
+				Width="*"/>
+			<ColumnDefinition
+				Width="20"/>
+		</Grid.ColumnDefinitions>
+		<Button
+			Grid.Column="1"
+			Height="20"
+			Width="20"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			Padding="7,0,0,0"
+			Content="X"
+			VerticalContentAlignment="Center"
+			FontSize="6"
+			Background="DarkSalmon"
+			BorderThickness="0"
+			Click="OnCloseClicked"/>
+		<ListBox
+			Grid.Column="0"
+			Grid.ColumnSpan="2"
+			Margin="20"
+			ItemsSource="{Binding ResultsList}"
+			Background="Transparent"
+			Grid.IsSharedSizeScope="True">
+			<ListBox.Styles>
+				<Style
+					Selector="ListBoxItem">
+					<Setter
+						Property="Padding"
+						Value="0"/>
+					<Setter
+						Property="IsEnabled"
+						Value="False"/>
+				</Style>
+			</ListBox.Styles>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition
+								SharedSizeGroup="A"
+								Width="Auto"/>
+							<ColumnDefinition
+								Width="*"/>
+							<ColumnDefinition
+								SharedSizeGroup="B"
+								Width="Auto"/>
+							<ColumnDefinition
+								SharedSizeGroup="C"
+								Width="Auto"/>
+							<ColumnDefinition
+								SharedSizeGroup="D"
+								Width="Auto"/>
+							<ColumnDefinition
+								SharedSizeGroup="E"
+								Width="Auto"/>
+							<ColumnDefinition
+								SharedSizeGroup="F"
+								Width="Auto"/>
+							<ColumnDefinition
+								SharedSizeGroup="G"
+								Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<Grid 
+							Grid.Column="0"
+							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes.IsMe="{Binding IsMe}"
+								Classes.NotMe="{Binding !IsMe}"
+								Text="{Binding ClassPosition}"
+								Padding="10,2"
+								FontSize="14"
+								FontFamily="Terminus (TTF) for Windows"
+								HorizontalAlignment="Left"/>
+						</Grid>
+						<Grid
+							Grid.Column="1"
+							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes.IsMe="{Binding IsMe}"
+								Classes.NotMe="{Binding !IsMe}"
+								Text="{Binding Name}"
+								Padding="10,2"
+								FontSize="14"
+								FontFamily="Terminus (TTF) for Windows"
+								HorizontalAlignment="Left"/>
+						</Grid>
+						<Grid
+							Grid.Column="2"
+							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes.IsMe="{Binding IsMe}"
+								Classes.NotMe="{Binding !IsMe}"
+								Text="{Binding License}"
+								Padding="10,2"
+								FontSize="14"
+								FontFamily="Terminus (TTF) for Windows"
+								HorizontalAlignment="Left"/>
+						</Grid>
+						<Grid
+							Grid.Column="3"
+							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes.IsMe="{Binding IsMe}"
+								Classes.NotMe="{Binding !IsMe}"
+								Text="{Binding Rating}"
+								Padding="10,2"
+								FontSize="14"
+								FontFamily="Terminus (TTF) for Windows"
+								HorizontalAlignment="Left"/>
+						</Grid>
+						<Grid
+							Grid.Column="4"
+							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes.IsMe="{Binding IsMe}"
+								Classes.NotMe="{Binding !IsMe}"
+								Text="{Binding CarPath}"
+								Padding="10,2"
+								FontSize="14"
+								FontFamily="Terminus (TTF) for Windows"
+								HorizontalAlignment="Left"/>
+						</Grid>
+						<Grid
+							Grid.Column="5"
+							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes.IsMe="{Binding IsMe}"
+								Classes.NotMe="{Binding !IsMe}"
+								Text="{Binding LapsCompleted}"
+								Padding="10,2"
+								FontSize="14"
+								FontFamily="Terminus (TTF) for Windows"
+								HorizontalAlignment="Left"/>
+						</Grid>
+						<Grid
+							Grid.Column="6"
+							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes.IsMe="{Binding IsMe}"
+								Classes.NotMe="{Binding !IsMe}"
+								Classes.IsFastest="{Binding IsFastest}"
+								Text="{Binding FastestLapTime}"
+								Padding="10,2"
+								FontSize="14"
+								FontFamily="Terminus (TTF) for Windows"
+								HorizontalAlignment="Left"/>
+						</Grid>
+						<Grid
+							Grid.Column="7"
+							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes.IsMe="{Binding IsMe}"
+								Classes.NotMe="{Binding !IsMe}"
+								Text="{Binding LastLapTime}"
+								Padding="10,2"
+								FontSize="14"
+								FontFamily="Terminus (TTF) for Windows"
+								HorizontalAlignment="Left"/>
+						</Grid>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid>
+</Window>

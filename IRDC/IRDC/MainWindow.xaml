@@ -3,15 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:local="clr-namespace:IRDC"
         mc:Ignorable="d"
         Title="iRacing Data Companion" Height="450" Width="800"
         Deactivated="OnWindowDeactivated"
+        KeyDown="OnKeyPressed"
+        MouseDown="OnMouseDown"
         AllowsTransparency="True"
         Background="White"
-        WindowStyle="None"
-        KeyDown="OnKeyPressed"
-        MouseDown="OnMouseDown">
+        WindowStyle="None">
+    <Window.Visibility>
+        <Binding Path="MainWindowVisibility" Mode="TwoWay"/>
+    </Window.Visibility>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
@@ -28,6 +32,11 @@
         <Label Grid.Column="1" Content="{Binding TelemetryModel.ClutchPerc}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,60,0,0" Height="20" Padding="0,0,0,0" VerticalContentAlignment="Center" Width="Auto" Foreground="LightGray"/>
         <Label Grid.Column="1" Content="{Binding TelemetryModel.BrakePerc}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,85,0,0" Height="20" Padding="0,0,0,0" VerticalContentAlignment="Center" Width="Auto" Foreground="LightGray"/>
         <ListView Grid.Column="0" Grid.ColumnSpan="2" Margin="20,110,0,20" ItemsSource="{Binding ResultsList}">
+            <ListView.Resources>
+                <Style TargetType="GridViewColumnHeader">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
+            </ListView.Resources>
             <ListView.View>
                 <GridView>
                     <GridViewColumn>

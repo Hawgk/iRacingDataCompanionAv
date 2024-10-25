@@ -23,3 +23,4 @@ C:\Users\hawgk\GitHub\istopping\IRDC\IRDC\obj\Debug\net8.0-windows\refint\IRDC.d
 C:\Users\hawgk\GitHub\istopping\IRDC\IRDC\obj\Debug\net8.0-windows\IRDC.pdb
 C:\Users\hawgk\GitHub\istopping\IRDC\IRDC\obj\Debug\net8.0-windows\IRDC.genruntimeconfig.cache
 C:\Users\hawgk\GitHub\istopping\IRDC\IRDC\obj\Debug\net8.0-windows\ref\IRDC.dll
+C:\Users\hawgk\GitHub\istopping\iRDC\IRDC\bin\Debug\net8.0-windows\Hardcodet.NotifyIcon.Wpf.dll
