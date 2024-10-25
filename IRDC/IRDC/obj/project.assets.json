@@ -1,0 +1,157 @@
+{
+  "version": 3,
+  "targets": {
+    "net8.0-windows7.0": {
+      "IRSDKSharper/1.1.2": {
+        "type": "package",
+        "dependencies": {
+          "YamlDotNet": "16.0.0"
+        },
+        "compile": {
+          "lib/net7.0-windows7.0/IRSDKSharper.dll": {}
+        },
+        "runtime": {
+          "lib/net7.0-windows7.0/IRSDKSharper.dll": {}
+        }
+      },
+      "YamlDotNet/16.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "IRSDKSharper/1.1.2": {
+      "sha512": "7+L8IMyNDiz3AszdwqZssQGZFyHr8QpH8l4hgcWyXWWr/Kq6Y2KKDMhCajule2ifrtc/froJTFyHMbjeJm1yTQ==",
+      "type": "package",
+      "path": "irsdksharper/1.1.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "irsdksharper.1.1.2.nupkg.sha512",
+        "irsdksharper.nuspec",
+        "lib/net471/IRSDKSharper.dll",
+        "lib/net6.0-windows7.0/IRSDKSharper.dll",
+        "lib/net7.0-windows7.0/IRSDKSharper.dll"
+      ]
+    },
+    "YamlDotNet/16.0.0": {
+      "sha512": "kZ4jR5ltFhnjaUqK9x81zXRIUTH4PTXTTEmJDNQdkDLQhcv+2Nl19r0dCSvPW1mstOYBfXTnjdieRbUO6gHMDw==",
+      "type": "package",
+      "path": "yamldotnet/16.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "README.md",
+        "images/yamldotnet.png",
+        "lib/net47/YamlDotNet.dll",
+        "lib/net47/YamlDotNet.xml",
+        "lib/net6.0/YamlDotNet.dll",
+        "lib/net6.0/YamlDotNet.xml",
+        "lib/net8.0/YamlDotNet.dll",
+        "lib/net8.0/YamlDotNet.xml",
+        "lib/netstandard2.0/YamlDotNet.dll",
+        "lib/netstandard2.0/YamlDotNet.xml",
+        "lib/netstandard2.1/YamlDotNet.dll",
+        "lib/netstandard2.1/YamlDotNet.xml",
+        "yamldotnet.16.0.0.nupkg.sha512",
+        "yamldotnet.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0-windows7.0": [
+      "IRSDKSharper >= 1.1.2"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\hawgk\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\hawgk\\GitHub\\istopping\\IRDC\\IRDC\\IRDC.csproj",
+      "projectName": "IRDC",
+      "projectPath": "C:\\Users\\hawgk\\GitHub\\istopping\\IRDC\\IRDC\\IRDC.csproj",
+      "packagesPath": "C:\\Users\\hawgk\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\hawgk\\GitHub\\istopping\\IRDC\\IRDC\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\hawgk\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0-windows"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      }
+    },
+    "frameworks": {
+      "net8.0-windows7.0": {
+        "targetAlias": "net8.0-windows",
+        "dependencies": {
+          "IRSDKSharper": {
+            "target": "Package",
+            "version": "[1.1.2, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          },
+          "Microsoft.WindowsDesktop.App.WPF": {
+            "privateAssets": "none"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

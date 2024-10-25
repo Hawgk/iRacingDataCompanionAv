@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "VzoVoph4268=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\hawgk\\GitHub\\istopping\\iRDC\\IRDC\\IRDC.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\hawgk\\.nuget\\packages\\irsdksharper\\1.1.2\\irsdksharper.1.1.2.nupkg.sha512",
+    "C:\\Users\\hawgk\\.nuget\\packages\\yamldotnet\\16.0.0\\yamldotnet.16.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,46 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "IRSDKSharper/1.1.2": {
+        "dependencies": {
+          "YamlDotNet": "16.0.0"
+        },
+        "runtime": {
+          "lib/net7.0-windows7.0/IRSDKSharper.dll": {
+            "assemblyVersion": "1.1.2.0",
+            "fileVersion": "1.1.2.0"
+          }
+        }
+      },
+      "YamlDotNet/16.0.0": {
+        "runtime": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "assemblyVersion": "16.0.0.0",
+            "fileVersion": "16.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "IRSDKSharper/1.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7+L8IMyNDiz3AszdwqZssQGZFyHr8QpH8l4hgcWyXWWr/Kq6Y2KKDMhCajule2ifrtc/froJTFyHMbjeJm1yTQ==",
+      "path": "irsdksharper/1.1.2",
+      "hashPath": "irsdksharper.1.1.2.nupkg.sha512"
+    },
+    "YamlDotNet/16.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kZ4jR5ltFhnjaUqK9x81zXRIUTH4PTXTTEmJDNQdkDLQhcv+2Nl19r0dCSvPW1mstOYBfXTnjdieRbUO6gHMDw==",
+      "path": "yamldotnet/16.0.0",
+      "hashPath": "yamldotnet.16.0.0.nupkg.sha512"
+    }
+  }
+}
