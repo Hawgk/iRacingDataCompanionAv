@@ -1,5 +1,4 @@
-﻿using Avalonia.Media;
-using IRDCav.Models;
+﻿using IRDCav.Models;
 using IRDCav.ViewModels;
 using IRSDKSharper;
 using System;
@@ -83,12 +82,15 @@ namespace IRDCav
                             drivers,
                             position => position.CarIdx,
                             driver => driver.CarIdx,
-                            (position, driver) => {
+                            (position, driver) =>
+                            {
                                 TimeSpan fastestTime = TimeSpan.FromSeconds(position.FastestTime);
                                 TimeSpan lastTime = TimeSpan.FromSeconds(position.LastTime);
                                 string classColor = "#40" + driver.CarClassColor.Substring(2);
                                 bool isFastestLap = false;
 
+                                // Only get the fastest lap of the race, but not class specific.
+                                // This will need a manual implementation for each class.
                                 foreach (FastestLapModel fl in fastestLap)
                                 {
                                     if (fl.CarIdx == driver.CarIdx)

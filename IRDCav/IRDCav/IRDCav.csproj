@@ -22,4 +22,10 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="IRSDKSharper" Version="1.1.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\ResultsWindow.axaml.cs">
+      <DependentUpon>ResultsWindow.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

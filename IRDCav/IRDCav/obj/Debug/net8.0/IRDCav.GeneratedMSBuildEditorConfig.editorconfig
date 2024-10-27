@@ -22,5 +22,8 @@ build_property.EnableGeneratedComInterfaceComImportInterop =
 [C:/Users/hawgk/GitHub/istopping/IRDCav/IRDCav/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/hawgk/GitHub/istopping/IRDCav/IRDCav/Views/MainWindow.axaml]
+[C:/Users/hawgk/GitHub/istopping/IRDCav/IRDCav/Views/RelativeWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/hawgk/GitHub/istopping/IRDCav/IRDCav/Views/ResultsWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

@@ -34,7 +34,7 @@ namespace IRDCav
                 DataViewModel vm = new DataViewModel();
                 _dc = new DataCollector(vm);
 
-                desktop.MainWindow = new MainWindow
+                desktop.MainWindow = new ResultsWindow
                 {
                     DataContext = vm,
                 };
