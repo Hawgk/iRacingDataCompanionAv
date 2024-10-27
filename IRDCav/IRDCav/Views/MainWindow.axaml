@@ -15,8 +15,14 @@
         PointerPressed="OnMouseDown"
         Background="White"
 		SystemDecorations="None"
-		Width="800">
+		Width="700">
 	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition
+				Height="*"/>
+			<RowDefinition
+				Height="*"/>
+		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition
 				Width="*"/>
@@ -24,6 +30,7 @@
 				Width="20"/>
 		</Grid.ColumnDefinitions>
 		<Button
+			Grid.Row="0"
 			Grid.Column="1"
 			Height="20"
 			Width="20"
@@ -36,13 +43,99 @@
 			Background="DarkSalmon"
 			BorderThickness="0"
 			Click="OnCloseClicked"/>
+		<Grid
+			Grid.Row="0"
+			Grid.ColumnSpan="2"
+			Margin="20,20,20,10"
+			HorizontalAlignment="Left">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition
+					Width="Auto"/>
+				<ColumnDefinition
+					Width="Auto"/>
+				<ColumnDefinition
+					Width="Auto"/>
+				<ColumnDefinition
+					Width="Auto"/>
+				<ColumnDefinition
+					Width="Auto"/>
+				<ColumnDefinition
+					Width="Auto"/>
+				<ColumnDefinition
+					Width="Auto"/>
+				<ColumnDefinition
+					Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock
+				Grid.Column="0"
+				Text="Air:"
+				Padding="0"
+				FontSize="14"
+				FontWeight="Bold"
+				FontFamily="Terminus (TTF) for Windows"
+				HorizontalAlignment="Left"/>
+			<TextBlock
+				Grid.Column="1"
+				Text="{Binding SessionInfoModel.AirTemp}"
+				Padding="5,0,0,0"
+				FontSize="14"
+				FontFamily="Terminus (TTF) for Windows"
+				HorizontalAlignment="Left"/>
+			<TextBlock
+				Grid.Column="2"
+				Text="Surface:"
+				Padding="20,0,0,0"
+				FontSize="14"
+				FontWeight="Bold"
+				FontFamily="Terminus (TTF) for Windows"
+				HorizontalAlignment="Left"/>
+			<TextBlock
+				Grid.Column="3"
+				Text="{Binding SessionInfoModel.SurfaceTemp}"
+				Padding="5,0,0,0"
+				FontSize="14"
+				FontFamily="Terminus (TTF) for Windows"
+				HorizontalAlignment="Left"/>
+			<TextBlock
+				Grid.Column="4"
+				Text="Fog:"
+				Padding="20,0,0,0"
+				FontSize="14"
+				FontWeight="Bold"
+				FontFamily="Terminus (TTF) for Windows"
+				HorizontalAlignment="Left"/>
+			<TextBlock
+				Grid.Column="5"
+				Text="{Binding SessionInfoModel.FogLevel}"
+				Padding="5,0,0,0"
+				FontSize="14"
+				FontFamily="Terminus (TTF) for Windows"
+				HorizontalAlignment="Left"/>
+			<TextBlock
+				Grid.Column="6"
+				Text="Humidity:"
+				Padding="20,0,0,0"
+				FontSize="14"
+				FontWeight="Bold"
+				FontFamily="Terminus (TTF) for Windows"
+				HorizontalAlignment="Left"/>
+			<TextBlock
+				Grid.Column="7"
+				Text="{Binding SessionInfoModel.Humidity}"
+				Padding="5,0,0,0"
+				FontSize="14"
+				FontFamily="Terminus (TTF) for Windows"
+				HorizontalAlignment="Left"/>
+		</Grid>
 		<ListBox
+			Grid.Row="1"
 			Grid.Column="0"
 			Grid.ColumnSpan="2"
-			Margin="20"
+			Margin="20,0,20,20"
 			ItemsSource="{Binding ResultsList}"
 			Background="Transparent"
-			Grid.IsSharedSizeScope="True">
+			Grid.IsSharedSizeScope="True"
+			MaxHeight="600">
 			<ListBox.Styles>
 				<Style
 					Selector="ListBoxItem">

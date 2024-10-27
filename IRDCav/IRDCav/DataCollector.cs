@@ -46,7 +46,23 @@ namespace IRDCav
         }
 
         private void OnSessionInfo()
-        { }
+        {
+            var weekendInfo = _irsdk.Data.SessionInfo.WeekendInfo;
+
+            if (weekendInfo != null)
+            {
+                SessionInfoModel sessionInfoModel = new SessionInfoModel
+                {
+                    TrackName = weekendInfo.TrackDisplayName,
+                    AirTemp = weekendInfo.TrackAirTemp,
+                    SurfaceTemp = weekendInfo.TrackSurfaceTemp,
+                    FogLevel = weekendInfo.TrackFogLevel,
+                    Humidity = weekendInfo.TrackRelativeHumidity
+                };
+
+                _dataViewModel.SessionInfoModel = sessionInfoModel;
+            }
+        }
 
         private void OnTelemetryData()
         {

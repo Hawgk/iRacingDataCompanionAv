@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IRDCav")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2b78d4ec353a848d6ef9f55364ad4217e6d74da2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c187c84161fd3ad027bcfab2dcbd113c6054a1f")]
 [assembly: System.Reflection.AssemblyProductAttribute("IRDCav")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IRDCav")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
