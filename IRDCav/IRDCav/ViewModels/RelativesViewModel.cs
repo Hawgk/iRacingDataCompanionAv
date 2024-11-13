@@ -3,11 +3,12 @@ using System.Collections.ObjectModel;
 
 namespace IRDCav.ViewModels
 {
-    public class DataViewModel : ViewModelBase
+    public class RelativesViewModel : ViewModelBase
     {
         private bool _isConnected = false;
+        public string _incidentCount = string.Empty;
         private SessionInfoModel _sessionInfoModel = new SessionInfoModel();
-        private TelemetryModel _telemetryModel = new TelemetryModel();
+        private FuelDataModel _fuelDataModel = new FuelDataModel();
         private ObservableCollection<RaceDataModel> _raceDataList = new ObservableCollection<RaceDataModel>();
 
         public bool IsConnected
@@ -22,6 +23,22 @@ namespace IRDCav.ViewModels
                 {
                     _isConnected = value;
                     OnPropertyChanged(nameof(IsConnected));
+                }
+            }
+        }
+
+        public string IncidentCount
+        {
+            get
+            {
+                return _incidentCount;
+            }
+            set
+            {
+                if (_incidentCount != value)
+                {
+                    _incidentCount = value;
+                    OnPropertyChanged(nameof(IncidentCount));
                 }
             }
         }
@@ -42,16 +59,16 @@ namespace IRDCav.ViewModels
             }
         }
 
-        public TelemetryModel TelemetryModel
+        public FuelDataModel FuelDataModel
         {
             get
             {
-                return _telemetryModel;
+                return _fuelDataModel;
             }
             set
             {
-                _telemetryModel = value;
-                OnPropertyChanged(nameof(TelemetryModel));
+                _fuelDataModel = value;
+                OnPropertyChanged(nameof(FuelDataModel));
             }
         }
 

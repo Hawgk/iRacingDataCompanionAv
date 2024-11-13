@@ -24,6 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaXaml Update="Views\RelativesWindow.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\RelativesWindow.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>RelativesWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\ResultsWindow.axaml.cs">
       <DependentUpon>ResultsWindow.axaml</DependentUpon>
     </Compile>

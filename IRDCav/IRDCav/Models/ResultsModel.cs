@@ -2,27 +2,22 @@
 {
     public class ResultsModel
     {
-        private bool _isMe = false;
         private bool _isFastest = false;
         private string _name = string.Empty;
         private string _class = string.Empty;
         private string _carPath = string.Empty;
         private string _license = string.Empty;
-        private string _fastestLapTime = string.Empty;
-        private string _lastLapTime = string.Empty;
+        private float _fastestLapTime;
+        private float _lastLapTime;
+        private float _gap;
 
         private int _rating;
         private int _classPosition;
         private int _lapsCompleted;
+        private int _id;
 
         private string _classColor = string.Empty;
 
-
-        public bool IsMe
-        {
-            get { return _isMe; }
-            set { _isMe = value; }
-        }
         public bool IsFastest
         {
             get { return _isFastest; }
@@ -53,17 +48,21 @@
             get { return _classColor; }
             set { _classColor = value; }
         }
-        public string FastestLapTime
+        public float FastestLapTime
         {
             get { return _fastestLapTime; }
             set { _fastestLapTime = value; }
         }
-        public string LastLapTime
+        public float LastLapTime
         {
             get { return _lastLapTime; }
             set { _lastLapTime = value; }
         }
-
+        public float Gap
+        {
+            get { return _gap; }
+            set { _gap = value; }
+        }
         public int Rating
         {
             get { return _rating; }
@@ -78,6 +77,11 @@
         {
             get { return _lapsCompleted; }
             set { _lapsCompleted = value; }
+        }
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
         }
     }
 }

@@ -7,6 +7,12 @@
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
+	<Application.Resources>
+		<local:SecToTimeConverter x:Key="SecToTimeConverter"/>
+		<local:IntToLapConverter x:Key="IntToLapConverter"/>
+		<local:DriverNameConverter x:Key="DriverNameConverter"/>
+		<local:FloatConverter x:Key="FloatConverter"/>
+	</Application.Resources>
     <Application.Styles>
 		<Style
 			Selector="TextBlock.NotMe">
@@ -34,6 +40,21 @@
 			<Setter
 				Property="FontWeight"
 				Value="Bold"/>
+		</Style>
+		<Style
+			Selector="TextBlock.DefaultStyle">
+			<Setter
+				Property="Padding"
+				Value="7,3"/>
+			<Setter
+				Property="FontSize"
+				Value="15"/>
+			<Setter
+				Property="FontFamily"
+				Value="Fragment Mono"/>
+			<Setter
+				Property="HorizontalAlignment"
+				Value="Left"/>
 		</Style>
         <FluentTheme />
     </Application.Styles>

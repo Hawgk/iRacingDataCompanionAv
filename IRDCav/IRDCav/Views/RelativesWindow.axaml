@@ -4,11 +4,11 @@
 		xmlns:views="using:ToDoList.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
-        x:Class="IRDCav.Views.ResultsWindow"
-        x:DataType="vm:DataViewModel"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="400"
+        x:Class="IRDCav.Views.RelativesWindow"
+        x:DataType="vm:RelativesViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="iRDCav Results"
+        Title="iRDCav Relatives"
         Deactivated="OnWindowDeactivated"
 		SizeToContent="Height"
 		Loaded="OnWindowLoaded"
@@ -16,7 +16,7 @@
         PointerPressed="OnMouseDown"
         Background="White"
 		SystemDecorations="None"
-		Width="600"
+		Width="500"
 		LayoutUpdated="OnResize">
 	<Grid>
 		<Grid.RowDefinitions>
@@ -69,50 +69,58 @@
 					Width="Auto"/>
 				<ColumnDefinition
 					Width="Auto"/>
+				<ColumnDefinition
+					Width="Auto"/>
 			</Grid.ColumnDefinitions>
 			<TextBlock
-				Classes="DefaultStyle"
 				Grid.Column="0"
-				Text="Air:"
+				Classes="DefaultStyle"
+				Text="{Binding IncidentCount}"
 				Padding="0"
-				FontWeight="Bold"/>
+				Foreground="DeepPink"/>
 			<TextBlock
 				Classes="DefaultStyle"
 				Grid.Column="1"
-				Text="{Binding SessionInfoModel.AirTemp}"
-				Padding="5,0,0,0"/>
+				Text="Level:"
+				Padding="20,0,0,0"
+				FontWeight="Bold"/>
 			<TextBlock
 				Classes="DefaultStyle"
 				Grid.Column="2"
-				Text="Surface:"
-				Padding="20,0,0,0"
-				FontWeight="Bold"/>
+				Text="{Binding FuelDataModel.Level, Converter={StaticResource FloatConverter}}"
+				Padding="5,0,0,0"/>
 			<TextBlock
 				Classes="DefaultStyle"
 				Grid.Column="3"
-				Text="{Binding SessionInfoModel.SurfaceTemp}"
-				Padding="5,0,0,0"/>
+				Text="Min:"
+				Padding="20,0,0,0"
+				FontWeight="Bold"/>
 			<TextBlock
 				Classes="DefaultStyle"
 				Grid.Column="4"
-				Text="Fog:"
-				Padding="20,0,0,0"
-				FontWeight="Bold"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="5"
-				Text="{Binding SessionInfoModel.FogLevel}"
+				Text="{Binding FuelDataModel.MinConsumption, Converter={StaticResource FloatConverter}}"
 				Padding="5,0,0,0"/>
 			<TextBlock
 				Classes="DefaultStyle"
-				Grid.Column="6"
-				Text="Humidity:"
+				Grid.Column="5"
+				Text="Avg:"
 				Padding="20,0,0,0"
 				FontWeight="Bold"/>
 			<TextBlock
 				Classes="DefaultStyle"
+				Grid.Column="6"
+				Text="{Binding FuelDataModel.AvgConsumption, Converter={StaticResource FloatConverter}}"
+				Padding="5,0,0,0"/>
+			<TextBlock
+				Classes="DefaultStyle"
 				Grid.Column="7"
-				Text="{Binding SessionInfoModel.Humidity}"
+				Text="Max:"
+				Padding="20,0,0,0"
+				FontWeight="Bold"/>
+			<TextBlock
+				Classes="DefaultStyle"
+				Grid.Column="8"
+				Text="{Binding FuelDataModel.MaxConsumption, Converter={StaticResource FloatConverter}}"
 				Padding="5,0,0,0"/>
 		</Grid>
 		<ListBox
@@ -123,7 +131,7 @@
 			ItemsSource="{Binding RaceDataList}"
 			Background="Transparent"
 			Grid.IsSharedSizeScope="True"
-			MaxHeight="600">
+			VerticalAlignment="Center">
 			<ListBox.Styles>
 				<Style
 					Selector="ListBoxItem">
@@ -150,19 +158,9 @@
 							<ColumnDefinition
 								SharedSizeGroup="C"
 								Width="Auto"/>
-							<ColumnDefinition
-								SharedSizeGroup="D"
-								Width="Auto"/>
-							<ColumnDefinition
-								SharedSizeGroup="E"
-								Width="Auto"/>
-							<ColumnDefinition
-								SharedSizeGroup="F"
-								Width="Auto"/>
 						</Grid.ColumnDefinitions>
 						<Grid
 							Grid.Column="0"
-							Classes.IsMe="{Binding IsMe}"
 							Background="{Binding ClassColor}">
 							<TextBlock
 								Classes="DefaultStyle"
@@ -172,64 +170,30 @@
 						</Grid>
 						<Grid
 							Grid.Column="1"
-							Classes.IsMe="{Binding IsMe}"
 							Background="{Binding ClassColor}">
 							<TextBlock
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
-								Text="{Binding Name, Converter={StaticResource DriverNameConverter}, ConverterParameter=ShortUpper}"/>
+								Text="{Binding Name, Converter={StaticResource DriverNameConverter}, ConverterParameter=LastUpper}"/>
 						</Grid>
 						<Grid
 							Grid.Column="2"
-							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
-							<TextBlock
-								Classes="DefaultStyle"
-								Classes.IsMe="{Binding IsMe}"
-								Classes.NotMe="{Binding !IsMe}"
-								Text="{Binding License}"/>
-						</Grid>
-						<Grid
-							Grid.Column="3"
-							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
-							<TextBlock
-								Classes="DefaultStyle"
-								Classes.IsMe="{Binding IsMe}"
-								Classes.NotMe="{Binding !IsMe}"
-								Text="{Binding LapsCompleted, Converter={StaticResource IntToLapConverter}}"/>
-						</Grid>
-						<Grid
-							Grid.Column="4"
-							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
-							<TextBlock
-								Classes="DefaultStyle"
-								Classes.IsMe="{Binding IsMe}"
-								Classes.NotMe="{Binding !IsMe}"
-								Classes.IsFastest="{Binding IsFastest}"
-								Text="{Binding FastestLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
-						</Grid>
-						<Grid
-							Grid.Column="5"
-							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
-							<TextBlock
-								Classes="DefaultStyle"
-								Classes.IsMe="{Binding IsMe}"
-								Classes.NotMe="{Binding !IsMe}"
-								Text="{Binding LastLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
-						</Grid>
-						<Grid
-							Grid.Column="6"
-							Classes.IsMe="{Binding IsMe}"
 							Background="{Binding ClassColor}">
 							<TextBlock
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
 								Text="{Binding Interval, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Interval}"/>
+						</Grid>
+						<Grid
+							Grid.Column="3"
+							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes="DefaultStyle"
+								Classes.IsMe="{Binding IsMe}"
+								Classes.NotMe="{Binding !IsMe}"
+								Text="{Binding LastLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
 						</Grid>
 					</Grid>
 				</DataTemplate>

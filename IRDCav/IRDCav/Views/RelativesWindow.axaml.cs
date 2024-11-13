@@ -7,15 +7,13 @@ using System;
 
 namespace IRDCav.Views
 {
-    public partial class ResultsWindow : Window
+    public partial class RelativesWindow : Window
     {
         private bool _f6Pressed = false;
         private SolidColorBrush _windowBackgroundMoving = new SolidColorBrush(Color.FromArgb(0x40, 0xFF, 0xFF, 0xFF));
         private SolidColorBrush _windowBackgroundFixed = new SolidColorBrush(Color.FromArgb(0x90, 0x00, 0x00, 0x00));
 
-        public PixelSize ScreenSize { get; set; }
-
-        public ResultsWindow()
+        public RelativesWindow()
         {
             InitializeComponent();
             Background = _windowBackgroundFixed;
@@ -26,12 +24,13 @@ namespace IRDCav.Views
             PixelSize screenSize = Screens.Primary.WorkingArea.Size;
             PixelSize windowSize = PixelSize.FromSize(ClientSize, Screens.Primary.Scaling);
 
-            Position = new PixelPoint(0, (int)(1440 - Height));
+            Position = new PixelPoint((int)(2560 - Width), (int)(1440 - Height));
         }
 
         private void OnResize(object sender, EventArgs e)
         {
-            Position = new PixelPoint(0, (int)(1440 - Height));
+
+            Position = new PixelPoint((int)(2560 - Width), (int)(1440 - Height));
         }
 
         private void OnWindowDeactivated(object sender, EventArgs e)

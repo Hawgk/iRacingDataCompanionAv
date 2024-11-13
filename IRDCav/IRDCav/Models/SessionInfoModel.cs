@@ -7,6 +7,8 @@
         private string _surfaceTemp = string.Empty;
         private string _fogLevel = string.Empty;
         private string _humidity = string.Empty;
+        private string _incidentCount = string.Empty;
+        private int _classCount;
 
         public string TrackName
         {
@@ -32,6 +34,11 @@
         {
             get { return _humidity; }
             set { _humidity = value; }
+        }
+        public int ClassCount
+        {
+            get { return _classCount; }
+            set { _classCount = value; }
         }
     }
 }

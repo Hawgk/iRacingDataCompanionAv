@@ -31,13 +31,21 @@ namespace IRDCav
                 BindingPlugins.DataValidators.RemoveAt(0);
                 desktop.Exit += OnExit;
 
-                DataViewModel vm = new DataViewModel();
-                _dc = new DataCollector(vm);
+                DataViewModel standingViewModel = new DataViewModel();
+                RelativesViewModel relativesViewModel = new RelativesViewModel();
+
+                _dc = new DataCollector(standingViewModel, relativesViewModel);
 
                 desktop.MainWindow = new ResultsWindow
                 {
-                    DataContext = vm,
+                    DataContext = standingViewModel,
                 };
+
+                RelativesWindow relativesWindow = new RelativesWindow
+                {
+                    DataContext = relativesViewModel,
+                };
+                relativesWindow.Show();
             }
 
             base.OnFrameworkInitializationCompleted();
