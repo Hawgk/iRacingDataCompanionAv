@@ -81,6 +81,19 @@ namespace IRDCav.Models
             fuelDataModel.FuelPerMinuteAvg = _lastFuelData.FuelPerMinuteAvg;
             fuelDataModel.FuelPerMinuteMax = _lastFuelData.FuelPerMinuteMax;
 
+            if (_lastFuelData.FuelPerMinuteMin > 0)
+            {
+                fuelDataModel.RefuelMin = (float)Math.Round(level - (_lastFuelData.FuelPerMinuteMin / 60) * SessionInfo.TimeRemain, 2);
+            }
+            if (_lastFuelData.FuelPerMinuteAvg > 0)
+            {
+                fuelDataModel.RefuelAvg = (float)Math.Round(level - (_lastFuelData.FuelPerMinuteAvg / 60) * SessionInfo.TimeRemain, 2);
+            }
+            if (_lastFuelData.FuelPerMinuteMax > 0)
+            {
+                fuelDataModel.RefuelMax = (float)Math.Round(level - (_lastFuelData.FuelPerMinuteMax / 60) * SessionInfo.TimeRemain, 2);
+            }
+
             _lastFuelData = fuelDataModel;
 
             return fuelDataModel;
@@ -102,19 +115,6 @@ namespace IRDCav.Models
             fuelDataModel.FuelPerMinuteMin = _fpmMin;
             fuelDataModel.FuelPerMinuteAvg = _fpmAvg;
             fuelDataModel.FuelPerMinuteMax = _fpmMax;
-
-            if (_lastFuelData.FuelPerMinuteMin > 0)
-            {
-                fuelDataModel.RefuelMin = (float)Math.Round(level - (_lastFuelData.FuelPerMinuteMin / 60) * SessionInfo.TimeRemain, 2);
-            }
-            if (_lastFuelData.FuelPerMinuteAvg > 0)
-            {
-                fuelDataModel.RefuelAvg = (float)Math.Round(level - (_lastFuelData.FuelPerMinuteAvg / 60) * SessionInfo.TimeRemain, 2);
-            }
-            if (_lastFuelData.FuelPerMinuteMax > 0)
-            {
-                fuelDataModel.RefuelMax = (float)Math.Round(level - (_lastFuelData.FuelPerMinuteMax / 60) * SessionInfo.TimeRemain, 2);
-            }
 
             _timer.Reset();
             _timer.Start();

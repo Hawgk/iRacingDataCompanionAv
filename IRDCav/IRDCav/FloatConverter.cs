@@ -18,11 +18,14 @@ namespace IRDCav
                 switch (targetCase)
                 {
                     case "Fuel":
-                        returnString = sourceValue.ToString("0.00") + "L";
-                        return returnString.PadLeft(6);
+                        returnString = sourceValue.ToString("0.00") + " L    ";
+                        return returnString.PadLeft(11);
+                    case "FuelPerLap":
+                        returnString = sourceValue.ToString("0.00") + " L/Lap";
+                        return returnString.PadLeft(11);
                     case "FuelPerMinute":
-                        returnString = sourceValue.ToString("0.00") + "L/min";
-                        return returnString.PadLeft(6);
+                        returnString = sourceValue.ToString("0.00") + " L/Min";
+                        return returnString.PadLeft(11);
                 }
             }
             // converter used for the wrong type

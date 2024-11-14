@@ -70,8 +70,7 @@
 					Classes="DefaultStyle"
 					Foreground="{StaticResource ThemeRed}"
 					Text="{Binding SessionInfo.LapsString}"
-					HorizontalAlignment="Left"
-					FontWeight="Bold"/>
+					HorizontalAlignment="Left"/>
 			</Grid>
 			<Grid
 				Grid.Column="1">
@@ -79,8 +78,7 @@
 					Classes="DefaultStyle"
 					Foreground="{StaticResource ThemeRed}"
 					Text="{Binding SessionInfo.TimeRemain, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Session}"
-					HorizontalAlignment="Right"
-					FontWeight="Bold"/>
+					HorizontalAlignment="Right"/>
 			</Grid>
 		</Grid>
 		<Grid
@@ -151,7 +149,7 @@
 				<TextBlock
 					Classes="DefaultStyle"
 					Foreground="{StaticResource ThemeWhite}"
-					Text="{Binding FuelData.LastConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					Text="{Binding FuelData.LastConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerLap}"
 					HorizontalAlignment="Right"/>
 			</Grid>
 			<Grid
@@ -172,7 +170,7 @@
 				<TextBlock
 					Classes="DefaultStyle"
 					Foreground="{StaticResource ThemeWhite}"
-					Text="{Binding FuelData.MinConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					Text="{Binding FuelData.MinConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerLap}"
 					HorizontalAlignment="Right"/>
 			</Grid>
 			<Grid
@@ -213,7 +211,7 @@
 				<TextBlock
 					Classes="DefaultStyle"
 					Foreground="{StaticResource ThemeWhite}"
-					Text="{Binding FuelData.AvgConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					Text="{Binding FuelData.AvgConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerLap}"
 					HorizontalAlignment="Right"/>
 			</Grid>
 			<Grid
@@ -254,7 +252,7 @@
 				<TextBlock
 					Classes="DefaultStyle"
 					Foreground="{StaticResource ThemeWhite}"
-					Text="{Binding FuelData.MaxConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					Text="{Binding FuelData.MaxConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerLap}"
 					HorizontalAlignment="Right"/>
 			</Grid>
 			<Grid
