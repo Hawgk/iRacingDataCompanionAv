@@ -10,10 +10,12 @@ namespace IRDCav.Models
         public bool IsMe { get; set; }
         public bool IsFastest { get; set; }
         public bool OnPitRoad { get; set; }
+        public bool ConsiderForRelative { get; set; }
 
         public string Name { get; set; } = string.Empty;
         public string ClassStr { get; set; } = string.Empty;
         public string CarName { get; set; } = string.Empty;
+        public string CarNumber { get; set; } = string.Empty;
         public string License { get; set; } = string.Empty;
         public string ClassColor { get; set; } = string.Empty;
 
@@ -40,6 +42,7 @@ namespace IRDCav.Models
             Position = liveData.Position;
             ClassPosition = liveData.ClassPosition;
             Interval = liveData.Interval;
+            ConsiderForRelative = liveData.ConsiderForRelative;
             LastLapTime = liveData.LastLapTime;
             BestLapTime = liveData.BestLapTime;
             BestLapNum = liveData.BestLapNum;
@@ -65,12 +68,13 @@ namespace IRDCav.Models
         {
             string ratingString = ((float)driver.IRating / 1000).ToString("0.0") + "k";
 
-            ClassColor = "#40" + driver.CarClassColor.Substring(2);
+            ClassColor = "#60" + driver.CarClassColor.Substring(2);
             Id = driver.CarIdx;
             Name = driver.UserName;
             ClassStr = driver.CarClassShortName;
             CarName = driver.CarPath;
-            License = driver.LicString.Split(" ")[0] + " " + ratingString;
+            CarNumber = driver.CarNumber;
+            License = driver.LicString.Split(" ")[0] + ratingString;
             Rating = driver.IRating;
         }
 

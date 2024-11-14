@@ -6,9 +6,8 @@ namespace IRDCav.ViewModels
     public class RelativesViewModel : ViewModelBase
     {
         private bool _isConnected = false;
-        public string _incidentCount = string.Empty;
-        private SessionInfoModel _sessionInfoModel = new SessionInfoModel();
-        private FuelDataModel _fuelDataModel = new FuelDataModel();
+        private SessionInfoModel _sessionInfo = new SessionInfoModel();
+        private FuelDataModel _fuelData = new FuelDataModel();
         private ObservableCollection<RaceDataModel> _raceDataList = new ObservableCollection<RaceDataModel>();
 
         public bool IsConnected
@@ -27,48 +26,32 @@ namespace IRDCav.ViewModels
             }
         }
 
-        public string IncidentCount
+        public SessionInfoModel SessionInfo
         {
             get
             {
-                return _incidentCount;
+                return _sessionInfo;
             }
             set
             {
-                if (_incidentCount != value)
+                if (_sessionInfo != value)
                 {
-                    _incidentCount = value;
-                    OnPropertyChanged(nameof(IncidentCount));
+                    _sessionInfo = value;
+                    OnPropertyChanged(nameof(SessionInfo));
                 }
             }
         }
 
-        public SessionInfoModel SessionInfoModel
+        public FuelDataModel FuelData
         {
             get
             {
-                return _sessionInfoModel;
+                return _fuelData;
             }
             set
             {
-                if (_sessionInfoModel != value)
-                {
-                    _sessionInfoModel = value;
-                    OnPropertyChanged(nameof(SessionInfoModel));
-                }
-            }
-        }
-
-        public FuelDataModel FuelDataModel
-        {
-            get
-            {
-                return _fuelDataModel;
-            }
-            set
-            {
-                _fuelDataModel = value;
-                OnPropertyChanged(nameof(FuelDataModel));
+                _fuelData = value;
+                OnPropertyChanged(nameof(FuelData));
             }
         }
 

@@ -94,7 +94,7 @@ namespace IRDCav.Models
             RaceDataModel[] trimmedRaceData;
             // Only take active cars into consideration and sort by interval
             RaceDataModel[] sortedRaceData = _raceData.ToList()
-                .Where(x => x.IsActive == true)
+                .Where(x => x.ConsiderForRelative)
                 .OrderBy(x => x.Interval)
                 .Reverse()
                 .ToArray();
@@ -139,7 +139,7 @@ namespace IRDCav.Models
             RaceDataModel[] trimmedRaceData;
             // Only take cars with drivers into consideration and sort by class position
             RaceDataModel[] sortedRaceData = _raceData.ToList()
-                .Where(x => x.Name != string.Empty && x.ClassPosition != 0)
+                .Where(x => x.Name != string.Empty && x.ClassPosition != 0 && x.BestLapNum != -1)
                 .OrderBy(x => x.Position)
                 .ToArray();
 

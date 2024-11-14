@@ -5,25 +5,19 @@ using System.Globalization;
 
 namespace IRDCav
 {
-    public class IntToLapConverter : IValueConverter
+    public class CarNumberConverter : IValueConverter
     {
-        public static readonly IntToLapConverter Instance = new();
+        public static readonly CarNumberConverter Instance = new();
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             string returnString = string.Empty;
 
-            if (value is int sourceValue && targetType.IsAssignableTo(typeof(string)))
+            if (value is string sourceValue && targetType.IsAssignableTo(typeof(string)))
             {
-                if (sourceValue > 0)
-                {
-                    returnString = sourceValue + "L";
-                    return returnString.PadLeft(4);
-                }
-                else
-                {
-                    return string.Empty;
-                }
+                returnString = "#" + sourceValue;
+
+                return returnString.PadRight(4);
             }
             // converter used for the wrong type
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);

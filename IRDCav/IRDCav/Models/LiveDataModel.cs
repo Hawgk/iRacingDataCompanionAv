@@ -9,6 +9,7 @@
         public int Position { get; set; }
         public int ClassPosition { get; set; }
         public float Interval { get; set; }
+        public bool ConsiderForRelative {  get; set; }
         public float LastLapTime { get; set; }
         public float BestLapTime { get; set; }
         public int BestLapNum { get; set; }

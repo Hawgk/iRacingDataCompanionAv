@@ -6,8 +6,9 @@ namespace IRDCav.ViewModels
     public class DataViewModel : ViewModelBase
     {
         private bool _isConnected = false;
-        private SessionInfoModel _sessionInfoModel = new SessionInfoModel();
-        private TelemetryModel _telemetryModel = new TelemetryModel();
+        private string _incidentCount = string.Empty;
+        private SessionInfoModel _sessionInfo = new SessionInfoModel();
+        private TelemetryModel _telemetry = new TelemetryModel();
         private ObservableCollection<RaceDataModel> _raceDataList = new ObservableCollection<RaceDataModel>();
 
         public bool IsConnected
@@ -26,32 +27,48 @@ namespace IRDCav.ViewModels
             }
         }
 
-        public SessionInfoModel SessionInfoModel
+        public string IncidentCount
         {
             get
             {
-                return _sessionInfoModel;
+                return _incidentCount;
             }
             set
             {
-                if (_sessionInfoModel != value)
+                if (_incidentCount != value)
                 {
-                    _sessionInfoModel = value;
-                    OnPropertyChanged(nameof(SessionInfoModel));
+                    _incidentCount = value;
+                    OnPropertyChanged(nameof(IncidentCount));
                 }
             }
         }
 
-        public TelemetryModel TelemetryModel
+        public SessionInfoModel SessionInfo
         {
             get
             {
-                return _telemetryModel;
+                return _sessionInfo;
             }
             set
             {
-                _telemetryModel = value;
-                OnPropertyChanged(nameof(TelemetryModel));
+                if (_sessionInfo != value)
+                {
+                    _sessionInfo = value;
+                    OnPropertyChanged(nameof(SessionInfo));
+                }
+            }
+        }
+
+        public TelemetryModel Telemetry
+        {
+            get
+            {
+                return _telemetry;
+            }
+            set
+            {
+                _telemetry = value;
+                OnPropertyChanged(nameof(Telemetry));
             }
         }
 

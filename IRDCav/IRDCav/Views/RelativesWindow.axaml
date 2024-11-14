@@ -16,12 +16,14 @@
         PointerPressed="OnMouseDown"
         Background="White"
 		SystemDecorations="None"
-		Width="500"
+		Width="400"
 		LayoutUpdated="OnResize">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition
 				Height="20"/>
+			<RowDefinition
+				Height="*"/>
 			<RowDefinition
 				Height="*"/>
 			<RowDefinition
@@ -44,94 +46,245 @@
 			Content="X"
 			VerticalContentAlignment="Center"
 			FontSize="6"
-			Background="DarkSalmon"
+			Background="{StaticResource ThemeRed}"
 			BorderThickness="0"
-			Click="OnCloseClicked"/>
+			Click="OnCloseClicked"
+			IsVisible="False"/>
 		<Grid
-			Grid.Row="1"
+			Grid.Row="0"
+			Grid.RowSpan="2"
+			Grid.Column="0"
 			Grid.ColumnSpan="2"
-			Margin="20,0,20,10"
-			HorizontalAlignment="Left">
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Center">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition
 					Width="Auto"/>
 				<ColumnDefinition
+					Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid
+				Grid.Column="0">
+				<TextBlock
+					Grid.Column="0"
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeRed}"
+					Text="{Binding SessionInfo.LapsString}"
+					HorizontalAlignment="Left"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Column="1">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeRed}"
+					Text="{Binding SessionInfo.TimeRemain, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Session}"
+					HorizontalAlignment="Right"
+					FontWeight="Bold"/>
+			</Grid>
+		</Grid>
+		<Grid
+			Grid.Row="2"
+			Grid.ColumnSpan="2"
+			HorizontalAlignment="Left"
+			Grid.IsSharedSizeScope="True">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition
+					SharedSizeGroup="A"
 					Width="Auto"/>
 				<ColumnDefinition
+					SharedSizeGroup="B"
 					Width="Auto"/>
 				<ColumnDefinition
+					SharedSizeGroup="C"
 					Width="Auto"/>
 				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
+					SharedSizeGroup="D"
 					Width="Auto"/>
 			</Grid.ColumnDefinitions>
-			<TextBlock
+			<Grid.RowDefinitions>
+				<RowDefinition
+					Height="Auto"/>
+				<RowDefinition
+					Height="Auto"/>
+				<RowDefinition
+					Height="Auto"/>
+				<RowDefinition
+					Height="Auto"/>
+				<RowDefinition
+					Height="Auto"/>
+				<RowDefinition
+					Height="Auto"/>
+				<RowDefinition
+					Height="Auto"/>
+			</Grid.RowDefinitions>
+			<Grid
+				Grid.Row="1"
+				Grid.Column="0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="Fuel"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Row="1"
+				Grid.Column="1">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.Level, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="2"
+				Grid.Column="0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="Last"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Row="2"
+				Grid.Column="1">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.LastConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="3"
+				Grid.Column="0">
+				<TextBlock
+					HorizontalAlignment="Center"
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="&#xf0f86;"
+					Margin="0,-1,0,0"
+					FontSize="17"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Row="3"
+				Grid.Column="1">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.MinConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="3"
+				Grid.Column="2">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.FuelPerMinuteMin, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerMinute}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="3"
+				Grid.Column="3">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.RefuelMin, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="4"
 				Grid.Column="0"
-				Classes="DefaultStyle"
-				Text="{Binding IncidentCount}"
-				Padding="0"
-				Foreground="DeepPink"/>
-			<TextBlock
-				Classes="DefaultStyle"
+				Background="{StaticResource ThemeFuelBackground}">
+				<TextBlock
+					HorizontalAlignment="Center"
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="&#xf0f85;"
+					Margin="0,-1,0,0"
+					FontSize="17"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Row="4"
 				Grid.Column="1"
-				Text="Level:"
-				Padding="20,0,0,0"
-				FontWeight="Bold"/>
-			<TextBlock
-				Classes="DefaultStyle"
+				Background="{StaticResource ThemeFuelBackground}">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.AvgConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="4"
 				Grid.Column="2"
-				Text="{Binding FuelDataModel.Level, Converter={StaticResource FloatConverter}}"
-				Padding="5,0,0,0"/>
-			<TextBlock
-				Classes="DefaultStyle"
+				Background="{StaticResource ThemeFuelBackground}">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.FuelPerMinuteAvg, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerMinute}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="4"
 				Grid.Column="3"
-				Text="Min:"
-				Padding="20,0,0,0"
-				FontWeight="Bold"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="4"
-				Text="{Binding FuelDataModel.MinConsumption, Converter={StaticResource FloatConverter}}"
-				Padding="5,0,0,0"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="5"
-				Text="Avg:"
-				Padding="20,0,0,0"
-				FontWeight="Bold"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="6"
-				Text="{Binding FuelDataModel.AvgConsumption, Converter={StaticResource FloatConverter}}"
-				Padding="5,0,0,0"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="7"
-				Text="Max:"
-				Padding="20,0,0,0"
-				FontWeight="Bold"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="8"
-				Text="{Binding FuelDataModel.MaxConsumption, Converter={StaticResource FloatConverter}}"
-				Padding="5,0,0,0"/>
+				Background="{StaticResource ThemeFuelBackground}">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeYellow}"
+					Text="{Binding FuelData.RefuelAvg, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="5"
+				Grid.Column="0">
+				<TextBlock
+					HorizontalAlignment="Center"
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="&#xf04c5;"
+					Margin="0,-1,0,0"
+					FontSize="17"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Row="5"
+				Grid.Column="1">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.MaxConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="5"
+				Grid.Column="2">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.FuelPerMinuteMax, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerMinute}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Row="5"
+				Grid.Column="3">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding FuelData.RefuelMax, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
+					HorizontalAlignment="Right"/>
+			</Grid>
 		</Grid>
 		<ListBox
-			Grid.Row="2"
+			Grid.Row="3"
 			Grid.Column="0"
 			Grid.ColumnSpan="2"
-			Margin="20,0,20,20"
+			Margin="0,2,0,0"
 			ItemsSource="{Binding RaceDataList}"
 			Background="Transparent"
 			Grid.IsSharedSizeScope="True"
-			VerticalAlignment="Center">
+			VerticalAlignment="Stretch">
 			<ListBox.Styles>
 				<Style
 					Selector="ListBoxItem">
@@ -151,26 +304,39 @@
 								SharedSizeGroup="A"
 								Width="Auto"/>
 							<ColumnDefinition
-								Width="*"/>
-							<ColumnDefinition
 								SharedSizeGroup="B"
 								Width="Auto"/>
 							<ColumnDefinition
+								Width="*"/>
+							<ColumnDefinition
 								SharedSizeGroup="C"
+								Width="Auto"/>
+							<ColumnDefinition
+								SharedSizeGroup="D"
 								Width="Auto"/>
 						</Grid.ColumnDefinitions>
 						<Grid
-							Grid.Column="0"
-							Background="{Binding ClassColor}">
+							Classes.IsMe="{Binding IsMe}"
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="0">
 							<TextBlock
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
-								Text="{Binding ClassPosition}"/>
+								Text="{Binding ClassPosition, Converter={StaticResource PositionConverter}}"/>
 						</Grid>
 						<Grid
 							Grid.Column="1"
 							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes="DefaultStyle"
+								Foreground="{StaticResource ThemeWhite}"
+								Text="{Binding CarNumber, Converter={StaticResource CarNumberConverter}}"/>
+						</Grid>
+						<Grid
+							Classes.IsMe="{Binding IsMe}"
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="2">
 							<TextBlock
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
@@ -178,18 +344,22 @@
 								Text="{Binding Name, Converter={StaticResource DriverNameConverter}, ConverterParameter=LastUpper}"/>
 						</Grid>
 						<Grid
-							Grid.Column="2"
-							Background="{Binding ClassColor}">
+							Classes.IsMe="{Binding IsMe}"
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="3">
 							<TextBlock
+								HorizontalAlignment="Right"
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
 								Text="{Binding Interval, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Interval}"/>
 						</Grid>
 						<Grid
-							Grid.Column="3"
-							Background="{Binding ClassColor}">
+							Classes.IsMe="{Binding IsMe}"
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="4">
 							<TextBlock
+								HorizontalAlignment="Right"
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"

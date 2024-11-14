@@ -11,9 +11,19 @@ namespace IRDCav
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is float sourceValue && targetType.IsAssignableTo(typeof(string)))
+            string returnString = string.Empty;
+
+            if (value is float sourceValue && parameter is string targetCase && targetType.IsAssignableTo(typeof(string)))
             {
-                return sourceValue.ToString();
+                switch (targetCase)
+                {
+                    case "Fuel":
+                        returnString = sourceValue.ToString("0.00") + "L";
+                        return returnString.PadLeft(6);
+                    case "FuelPerMinute":
+                        returnString = sourceValue.ToString("0.00") + "L/min";
+                        return returnString.PadLeft(6);
+                }
             }
             // converter used for the wrong type
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);

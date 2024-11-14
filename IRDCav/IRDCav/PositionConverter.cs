@@ -5,9 +5,9 @@ using System.Globalization;
 
 namespace IRDCav
 {
-    public class IntToLapConverter : IValueConverter
+    public class PositionConverter : IValueConverter
     {
-        public static readonly IntToLapConverter Instance = new();
+        public static readonly PositionConverter Instance = new();
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
@@ -17,13 +17,10 @@ namespace IRDCav
             {
                 if (sourceValue > 0)
                 {
-                    returnString = sourceValue + "L";
-                    return returnString.PadLeft(4);
+                    returnString = sourceValue.ToString("0");
                 }
-                else
-                {
-                    return string.Empty;
-                }
+
+                return returnString.PadLeft(2);
             }
             // converter used for the wrong type
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);

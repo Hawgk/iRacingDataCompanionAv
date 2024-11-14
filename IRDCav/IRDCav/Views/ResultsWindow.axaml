@@ -16,7 +16,7 @@
         PointerPressed="OnMouseDown"
         Background="White"
 		SystemDecorations="None"
-		Width="600"
+		Width="560"
 		LayoutUpdated="OnResize">
 	<Grid>
 		<Grid.RowDefinitions>
@@ -44,13 +44,15 @@
 			Content="X"
 			VerticalContentAlignment="Center"
 			FontSize="6"
-			Background="DarkSalmon"
+			Background="{StaticResource ThemeRed}"
 			BorderThickness="0"
-			Click="OnCloseClicked"/>
+			Click="OnCloseClicked"
+			IsVisible="False"/>
 		<Grid
-			Grid.Row="1"
+			Grid.Row="0"
+			Grid.RowSpan="2"
 			Grid.ColumnSpan="2"
-			Margin="20,0,20,10"
+			Margin="0,0,20,0"
 			HorizontalAlignment="Left">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition
@@ -69,61 +71,111 @@
 					Width="Auto"/>
 				<ColumnDefinition
 					Width="Auto"/>
+				<ColumnDefinition
+					Width="*"/>
+				<ColumnDefinition
+					Width="Auto"/>
+				<ColumnDefinition
+					Width="Auto"/>
 			</Grid.ColumnDefinitions>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="0"
-				Text="Air:"
-				Padding="0"
-				FontWeight="Bold"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="1"
-				Text="{Binding SessionInfoModel.AirTemp}"
-				Padding="5,0,0,0"/>
-			<TextBlock
-				Classes="DefaultStyle"
+			<Grid
+				Grid.Column="0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="&#xf2cb;"
+					Margin="7,1,0,0"
+					FontSize="14"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Column="1">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding SessionInfo.AirTemp}"/>
+			</Grid>
+			<Grid
 				Grid.Column="2"
-				Text="Surface:"
-				Padding="20,0,0,0"
-				FontWeight="Bold"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="3"
-				Text="{Binding SessionInfoModel.SurfaceTemp}"
-				Padding="5,0,0,0"/>
-			<TextBlock
-				Classes="DefaultStyle"
+				Margin="20,0,0,0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="&#xf018;"
+					Margin="0,1,0,0"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Column="3">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding SessionInfo.SurfaceTemp}"/>
+			</Grid>
+			<Grid
 				Grid.Column="4"
-				Text="Fog:"
-				Padding="20,0,0,0"
-				FontWeight="Bold"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="5"
-				Text="{Binding SessionInfoModel.FogLevel}"
-				Padding="5,0,0,0"/>
-			<TextBlock
-				Classes="DefaultStyle"
+				Margin="20,0,0,0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="&#xe313;"
+					Margin="0,-4,0,0"
+					FontSize="20"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Column="5">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding SessionInfo.FogLevel}"/>
+			</Grid>
+			<Grid
 				Grid.Column="6"
-				Text="Humidity:"
-				Padding="20,0,0,0"
-				FontWeight="Bold"/>
-			<TextBlock
-				Classes="DefaultStyle"
-				Grid.Column="7"
-				Text="{Binding SessionInfoModel.Humidity}"
-				Padding="5,0,0,0"/>
+				Margin="20,0,0,0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="&#xe373;"
+					Margin="0,-3,0,0"
+					FontSize="21"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Column="7">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeWhite}"
+					Text="{Binding SessionInfo.Humidity}"/>
+			</Grid>
+			<Grid
+				Grid.Column="9"
+				Margin="20,0,0,0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Text="&#xf071;"
+					Margin="0,1,0,0"
+					Foreground="{StaticResource ThemeYellow}"
+					FontWeight="Bold"/>
+			</Grid>
+			<Grid
+				Grid.Column="10">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeYellow}"
+					Text="{Binding IncidentCount}"/>
+			</Grid>
 		</Grid>
 		<ListBox
 			Grid.Row="2"
 			Grid.Column="0"
 			Grid.ColumnSpan="2"
-			Margin="20,0,20,20"
+			Margin="0,-7,0,0"
 			ItemsSource="{Binding RaceDataList}"
 			Background="Transparent"
 			Grid.IsSharedSizeScope="True"
-			MaxHeight="600">
+			MaxHeight="600"
+			VerticalAlignment="Stretch">
 			<ListBox.Styles>
 				<Style
 					Selector="ListBoxItem">
@@ -143,10 +195,10 @@
 								SharedSizeGroup="A"
 								Width="Auto"/>
 							<ColumnDefinition
-								Width="*"/>
-							<ColumnDefinition
 								SharedSizeGroup="B"
 								Width="Auto"/>
+							<ColumnDefinition
+								Width="*"/>
 							<ColumnDefinition
 								SharedSizeGroup="C"
 								Width="Auto"/>
@@ -159,21 +211,33 @@
 							<ColumnDefinition
 								SharedSizeGroup="F"
 								Width="Auto"/>
+							<ColumnDefinition
+								SharedSizeGroup="G"
+								Width="Auto"/>
 						</Grid.ColumnDefinitions>
 						<Grid
-							Grid.Column="0"
 							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="0">
 							<TextBlock
+								HorizontalAlignment="Right"
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
-								Text="{Binding ClassPosition}"/>
+								Text="{Binding ClassPosition, Converter={StaticResource PositionConverter}}"/>
 						</Grid>
 						<Grid
 							Grid.Column="1"
-							Classes.IsMe="{Binding IsMe}"
 							Background="{Binding ClassColor}">
+							<TextBlock
+								Classes="DefaultStyle"
+								Foreground="{StaticResource ThemeGray}"
+								Text="{Binding CarNumber, Converter={StaticResource CarNumberConverter}}"/>
+						</Grid>
+						<Grid
+							Classes.IsMe="{Binding IsMe}"
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="2">
 							<TextBlock
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
@@ -181,30 +245,33 @@
 								Text="{Binding Name, Converter={StaticResource DriverNameConverter}, ConverterParameter=ShortUpper}"/>
 						</Grid>
 						<Grid
-							Grid.Column="2"
 							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="3">
 							<TextBlock
+								HorizontalAlignment="Right"
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
 								Text="{Binding License}"/>
 						</Grid>
 						<Grid
-							Grid.Column="3"
 							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="4">
 							<TextBlock
+								HorizontalAlignment="Right"
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
 								Text="{Binding LapsCompleted, Converter={StaticResource IntToLapConverter}}"/>
 						</Grid>
 						<Grid
-							Grid.Column="4"
 							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="5">
 							<TextBlock
+								HorizontalAlignment="Right"
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
@@ -212,20 +279,22 @@
 								Text="{Binding FastestLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
 						</Grid>
 						<Grid
-							Grid.Column="5"
 							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="6">
 							<TextBlock
+								HorizontalAlignment="Right"
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
 								Text="{Binding LastLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
 						</Grid>
 						<Grid
-							Grid.Column="6"
 							Classes.IsMe="{Binding IsMe}"
-							Background="{Binding ClassColor}">
+							Classes.NotMe="{Binding !IsMe}"
+							Grid.Column="7">
 							<TextBlock
+								HorizontalAlignment="Right"
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"

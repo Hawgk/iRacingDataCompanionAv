@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Win32;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -36,10 +37,11 @@ namespace IRDCav
 
                 _dc = new DataCollector(standingViewModel, relativesViewModel);
 
-                desktop.MainWindow = new ResultsWindow
+                ResultsWindow resultsWindow = new ResultsWindow
                 {
                     DataContext = standingViewModel,
                 };
+                resultsWindow.Show();
 
                 RelativesWindow relativesWindow = new RelativesWindow
                 {

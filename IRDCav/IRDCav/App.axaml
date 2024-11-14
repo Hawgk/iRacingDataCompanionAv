@@ -12,13 +12,36 @@
 		<local:IntToLapConverter x:Key="IntToLapConverter"/>
 		<local:DriverNameConverter x:Key="DriverNameConverter"/>
 		<local:FloatConverter x:Key="FloatConverter"/>
+		<local:PositionConverter x:Key="PositionConverter"/>
+		<local:CarNumberConverter x:Key="CarNumberConverter"/>
+		<SolidColorBrush x:Key="ThemeFuelBackground">#60FF7247</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeIsNotMeBackground">#C0242423</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeIsMeBackground">#C0CFDBD5</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeDarkGray">#333533</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeBlack">#242423</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeYellow">#F5CB5C</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeRed">#FF7247</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeWhite">#E8EDDF</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeGray">#CFDBD5</SolidColorBrush>
 	</Application.Resources>
     <Application.Styles>
+		<Style
+			Selector="Grid.IsMe">
+			<Setter
+				Property="Background"
+				Value="{StaticResource ThemeIsMeBackground}"/>
+		</Style>
+		<Style
+			Selector="Grid.NotMe">
+			<Setter
+				Property="Background"
+				Value="{StaticResource ThemeIsNotMeBackground}"/>
+		</Style>
 		<Style
 			Selector="TextBlock.NotMe">
 			<Setter
 				Property="Foreground"
-				Value="White"/>
+				Value="{StaticResource ThemeWhite}"/>
 			<Setter
 				Property="FontWeight"
 				Value="Normal"/>
@@ -27,7 +50,7 @@
 			Selector="TextBlock.IsMe">
 			<Setter
 				Property="Foreground"
-				Value="DarkSalmon"/>
+				Value="{StaticResource ThemeDarkGray}"/>
 			<Setter
 				Property="FontWeight"
 				Value="Bold"/>
@@ -36,7 +59,7 @@
 			Selector="TextBlock.IsFastest">
 			<Setter
 				Property="Foreground"
-				Value="Pink"/>
+				Value="{StaticResource ThemeYellow}"/>
 			<Setter
 				Property="FontWeight"
 				Value="Bold"/>
@@ -45,13 +68,13 @@
 			Selector="TextBlock.DefaultStyle">
 			<Setter
 				Property="Padding"
-				Value="7,3"/>
+				Value="7,5"/>
 			<Setter
 				Property="FontSize"
 				Value="15"/>
 			<Setter
 				Property="FontFamily"
-				Value="Fragment Mono"/>
+				Value="M+1Code Nerd Font Propo"/>
 			<Setter
 				Property="HorizontalAlignment"
 				Value="Left"/>

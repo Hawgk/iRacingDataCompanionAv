@@ -10,13 +10,14 @@ namespace IRDCav.Views
     public partial class ResultsWindow : Window
     {
         private bool _f6Pressed = false;
-        private SolidColorBrush _windowBackgroundMoving = new SolidColorBrush(Color.FromArgb(0x40, 0xFF, 0xFF, 0xFF));
-        private SolidColorBrush _windowBackgroundFixed = new SolidColorBrush(Color.FromArgb(0x90, 0x00, 0x00, 0x00));
+        private SolidColorBrush _windowBackgroundMoving = new SolidColorBrush(Color.FromArgb(0x40, 0xD3, 0xD0, 0xCB));
+        private SolidColorBrush _windowBackgroundFixed = new SolidColorBrush(Color.FromArgb(0xA0, 0x1E, 0x20, 0x19));
 
         public PixelSize ScreenSize { get; set; }
 
         public ResultsWindow()
         {
+            WindowTransparency.ToTransparentWindow(this);
             InitializeComponent();
             Background = _windowBackgroundFixed;
         }
@@ -26,18 +27,38 @@ namespace IRDCav.Views
             PixelSize screenSize = Screens.Primary.WorkingArea.Size;
             PixelSize windowSize = PixelSize.FromSize(ClientSize, Screens.Primary.Scaling);
 
-            Position = new PixelPoint(0, (int)(1440 - Height));
+            Position = new PixelPoint(0, (int)(940 - Height / 2));
         }
 
         private void OnResize(object sender, EventArgs e)
         {
-            Position = new PixelPoint(0, (int)(1440 - Height));
+            int x = Position.X;
+            int y = Position.Y;
+
+            if (Position.X < 0)
+            {
+                x = 0;
+            }
+            else if (Position.X > (int)(2560 - Width))
+            {
+                x = (int)(2560 - Width);
+            }
+
+            if (Position.X < 0)
+            {
+                x = 0;
+            }
+            else if (Position.Y > (int)(1420 - Height))
+            {
+                y = (int)(1420 - Height);
+            }
+
+            Position = new PixelPoint(x, y);
         }
 
         private void OnWindowDeactivated(object sender, EventArgs e)
         {
-            Window window = (Window)sender;
-            window.Topmost = true;
+            Topmost = true;
         }
 
         private void OnCloseClicked(object sender, RoutedEventArgs e)
