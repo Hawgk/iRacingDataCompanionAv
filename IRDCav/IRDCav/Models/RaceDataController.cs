@@ -91,40 +91,59 @@ namespace IRDCav.Models
             int localPlayerId = 0;
             int lowerBound = 0;
             int upperBound = 0;
-            RaceDataModel[] trimmedRaceData;
+            int offset = 0;
+            int middleIdx = totalCount / 2;
+
+            RaceDataModel[] trimmedRaceData = new RaceDataModel[totalCount];
+            for (int i = 0; i < trimmedRaceData.Length; i++)
+            {
+                trimmedRaceData[i] = new RaceDataModel();
+            }
+
             // Only take active cars into consideration and sort by interval
             RaceDataModel[] sortedRaceData = _raceData.ToList()
-                .Where(x => x.ConsiderForRelative)
+                .Where(x => x.ConsiderForRelative && !x.IsPaceCar)
                 .OrderBy(x => x.Interval)
                 .Reverse()
                 .ToArray();
 
-            // Get relative player ID in the new sorted list
-            for (int i = 0; i < sortedRaceData.Length; i++)
+            if (sortedRaceData.Length > 0)
             {
-                if (sortedRaceData[i].IsMe)
+                // Get relative player ID in the new sorted list
+                for (int i = 0; i < sortedRaceData.Length; i++)
                 {
-                    localPlayerId = i;
-                    break;
+                    if (sortedRaceData[i].IsMe)
+                    {
+                        localPlayerId = i;
+                        break;
+                    }
                 }
-            }
-            // Set bounds that are determined with totalCount
-            lowerBound = localPlayerId - totalCount / 2;
-            if (lowerBound < 0) lowerBound = 0;
-            upperBound = lowerBound + totalCount;
+                // Set bounds that are determined with totalCount
+                lowerBound = localPlayerId - totalCount / 2;
 
-            if (sortedRaceData.Length < upperBound)
-            {
-                upperBound = sortedRaceData.Length;
-            }
+                if (lowerBound < 0)
+                {
+                    offset = -lowerBound;
+                    lowerBound = 0;
+                }
 
-            trimmedRaceData = new RaceDataModel[upperBound - lowerBound];
+                upperBound = lowerBound + totalCount;
 
-            for (int carId = lowerBound; carId < upperBound; carId++)
-            {
-                trimmedRaceData[idx] = sortedRaceData[carId];
-                trimmedRaceData[idx].Interval = Math.Abs(trimmedRaceData[idx].Interval);
-                idx++;
+                if (upperBound > sortedRaceData.Length)
+                {
+                    upperBound = sortedRaceData.Length;
+                }
+                
+                for (int carId = lowerBound; carId < upperBound; carId++)
+                {
+                    // Set player position in the middle of the trimmedRaceData array
+                    if (idx + offset >= 0 && idx + offset < trimmedRaceData.Length)
+                    {
+                        trimmedRaceData[idx + offset] = sortedRaceData[carId];
+                        trimmedRaceData[idx + offset].Interval = Math.Abs(trimmedRaceData[idx + offset].Interval);
+                    }
+                    idx++;
+                }
             }
 
             return trimmedRaceData.ToList();
@@ -136,11 +155,13 @@ namespace IRDCav.Models
             int localPlayerId = 0;
             int lowerBound = 0;
             int upperBound = 0;
-            RaceDataModel[] trimmedRaceData;
+
             // Only take cars with drivers into consideration and sort by class position
+            // If no class position is available append to the end.
             RaceDataModel[] sortedRaceData = _raceData.ToList()
-                .Where(x => x.Name != string.Empty && x.ClassPosition != 0 && x.BestLapNum != -1)
-                .OrderBy(x => x.Position)
+                .Where(x => x.Name != string.Empty && !x.IsPaceCar)
+                .OrderByDescending(x => x.Position > 0)
+                .ThenBy(x => x.Position)
                 .ToArray();
 
             // Get relative player ID in the new sorted list
@@ -162,7 +183,7 @@ namespace IRDCav.Models
                 upperBound = sortedRaceData.Length;
             }
 
-            trimmedRaceData = new RaceDataModel[upperBound - lowerBound];
+            RaceDataModel[] trimmedRaceData = new RaceDataModel[upperBound - lowerBound];
 
             for (int carId = lowerBound; carId < upperBound; carId++)
             {

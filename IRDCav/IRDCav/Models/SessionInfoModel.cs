@@ -5,14 +5,20 @@
         private string _trackName = string.Empty;
         private string _airTemp = string.Empty;
         private string _surfaceTemp = string.Empty;
-        private string _fogLevel = string.Empty;
+        private string _precipitation = string.Empty;
         private string _humidity = string.Empty;
         private string _incidentCount = string.Empty;
         private string _lapsString = string.Empty;
         private string _timeString = string.Empty;
+        private string _driverClassName = string.Empty;
+        private string _sessionType = string.Empty;
+        
         private int _classCount;
         private int _lapsRemain;
         private int _lapsTotal;
+        private int _sof;
+        private int _driverCount;
+
         private double _timeRemain;
         private double _timeTotal;
 
@@ -31,10 +37,10 @@
             get { return _surfaceTemp; }
             set { _surfaceTemp = value; }
         }
-        public string FogLevel
+        public string Precipitation
         {
-            get { return _fogLevel; }
-            set { _fogLevel = value; }
+            get { return _precipitation; }
+            set { _precipitation = value; }
         }
         public string Humidity
         {
@@ -51,6 +57,22 @@
             get { return _timeString; }
             set { _timeString = value; }
         }
+        public string DriverClassName
+        {
+            get { return _driverClassName; }
+            set { _driverClassName = value; }
+        }
+        public string IncidentCount
+        {
+            get { return _incidentCount; }
+            set { _incidentCount = value; }
+        }
+        public string SessionType
+        {
+            get { return _sessionType; }
+            set { _sessionType = value; }
+        }
+
         public int ClassCount
         {
             get { return _classCount; }
@@ -66,6 +88,17 @@
             get { return _lapsTotal; }
             set { _lapsTotal = value; }
         }
+        public int SOF
+        {
+            get { return _sof; }
+            set { _sof = value; }
+        }
+        public int DriverCount
+        {
+            get { return _driverCount; }
+            set { _driverCount = value; }
+        }
+
         public double TimeRemain
         {
             get { return _timeRemain; }

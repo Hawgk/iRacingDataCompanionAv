@@ -9,6 +9,7 @@ namespace IRDCav.Models
         public bool IsActive { get; set; }
         public bool IsMe { get; set; }
         public bool IsFastest { get; set; }
+        public bool IsPaceCar { get; set; }
         public bool OnPitRoad { get; set; }
         public bool ConsiderForRelative { get; set; }
 
@@ -17,7 +18,8 @@ namespace IRDCav.Models
         public string CarName { get; set; } = string.Empty;
         public string CarNumber { get; set; } = string.Empty;
         public string License { get; set; } = string.Empty;
-        public string ClassColor { get; set; } = string.Empty;
+        public string ClassColor { get; set; } = "#C0242423";
+        public string LicenseColor { get; set; } = "#C0242423";
 
         public int Id { get; set; }
         public int Rating { get; set; }
@@ -66,16 +68,16 @@ namespace IRDCav.Models
 
         public void SetFromDriverModel(DriverModel driver)
         {
-            string ratingString = ((float)driver.IRating / 1000).ToString("0.0") + "k";
-
             ClassColor = "#60" + driver.CarClassColor.Substring(2);
+            LicenseColor = "#60" + driver.LicColor.Substring(2);
             Id = driver.CarIdx;
             Name = driver.UserName;
             ClassStr = driver.CarClassShortName;
             CarName = driver.CarPath;
             CarNumber = driver.CarNumber;
-            License = driver.LicString.Split(" ")[0] + ratingString;
+            License = ((float)driver.IRating / 1000).ToString("0.0") + "k";
             Rating = driver.IRating;
+            IsPaceCar = driver.CarIsPaceCar > 0 ? true : false;
         }
 
         public void SetFromPositionModel(PositionModel position)

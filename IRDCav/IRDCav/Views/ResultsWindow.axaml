@@ -21,47 +21,84 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition
-				Height="20"/>
+				Height="30"/>
 			<RowDefinition
-				Height="*"/>
+				Height="30"/>
 			<RowDefinition
 				Height="*"/>
 		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition
-				Width="*"/>
-			<ColumnDefinition
-				Width="20"/>
-		</Grid.ColumnDefinitions>
-		<Button
-			Grid.Row="0"
-			Grid.Column="1"
-			Height="20"
-			Width="20"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Top"
-			Padding="7,0,0,0"
-			Content="X"
-			VerticalContentAlignment="Center"
-			FontSize="6"
-			Background="{StaticResource ThemeRed}"
-			BorderThickness="0"
-			Click="OnCloseClicked"
-			IsVisible="False"/>
 		<Grid
 			Grid.Row="0"
-			Grid.RowSpan="2"
-			Grid.ColumnSpan="2"
 			HorizontalAlignment="Stretch">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition
 					Width="Auto"/>
 				<ColumnDefinition
+					Width="*"/>
+				<ColumnDefinition
+					Width="Auto"/>
+				<ColumnDefinition
 					Width="Auto"/>
 				<ColumnDefinition
 					Width="Auto"/>
 				<ColumnDefinition
 					Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<Grid
+				Grid.Column="0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeGray}"
+					Text="&#xf01e;"
+					Margin="0,1,0,0"
+					FontSize="14"/>
+			</Grid>
+			<Grid
+				Grid.Column="1">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeGray}"
+					Text="{Binding SessionInfo.LapsString}"/>
+			</Grid>
+			<Grid
+				Grid.Column="2"
+				Margin="10,0,0,0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeRed}"
+					Text="&#xf13ab;"/>
+			</Grid>
+			<Grid
+				Grid.Column="3">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeRed}"
+					Text="{Binding SessionInfo.TimeRemain, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Session}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Column="4"
+				Margin="10,0,0,0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Text="&#xf071;"
+					Foreground="{StaticResource ThemeYellow}"
+					HorizontalAlignment="Right"/>
+			</Grid>
+			<Grid
+				Grid.Column="5"
+				Margin="5,0,0,0">
+				<TextBlock
+					Classes="DefaultStyle"
+					Foreground="{StaticResource ThemeYellow}"
+					Text="{Binding SessionInfo.IncidentCount}"/>
+			</Grid>
+		</Grid>
+		<Grid
+			Grid.Row="1"
+			HorizontalAlignment="Stretch"
+			Background="{StaticResource ThemeFuelBackground}">
+			<Grid.ColumnDefinitions>
 				<ColumnDefinition
 					Width="Auto"/>
 				<ColumnDefinition
@@ -74,104 +111,65 @@
 					Width="*"/>
 				<ColumnDefinition
 					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
 			</Grid.ColumnDefinitions>
 			<Grid
-				Grid.Column="0">
+				Grid.Column="0"
+				Margin="5,0,0,0">
 				<TextBlock
 					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeWhite}"
-					Text="&#xf2cb;"
-					Margin="7,1,0,0"
-					FontSize="14"
+					Foreground="{StaticResource ThemeGray}"
+					Text="{Binding SessionInfo.DriverClassName}"
 					FontWeight="Bold"/>
 			</Grid>
 			<Grid
-				Grid.Column="1">
+				Grid.Column="1"
+				Margin="10,0,0,0">
 				<TextBlock
 					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeWhite}"
-					Text="{Binding SessionInfo.AirTemp}"/>
+					Foreground="{StaticResource ThemeGray}"
+					Text="&#xf0d93;"
+					Margin="0,-1,0,0"
+					FontSize="17"/>
 			</Grid>
 			<Grid
-				Grid.Column="2"
-				Margin="20,0,0,0">
+				Grid.Column="2">
 				<TextBlock
 					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeWhite}"
-					Text="&#xf018;"
-					Margin="0,1,0,0"
-					FontWeight="Bold"/>
+					Foreground="{StaticResource ThemeGray}"
+					Text="{Binding SessionInfo.DriverCount}"/>
 			</Grid>
 			<Grid
-				Grid.Column="3">
+				Grid.Column="3"
+				Margin="10,0,0,0">
 				<TextBlock
 					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeWhite}"
-					Text="{Binding SessionInfo.SurfaceTemp}"/>
+					Foreground="{StaticResource ThemeGray}"
+					Text="&#xf05a1;"
+					Margin="0,-1,0,0"
+					FontSize="17"/>
 			</Grid>
 			<Grid
-				Grid.Column="4"
-				Margin="20,0,0,0">
+				Grid.Column="4">
 				<TextBlock
 					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeWhite}"
-					Text="&#xe313;"
-					Margin="0,-4,0,0"
-					FontSize="20"
-					FontWeight="Bold"/>
+					Foreground="{StaticResource ThemeGray}"
+					Text="{Binding SessionInfo.SOF}"/>
 			</Grid>
 			<Grid
-				Grid.Column="5">
+				Grid.Column="5"
+				Margin="10,0,5,0">
 				<TextBlock
 					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeWhite}"
-					Text="{Binding SessionInfo.FogLevel}"/>
-			</Grid>
-			<Grid
-				Grid.Column="6"
-				Margin="20,0,0,0">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeWhite}"
-					Text="&#xe373;"
-					Margin="0,-3,0,0"
-					FontSize="21"
-					FontWeight="Bold"/>
-			</Grid>
-			<Grid
-				Grid.Column="7">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeWhite}"
-					Text="{Binding SessionInfo.Humidity}"/>
-			</Grid>
-			<Grid
-				Grid.Column="9"
-				Margin="20,0,0,0">
-				<TextBlock
-					Classes="DefaultStyle"
-					Text="&#xf071;"
-					Margin="0,1,0,0"
-					Foreground="{StaticResource ThemeYellow}"
-					FontWeight="Bold"/>
-			</Grid>
-			<Grid
-				Grid.Column="10">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeYellow}"
-					Text="{Binding IncidentCount}"/>
+					Foreground="{StaticResource ThemeGray}"
+					Text="{Binding SessionInfo.SessionType}"
+					FontWeight="Bold"
+					HorizontalAlignment="Right"/>
 			</Grid>
 		</Grid>
 		<ListBox
 			Grid.Row="2"
-			Grid.Column="0"
-			Grid.ColumnSpan="2"
-			Margin="0,-7,0,0"
 			ItemsSource="{Binding RaceDataList}"
-			Background="Transparent"
+			Background="{StaticResource ThemeIsNotMeBackground}"
 			Grid.IsSharedSizeScope="True"
 			MaxHeight="600"
 			VerticalAlignment="Stretch">
@@ -244,14 +242,12 @@
 								Text="{Binding Name, Converter={StaticResource DriverNameConverter}, ConverterParameter=ShortUpper}"/>
 						</Grid>
 						<Grid
-							Classes.IsMe="{Binding IsMe}"
-							Classes.NotMe="{Binding !IsMe}"
-							Grid.Column="3">
+							Grid.Column="3"
+							Background="{Binding LicenseColor}">
 							<TextBlock
 								HorizontalAlignment="Right"
 								Classes="DefaultStyle"
-								Classes.IsMe="{Binding IsMe}"
-								Classes.NotMe="{Binding !IsMe}"
+								Foreground="{StaticResource ThemeWhite}"
 								Text="{Binding License}"/>
 						</Grid>
 						<Grid

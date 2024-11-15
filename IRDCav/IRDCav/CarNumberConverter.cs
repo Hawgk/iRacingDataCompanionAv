@@ -15,7 +15,10 @@ namespace IRDCav
 
             if (value is string sourceValue && targetType.IsAssignableTo(typeof(string)))
             {
-                returnString = "#" + sourceValue;
+                if (sourceValue != string.Empty)
+                {
+                    returnString = "#" + sourceValue;
+                }
 
                 return returnString.PadRight(4);
             }

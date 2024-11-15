@@ -17,48 +17,40 @@ namespace IRDCav
             {
                 if (value is float sourceValueFloat)
                 {
-                    if (sourceValueFloat <= 0.0f)
-                    {
-                        returnString = string.Empty;
-                    }
-                    else
+                    if (sourceValueFloat > 0.0f)
                     {
                         switch (targetCase)
                         {
                             case "Interval":
                                 if (sourceValueFloat > 60.0f || sourceValueFloat < -60.0f)
                                 {
-                                    returnString = TimeSpan.FromSeconds(sourceValueFloat).ToString(@"m\:ss\.f");
+                                    returnString = TimeSpan.FromSeconds(Math.Round(sourceValueFloat, 1)).ToString(@"m\:ss\.f");
                                 }
                                 else
                                 {
-                                    returnString = TimeSpan.FromSeconds(sourceValueFloat).ToString(@"s\.f");
+                                    returnString = TimeSpan.FromSeconds(Math.Round(sourceValueFloat, 1)).ToString(@"s\.f");
                                 }
                                 break;
                             case "Laptime":
-                                returnString = TimeSpan.FromSeconds(sourceValueFloat).ToString(@"m\:ss\.fff");
+                                returnString = TimeSpan.FromSeconds(Math.Round(sourceValueFloat, 3)).ToString(@"m\:ss\.fff");
                                 break;
                         }
                     }
                 }
                 else if (value is double sourceValueDouble)
                 {
-                    if (sourceValueDouble <= 0.0f)
-                    {
-                        returnString = string.Empty;
-                    }
-                    else
+                    if (sourceValueDouble > 0.0f)
                     {
                         switch (targetCase)
                         {
                             case "Session":
                                 if (sourceValueDouble > 3600.0f)
                                 {
-                                    returnString = TimeSpan.FromSeconds(sourceValueDouble).ToString(@"h\:mm\:ss");
+                                    returnString = TimeSpan.FromSeconds(Math.Round(sourceValueDouble, 0)).ToString(@"h\:mm\:ss");
                                 }
                                 else
                                 {
-                                    returnString = TimeSpan.FromSeconds(sourceValueDouble).ToString(@"m\:ss");
+                                    returnString = TimeSpan.FromSeconds(Math.Round(sourceValueDouble, 0)).ToString(@"m\:ss");
                                 }
                                 return returnString;
                         }

@@ -18,12 +18,9 @@ namespace IRDCav
                 if (sourceValue > 0)
                 {
                     returnString = sourceValue + "L";
-                    return returnString.PadLeft(4);
                 }
-                else
-                {
-                    return string.Empty;
-                }
+
+                return returnString.PadLeft(4);
             }
             // converter used for the wrong type
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);
