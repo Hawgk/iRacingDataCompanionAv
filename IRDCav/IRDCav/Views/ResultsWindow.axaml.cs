@@ -48,9 +48,9 @@ namespace IRDCav.Views
             {
                 x = 0;
             }
-            else if (Position.Y > (int)(1420 - Height))
+            else if (Position.Y > (int)(1440 - Height))
             {
-                y = (int)(1420 - Height);
+                y = (int)(1440 - Height);
             }
 
             Position = new PixelPoint(x, y);

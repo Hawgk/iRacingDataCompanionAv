@@ -73,15 +73,19 @@ namespace IRDCav.Models
             foreach (var raceData in calculatedRaceData)
             {
                 // First in order is the fastest lap in class
-                try
+                RaceDataModel[] raceDataModels = raceData.Where(x => x.FastestLapTime > 0).OrderBy(x => x.FastestLapTime).ToArray();
+                if (raceDataModels != null)
                 {
-                    RaceDataModel raceDataModel = raceData.Where(x => x.FastestLapTime > 0).OrderBy(x => x.FastestLapTime).ToArray()[0];
-                    if (raceDataModel != null)
+                    if (raceDataModels.Length > 0)
                     {
-                        raceDataModel.IsFastest = true;
-                        _raceData[raceDataModel.Id] = raceDataModel;
+                        RaceDataModel raceDataModel = raceDataModels[0];
+                        if (raceDataModel != null)
+                        {
+                            raceDataModel.IsFastest = true;
+                            _raceData[raceDataModel.Id] = raceDataModel;
+                        }
                     }
-                } catch { }
+                }
             }
         }
 
@@ -140,7 +144,7 @@ namespace IRDCav.Models
                     if (idx + offset >= 0 && idx + offset < trimmedRaceData.Length)
                     {
                         trimmedRaceData[idx + offset] = sortedRaceData[carId];
-                        trimmedRaceData[idx + offset].Interval = Math.Abs(trimmedRaceData[idx + offset].Interval);
+                        //trimmedRaceData[idx + offset].Interval = Math.Abs(trimmedRaceData[idx + offset].Interval);
                     }
                     idx++;
                 }
@@ -149,49 +153,167 @@ namespace IRDCav.Models
             return trimmedRaceData.ToList();
         }
 
-        public List<RaceDataModel> GetResultsViewRaceData(int totalCount)
+        public List<RaceDataModel> GetResultsViewRaceData(int totalCount, int perClassCount, int numCarClasses)
         {
-            int idx = 0;
             int localPlayerId = 0;
             int lowerBound = 0;
             int upperBound = 0;
 
             // Only take cars with drivers into consideration and sort by class position
             // If no class position is available append to the end.
+            // TODO: At race start the order is random. Would be great if it got sorted by interval.
             RaceDataModel[] sortedRaceData = _raceData.ToList()
-                .Where(x => x.Name != string.Empty && !x.IsPaceCar)
-                .OrderByDescending(x => x.Position > 0)
-                .ThenBy(x => x.Position)
+                .Where(x => x.Name != string.Empty && !x.IsPaceCar && x.Position > 0)
+                .OrderBy(x => x.Position)
+                .ThenBy(x => x.ClassPosition)
                 .ToArray();
 
-            // Get relative player ID in the new sorted list
-            for (int i = 0; i < sortedRaceData.Length; i++)
+
+
+            RaceDataModel[] raceDataCopy = new RaceDataModel[_raceData.Length];
+            for (int i = 0; i < _raceData.Length; i++)
             {
-                if (sortedRaceData[i].IsMe)
+                raceDataCopy[i] = _raceData[i];
+            }
+            Array.Sort(raceDataCopy, delegate (RaceDataModel x, RaceDataModel y) {
+                return x.Position.CompareTo(y.Position);
+            });
+
+            RaceDataModel[][] sortedRaceDataNew = new RaceDataModel[numCarClasses][];
+            int carClassId = 0;
+            string previousClass = string.Empty;
+            List<string> classOrder = new List<string>();
+
+            // Get list of classes ordered by position. Fastest should come first.
+            foreach (RaceDataModel rdm in raceDataCopy)
+            {
+                if (rdm.Name != string.Empty && !rdm.IsPaceCar && rdm.Position > 0)
                 {
-                    localPlayerId = i;
-                    break;
+                    if (rdm.ClassStr != previousClass && classOrder.Contains(rdm.ClassStr) == false)
+                    {
+                        classOrder.Add(rdm.ClassStr);
+                        
+                        if (classOrder.Count == numCarClasses)
+                        {
+                            break;
+                        }
+                    }
+                    previousClass = rdm.ClassStr;
                 }
             }
-            // Set bounds that are determined with totalCount
-            lowerBound = localPlayerId - totalCount / 2;
-            if (lowerBound < 0) lowerBound = 0;
-            upperBound = lowerBound + totalCount;
 
-            if (sortedRaceData.Length < upperBound)
+            // Sort by class
+            carClassId = 0;
+            foreach (string cls in classOrder)
             {
-                upperBound = sortedRaceData.Length;
+                int id = 0;
+                RaceDataModel[] rdc = new RaceDataModel[perClassCount];
+
+                if (_raceData[_playerId].ClassStr == cls)
+                {
+                    rdc = new RaceDataModel[IRacingSdkConst.MaxNumCars];
+                }
+
+                foreach (RaceDataModel rdm in raceDataCopy)
+                {
+                    if (rdm.Name != string.Empty && !rdm.IsPaceCar && rdm.Position > 0)
+                    {
+                        if (id < rdc.Length)
+                        {
+                            if (rdm.ClassStr == cls)
+                            {
+                                if (rdm.IsMe) localPlayerId = id;
+                                rdc[id] = rdm;
+                                id++;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                if (_raceData[_playerId].ClassStr == cls)
+                {
+                    // Set bounds that are determined with totalCount
+                    lowerBound = localPlayerId - totalCount / 2;
+                    if (lowerBound < 0) lowerBound = 0;
+                    if (lowerBound < perClassCount) perClassCount = lowerBound;
+
+                    upperBound = lowerBound + totalCount;
+
+                    if (rdc.Length < upperBound)
+                    {
+                        upperBound = rdc.Length;
+                    }
+
+                    int idx = 0;
+                    sortedRaceDataNew[carClassId] = new RaceDataModel[upperBound - lowerBound + perClassCount];
+
+                    for (int carId = 0; carId < perClassCount; carId++)
+                    {
+                        sortedRaceDataNew[carClassId][idx] = rdc[carId];
+                        idx++;
+                    }
+
+                    for (int carId = lowerBound; carId < upperBound; carId++)
+                    {
+                        sortedRaceDataNew[carClassId][idx] = rdc[carId];
+                        idx++;
+                    }
+                }
+                else
+                {
+                    sortedRaceDataNew[carClassId] = rdc;
+                }
+
+                carClassId++;
             }
 
-            RaceDataModel[] trimmedRaceData = new RaceDataModel[upperBound - lowerBound];
+            //// Get relative player ID in the new sorted list
+            //for (int i = 0; i < sortedRaceData.Length; i++)
+            //{
+            //    if (sortedRaceData[i].IsMe)
+            //    {
+            //        localPlayerId = i;
+            //        break;
+            //    }
+            //}
+            //// Set bounds that are determined with totalCount
+            //lowerBound = localPlayerId - totalCount / 2;
+            //if (lowerBound < 0) lowerBound = 0;
+            //upperBound = lowerBound + totalCount;
 
-            for (int carId = lowerBound; carId < upperBound; carId++)
+            //if (sortedRaceData.Length < upperBound)
+            //{
+            //    upperBound = sortedRaceData.Length;
+            //}
+
+            //RaceDataModel[] trimmedRaceData = new RaceDataModel[upperBound - lowerBound];
+
+            //for (int carId = lowerBound; carId < upperBound; carId++)
+            //{
+            //    trimmedRaceData[idx] = sortedRaceData[carId];
+            //    idx++;
+            //}
+
+            List<RaceDataModel> returnList = new List<RaceDataModel>();
+            foreach (RaceDataModel[] crdm in sortedRaceDataNew)
             {
-                trimmedRaceData[idx] = sortedRaceData[carId];
-                idx++;
+                if (crdm != null)
+                {
+                    foreach (RaceDataModel rdm in crdm)
+                    {
+                        if (rdm != null)
+                        {
+                            returnList.Add(rdm);
+                        }
+                    }
+                }
             }
 
-            return trimmedRaceData.ToList();
+            return returnList;
         }
     }
 }

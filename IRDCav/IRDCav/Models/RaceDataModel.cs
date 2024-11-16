@@ -1,5 +1,4 @@
-﻿using System;
-using static IRSDKSharper.IRacingSdkSessionInfo.DriverInfoModel;
+﻿using static IRSDKSharper.IRacingSdkSessionInfo.DriverInfoModel;
 using static IRSDKSharper.IRacingSdkSessionInfo.SessionInfoModel.SessionModel;
 
 namespace IRDCav.Models
@@ -10,6 +9,8 @@ namespace IRDCav.Models
         public bool IsMe { get; set; }
         public bool IsFastest { get; set; }
         public bool IsPaceCar { get; set; }
+        public bool IsBehind { get; set; }
+        public bool IsInfront { get; set; }
         public bool OnPitRoad { get; set; }
         public bool ConsiderForRelative { get; set; }
 
@@ -28,6 +29,7 @@ namespace IRDCav.Models
         public int ClassPosition { get; set; }
         public int BestLapNum { get; set; }
         public int LapsCompleted { get; set; }
+        public int LapDelta { get; set; }
 
         public float LapDistPct { get; set; }
         public float LastLapTime { get; set; }
@@ -44,10 +46,27 @@ namespace IRDCav.Models
             Position = liveData.Position;
             ClassPosition = liveData.ClassPosition;
             Interval = liveData.Interval;
+            LapDelta = liveData.LapDelta;
             ConsiderForRelative = liveData.ConsiderForRelative;
             LastLapTime = liveData.LastLapTime;
             BestLapTime = liveData.BestLapTime;
             BestLapNum = liveData.BestLapNum;
+
+            if (LapDelta < 0)
+            {
+                IsInfront = true;
+                IsBehind = false;
+            }
+            else if (LapDelta > 0)
+            {
+                IsInfront = false;
+                IsBehind = true;
+            }
+            else
+            {
+                IsInfront = false;
+                IsBehind = false;
+            }
         }
 
         public void SetFromResultsModel(ResultsModel resultsModel)
@@ -68,8 +87,14 @@ namespace IRDCav.Models
 
         public void SetFromDriverModel(DriverModel driver)
         {
+            string licColor = "#60" + driver.LicColor.Substring(2);
+
+            if (driver.LicColor == "0xundefined")
+            {
+                licColor = "#60FF7247";
+            }
             ClassColor = "#60" + driver.CarClassColor.Substring(2);
-            LicenseColor = "#60" + driver.LicColor.Substring(2);
+            LicenseColor = licColor;
             Id = driver.CarIdx;
             Name = driver.UserName;
             ClassStr = driver.CarClassShortName;

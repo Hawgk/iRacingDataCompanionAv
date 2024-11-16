@@ -353,6 +353,8 @@
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
+								Classes.IsBehind="{Binding IsBehind}"
+								Classes.IsInfront="{Binding IsInfront}"
 								Text="{Binding ClassPosition, Converter={StaticResource PositionConverter}}"/>
 						</Grid>
 						<Grid
@@ -371,6 +373,8 @@
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
+								Classes.IsBehind="{Binding IsBehind}"
+								Classes.IsInfront="{Binding IsInfront}"
 								Text="{Binding Name, Converter={StaticResource DriverNameConverter}, ConverterParameter=LastUpper}"/>
 						</Grid>
 						<Grid
@@ -382,6 +386,8 @@
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
+								Classes.IsBehind="{Binding IsBehind}"
+								Classes.IsInfront="{Binding IsInfront}"
 								Text="{Binding Interval, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Interval}"/>
 						</Grid>
 						<Grid
@@ -393,6 +399,8 @@
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
+								Classes.IsBehind="{Binding IsBehind}"
+								Classes.IsInfront="{Binding IsInfront}"
 								Text="{Binding LastLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
 						</Grid>
 					</Grid>

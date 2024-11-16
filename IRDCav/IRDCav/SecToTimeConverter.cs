@@ -11,28 +11,38 @@ namespace IRDCav
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            string returnString = string.Empty;
+            string returnString = string.Empty.PadLeft(8);
 
             if (parameter is string targetCase && targetType.IsAssignableTo(typeof(string)))
             {
                 if (value is float sourceValueFloat)
                 {
-                    if (sourceValueFloat > 0.0f)
+                    if (sourceValueFloat != 0.0f)
                     {
                         switch (targetCase)
                         {
                             case "Interval":
                                 if (sourceValueFloat > 60.0f || sourceValueFloat < -60.0f)
                                 {
-                                    returnString = TimeSpan.FromSeconds(Math.Round(sourceValueFloat, 1)).ToString(@"m\:ss\.f");
+                                    returnString = TimeSpan.FromSeconds(Math.Round(Math.Abs(sourceValueFloat), 1)).ToString(@"m\:ss\.f");
                                 }
                                 else
                                 {
-                                    returnString = TimeSpan.FromSeconds(Math.Round(sourceValueFloat, 1)).ToString(@"s\.f");
+                                    returnString = TimeSpan.FromSeconds(Math.Round(Math.Abs(sourceValueFloat), 1)).ToString(@"s\.f");
                                 }
+
+                                if (sourceValueFloat < 0.0f)
+                                {
+                                    returnString = "-" + returnString;
+                                }
+
+                                returnString = returnString.PadLeft(7);
                                 break;
                             case "Laptime":
-                                returnString = TimeSpan.FromSeconds(Math.Round(sourceValueFloat, 3)).ToString(@"m\:ss\.fff");
+                                if (sourceValueFloat > 0.0f)
+                                {
+                                    returnString = TimeSpan.FromSeconds(Math.Round(sourceValueFloat, 3)).ToString(@"m\:ss\.fff").PadLeft(7);
+                                }
                                 break;
                         }
                     }
@@ -52,12 +62,12 @@ namespace IRDCav
                                 {
                                     returnString = TimeSpan.FromSeconds(Math.Round(sourceValueDouble, 0)).ToString(@"m\:ss");
                                 }
-                                return returnString;
+                                break;
                         }
                     }
                 }
 
-                return returnString.PadLeft(7);
+                return returnString;
             }
             // converter used for the wrong type
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);

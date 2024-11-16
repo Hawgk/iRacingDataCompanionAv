@@ -16,12 +16,13 @@
 		<local:CarNumberConverter x:Key="CarNumberConverter"/>
 		<SolidColorBrush x:Key="ThemeFuelBackground">#60FF7247</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeIsNotMeBackground">#C0242423</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeIsMeBackground">#C0CFDBD5</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeIsMeBackground">#C03B3B3A</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeDarkGray">#333533</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeBlack">#242423</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeYellow">#F5CB5C</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeRed">#FF7247</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeWhite">#E8EDDF</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeBlue">#60C7DB</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeGray">#CFDBD5</SolidColorBrush>
 	</Application.Resources>
     <Application.Styles>
@@ -42,18 +43,12 @@
 			<Setter
 				Property="Foreground"
 				Value="{StaticResource ThemeWhite}"/>
-			<Setter
-				Property="FontWeight"
-				Value="Normal"/>
 		</Style>
 		<Style
 			Selector="TextBlock.IsMe">
 			<Setter
 				Property="Foreground"
-				Value="{StaticResource ThemeDarkGray}"/>
-			<Setter
-				Property="FontWeight"
-				Value="Bold"/>
+				Value="{StaticResource ThemeWhite}"/>
 		</Style>
 		<Style
 			Selector="TextBlock.IsFastest">
@@ -62,7 +57,19 @@
 				Value="{StaticResource ThemeYellow}"/>
 			<Setter
 				Property="FontWeight"
-				Value="Bold"/>
+				Value="Normal"/>
+		</Style>
+		<Style
+			Selector="TextBlock.IsBehind">
+			<Setter
+				Property="Foreground"
+				Value="{StaticResource ThemeRed}"/>
+		</Style>
+		<Style
+			Selector="TextBlock.IsInfront">
+			<Setter
+				Property="Foreground"
+				Value="{StaticResource ThemeBlue}"/>
 		</Style>
 		<Style
 			Selector="TextBlock.DefaultStyle">

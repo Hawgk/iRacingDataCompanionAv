@@ -25,7 +25,7 @@ namespace IRDCav.Views
             PixelSize screenSize = Screens.Primary.WorkingArea.Size;
             PixelSize windowSize = PixelSize.FromSize(ClientSize, Screens.Primary.Scaling);
 
-            Position = new PixelPoint((int)(2560 - Width), (int)(1420 - Height));
+            Position = new PixelPoint((int)(2560 - Width), (int)(1440 - Height));
         }
 
         private void OnResize(object sender, EventArgs e)
@@ -46,9 +46,9 @@ namespace IRDCav.Views
             {
                 x = 0;
             }
-            else if (Position.Y > (int)(1420 - Height))
+            else if (Position.Y > (int)(1440 - Height))
             {
-                y = (int)(1420 - Height);
+                y = (int)(1440 - Height);
             }
 
             Position = new PixelPoint(x, y);

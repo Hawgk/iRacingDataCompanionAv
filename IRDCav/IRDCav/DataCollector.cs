@@ -54,7 +54,6 @@ namespace IRDCav
             _irsdk.OnDisconnected += OnDisconnected;
             _irsdk.OnStopped += OnStopped;
             _irsdk.OnTelemetryData += OnTelemetryData;
-            _irsdk.OnSessionInfo += OnSessionInfo;
 
             _irsdk.UpdateInterval = 6;
             _irsdk.Start();
@@ -93,11 +92,6 @@ namespace IRDCav
         public void Terminate()
         {
             _irsdk.Stop();
-        }
-
-        public void OnSessionInfo()
-        {
-            //_sessionIndex++;
         }
 
         private void OnTelemetryData()
@@ -158,6 +152,7 @@ namespace IRDCav
             {
                 var weekendInfo = _irsdk.Data.SessionInfo.WeekendInfo;
                 string incidentLimit = sessionInfo.WeekendInfo.WeekendOptions.IncidentLimit;
+                string sessionType = string.Empty;
 
                 List<DriverModel> drivers = sessionInfo.DriverInfo.Drivers;
                 List<LiveDataModel> liveDataList = new List<LiveDataModel>();
@@ -179,7 +174,15 @@ namespace IRDCav
                 isOnTrack = _irsdk.Data.GetBool(_isOnTrackDatum);
                 sessionNum = _irsdk.Data.GetInt(_sessionNumDatum);
 
-                string sessionType = sessionInfo.SessionInfo.Sessions[sessionNum].SessionName;
+                if (sessionNum > 0)
+                {
+                    // First character of session name. (practice, quali, race)
+                    sessionType = sessionInfo.SessionInfo.Sessions[sessionNum].SessionName[0].ToString();
+                }
+                else
+                {
+                    sessionNum = 0;
+                }
                 List<PositionModel> positions = sessionInfo.SessionInfo.Sessions[sessionNum].ResultsPositions;
 
                 // Fuel calculation shenanigans.
@@ -232,14 +235,10 @@ namespace IRDCav
                             // If the other car is up to half a lap in front, we consider the delta 'ahead', otherwise 'behind'.
                             float delta = 0;
                             int lapDelta = lapcountC - lapcountS;
-                            float L = 0;
+                            float L = bestLapTimeArr[i];
+                            float timeDiff = 0;
 
-                            if (bestLapTimeArr[sessionInfo.DriverInfo.DriverCarIdx] < drivers[sessionInfo.DriverInfo.DriverCarIdx].CarClassEstLapTime &&
-                                bestLapTimeArr[sessionInfo.DriverInfo.DriverCarIdx] > 0)
-                            {
-                                L = bestLapTimeArr[sessionInfo.DriverInfo.DriverCarIdx];
-                            }
-                            else
+                            if (L <= 0)
                             {
                                 L = drivers[sessionInfo.DriverInfo.DriverCarIdx].CarClassEstLapTime;
                             }
@@ -250,14 +249,20 @@ namespace IRDCav
                             // Does the delta between us and the other car span across the start/finish line?
                             bool wrap = Math.Abs(lapDistPctArr[i] - lapDistPctArr[sessionInfo.DriverInfo.DriverCarIdx]) > 0.5f;
 
+                            timeDiff = C - S;
+                            if (lapDistPctArr[i] - lapDistPctArr[sessionInfo.DriverInfo.DriverCarIdx] < 0.05f)
+                            {
+                                timeDiff = (lapDistPctArr[i] - lapDistPctArr[sessionInfo.DriverInfo.DriverCarIdx]) * L;
+                            }
+
                             if (wrap)
                             {
-                                delta = S > C ? (C - S) + L : (C - S) - L;
+                                delta = S > C ? timeDiff + L : timeDiff - L;
                                 lapDelta += S > C ? -1 : 1;
                             }
                             else
                             {
-                                delta = C - S;
+                                delta = timeDiff;
                             }
 
                             _raceDataController.SetFromLiveDataModel(i, new LiveDataModel
@@ -268,7 +273,8 @@ namespace IRDCav
                                 OnPitRoad = onPitRoadArr[i],
                                 Position = positionArr[i],
                                 ClassPosition = classPositionArr[i],
-                                Interval = (float)Math.Round(delta, 3),
+                                Interval = delta,
+                                LapDelta = lapDelta,
                                 ConsiderForRelative = true,
                                 LastLapTime = lastLapTimeArr[i],
                                 BestLapTime = bestLapTimeArr[i],
@@ -321,14 +327,16 @@ namespace IRDCav
                         ClassCount = weekendInfo.NumCarClasses,
                         LapsRemain = sessionLapsRemain,
                         LapsTotal = sessionLapsTotal,
-                        LapsString = (sessionLapsTotal - sessionLapsRemain).ToString() + "/~" + sessionLapsTotal.ToString(),
+                        // TODO: Laps not working. Must be calculated internally
+                        //LapsString = (sessionLapsTotal - sessionLapsRemain).ToString() + "/~" + sessionLapsTotal.ToString(),
                         TimeRemain = sessionTimeRemain,
                         TimeTotal = sessionTimeTotal,
                         SOF = sof,
                         DriverCount = classDriverCount,
                         DriverClassName = driverClassName,
                         IncidentCount = incidentCount + "/" + incidentLimit,
-                        SessionType = sessionType[0].ToString(),
+                        SessionType = sessionType,
+                        NumCarClasses = weekendInfo.NumCarClasses,
                     };
 
                     _fuelDataController.SessionInfo = sessionInfoModel;
@@ -337,8 +345,8 @@ namespace IRDCav
                 }
 
                 _raceDataController.CalculateBestLaps();
-                _relativesViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetRelativeViewRaceData(7));
-                _dataViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetResultsViewRaceData(15));
+                _relativesViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetRelativeViewRaceData(9));
+                _dataViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetResultsViewRaceData(11, 3, _dataViewModel.SessionInfo.NumCarClasses));
             }
         }
     }
