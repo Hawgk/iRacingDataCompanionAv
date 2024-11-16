@@ -158,19 +158,17 @@ namespace IRDCav.Models
             int localPlayerId = 0;
             int lowerBound = 0;
             int upperBound = 0;
+            int carClassId = 0;
+            string previousClass = string.Empty;
 
-            // Only take cars with drivers into consideration and sort by class position
-            // If no class position is available append to the end.
-            // TODO: At race start the order is random. Would be great if it got sorted by interval.
-            RaceDataModel[] sortedRaceData = _raceData.ToList()
-                .Where(x => x.Name != string.Empty && !x.IsPaceCar && x.Position > 0)
-                .OrderBy(x => x.Position)
-                .ThenBy(x => x.ClassPosition)
-                .ToArray();
-
-
-
+            RaceDataModel[][] sortedRaceDataNew = new RaceDataModel[numCarClasses][];
             RaceDataModel[] raceDataCopy = new RaceDataModel[_raceData.Length];
+
+            List<string> classOrder = new List<string>();
+            List<RaceDataModel> returnList = new List<RaceDataModel>();
+
+            // Only take cars with drivers into consideration and sort by class and position
+            // TODO: At race start the order is random. Would be great if it got sorted by interval.
             for (int i = 0; i < _raceData.Length; i++)
             {
                 raceDataCopy[i] = _raceData[i];
@@ -178,11 +176,6 @@ namespace IRDCav.Models
             Array.Sort(raceDataCopy, delegate (RaceDataModel x, RaceDataModel y) {
                 return x.Position.CompareTo(y.Position);
             });
-
-            RaceDataModel[][] sortedRaceDataNew = new RaceDataModel[numCarClasses][];
-            int carClassId = 0;
-            string previousClass = string.Empty;
-            List<string> classOrder = new List<string>();
 
             // Get list of classes ordered by position. Fastest should come first.
             foreach (RaceDataModel rdm in raceDataCopy)
@@ -271,7 +264,6 @@ namespace IRDCav.Models
                 carClassId++;
             }
 
-            List<RaceDataModel> returnList = new List<RaceDataModel>();
             foreach (RaceDataModel[] crdm in sortedRaceDataNew)
             {
                 if (crdm != null)
