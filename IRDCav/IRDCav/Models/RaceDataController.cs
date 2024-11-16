@@ -271,33 +271,6 @@ namespace IRDCav.Models
                 carClassId++;
             }
 
-            //// Get relative player ID in the new sorted list
-            //for (int i = 0; i < sortedRaceData.Length; i++)
-            //{
-            //    if (sortedRaceData[i].IsMe)
-            //    {
-            //        localPlayerId = i;
-            //        break;
-            //    }
-            //}
-            //// Set bounds that are determined with totalCount
-            //lowerBound = localPlayerId - totalCount / 2;
-            //if (lowerBound < 0) lowerBound = 0;
-            //upperBound = lowerBound + totalCount;
-
-            //if (sortedRaceData.Length < upperBound)
-            //{
-            //    upperBound = sortedRaceData.Length;
-            //}
-
-            //RaceDataModel[] trimmedRaceData = new RaceDataModel[upperBound - lowerBound];
-
-            //for (int carId = lowerBound; carId < upperBound; carId++)
-            //{
-            //    trimmedRaceData[idx] = sortedRaceData[carId];
-            //    idx++;
-            //}
-
             List<RaceDataModel> returnList = new List<RaceDataModel>();
             foreach (RaceDataModel[] crdm in sortedRaceDataNew)
             {
