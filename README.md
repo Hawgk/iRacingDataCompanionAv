@@ -1,11 +1,9 @@
 # iRacing Data Companion
 This is a tool.
 
-It's a tool that does things.
-
 It's written in C# using .NET 8.0 and AvaloniaUI. Was kinda an experiment to get to know Avalonia a bit better. Might port it to OpenGL/DirectX at some later stage.
 
-One of those things is reading data from iRacing SDK.
+One of those things it can do is read data from iRacing SDK.
 
 Also it paints pixels.
 
