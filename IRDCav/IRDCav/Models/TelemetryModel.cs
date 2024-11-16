@@ -2,51 +2,51 @@
 {
     public class TelemetryModel
     {
-        private decimal _throttlePerc;
-        private decimal _clutchPerc;
-        private decimal _brakePerc;
+        private decimal _throttle;
+        private decimal _clutch;
+        private decimal _brake;
 
-        public decimal ThrottlePerc
+        public decimal Throttle
         {
             get
             {
-                return _throttlePerc;
+                return _throttle;
             }
             set
             {
-                if (_throttlePerc != value)
+                if (_throttle != value)
                 {
-                    _throttlePerc = value;
+                    _throttle = value;
                 }
             }
         }
 
-        public decimal ClutchPerc
+        public decimal Clutch
         {
             get
             {
-                return _clutchPerc;
+                return _clutch;
             }
             set
             {
-                if (_clutchPerc != value)
+                if (_clutch != value)
                 {
-                    _clutchPerc = value;
+                    _clutch = value;
                 }
             }
         }
 
-        public decimal BrakePerc
+        public decimal Brake
         {
             get
             {
-                return _brakePerc;
+                return _brake;
             }
             set
             {
-                if (_brakePerc != value)
+                if (_brake != value)
                 {
-                    _brakePerc = value;
+                    _brake = value;
                 }
             }
         }

@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:IRDCav.ViewModels"
+        xmlns:oxy="using:OxyPlot.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="8010" d:DesignHeight="450"
+        x:Class="IRDCav.Views.InputGraphWindow"
+        x:DataType="vm:InputGraphViewModel"
+        Title="iRDCav Input Graph"
+        Deactivated="OnWindowDeactivated"
+		SizeToContent="Height"
+		Loaded="OnWindowLoaded"
+        KeyDown="OnKeyPressed"
+        PointerPressed="OnMouseDown"
+        Background="White"
+		SystemDecorations="None"
+		Width="300"
+		MinHeight="120"
+		LayoutUpdated="OnResize">
+	<Grid>
+		<oxy:PlotView Model="{Binding Model}" Background="Transparent" IsEnabled="false"/>
+	</Grid>
+</Window>

@@ -1,4 +1,4 @@
-# iRacing Data Companion
+# iRDCav - iRacing Data Companion
 This is a tool.
 
 It's written in C# using .NET 8.0 and AvaloniaUI. Was kinda an experiment to get to know Avalonia a bit better. Might port it to OpenGL/DirectX at some later stage.

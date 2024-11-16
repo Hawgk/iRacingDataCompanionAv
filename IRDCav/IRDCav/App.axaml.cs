@@ -1,7 +1,5 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Win32;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using IRDCav.ViewModels;
@@ -11,7 +9,7 @@ namespace IRDCav
 {
     public partial class App : Application
     {
-        DataCollector _dc = null;
+        DataCollector? _dc = null;
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -19,7 +17,7 @@ namespace IRDCav
 
         public void OnExit(object sender, ControlledApplicationLifetimeExitEventArgs e)
         {
-            _dc.Terminate();
+            _dc?.Terminate();
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -34,8 +32,9 @@ namespace IRDCav
 
                 DataViewModel standingViewModel = new DataViewModel();
                 RelativesViewModel relativesViewModel = new RelativesViewModel();
+                InputGraphViewModel inputGraphViewModel = new InputGraphViewModel();
 
-                _dc = new DataCollector(standingViewModel, relativesViewModel);
+                _dc = new DataCollector(standingViewModel, relativesViewModel, inputGraphViewModel);
 
                 ResultsWindow resultsWindow = new ResultsWindow
                 {
@@ -48,6 +47,12 @@ namespace IRDCav
                     DataContext = relativesViewModel,
                 };
                 relativesWindow.Show();
+
+                InputGraphWindow inputGraphWindow = new InputGraphWindow
+                {
+                    DataContext = inputGraphViewModel,
+                };
+                inputGraphWindow.Show();
             }
 
             base.OnFrameworkInitializationCompleted();

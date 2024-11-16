@@ -11,17 +11,21 @@ namespace IRDCav
 {
     public class DataCollector
     {
+        private static int _refreshInterval = 3;
+
         private bool _isInitialized = false;
+        private bool _isInitializedFast = false;
         private bool _firstLap = true;
         private bool _driving = false;
         private int _lastLapCount = 1;
-        private int _sessionIndex = 0;
+        private int _calculateCounter = 0;
 
         private RaceDataController _raceDataController = new RaceDataController();
         private FuelDataController _fuelDataController = new FuelDataController();
 
         private DataViewModel _dataViewModel;
         private RelativesViewModel _relativesViewModel;
+        private InputGraphViewModel _inputGraphViewModel;
 
         private IRacingSdk _irsdk;
         private IRacingSdkDatum _carIdxClassDatum;
@@ -43,11 +47,15 @@ namespace IRDCav
         private IRacingSdkDatum _sessionLapsRemainExDatum;
         private IRacingSdkDatum _sessionLapsTotalDatum;
         private IRacingSdkDatum _sessionNumDatum;
+        private IRacingSdkDatum _brakeDatum;
+        private IRacingSdkDatum _throttleDatum;
+        private IRacingSdkDatum _clutchDatum;
 
-        public DataCollector(DataViewModel dataViewModel, RelativesViewModel relativesViewModel)
+        public DataCollector(DataViewModel dataViewModel, RelativesViewModel relativesViewModel, InputGraphViewModel inputGraphViewModel)
         {
             _dataViewModel = dataViewModel;
             _relativesViewModel = relativesViewModel;
+            _inputGraphViewModel = inputGraphViewModel;
 
             _irsdk = new IRacingSdk();
             _irsdk.OnConnected += OnConnected;
@@ -55,7 +63,7 @@ namespace IRDCav
             _irsdk.OnStopped += OnStopped;
             _irsdk.OnTelemetryData += OnTelemetryData;
 
-            _irsdk.UpdateInterval = 6;
+            _irsdk.UpdateInterval = 2;
             _irsdk.Start();
         }
 
@@ -120,6 +128,10 @@ namespace IRDCav
             string incidentCount = string.Empty;
             int sessionNum = 0;
 
+            float brake = 0;
+            float throttle = 0;
+            float clutch = 0;
+
             var sessionInfo = _irsdk.Data.SessionInfo;
 
             if (_isInitialized == false)
@@ -143,12 +155,24 @@ namespace IRDCav
                 _sessionLapsRemainExDatum = _irsdk.Data.TelemetryDataProperties["SessionLapsRemainEx"];
                 _sessionLapsTotalDatum = _irsdk.Data.TelemetryDataProperties["SessionLapsTotal"];
                 _sessionNumDatum = _irsdk.Data.TelemetryDataProperties["SessionNum"];
+                _brakeDatum = _irsdk.Data.TelemetryDataProperties["BrakeRaw"];
+                _throttleDatum = _irsdk.Data.TelemetryDataProperties["ThrottleRaw"];
+                _clutchDatum = _irsdk.Data.TelemetryDataProperties["ClutchRaw"];
+                _throttleDatum = _irsdk.Data.TelemetryDataProperties["ThrottleRaw"];
+                _brakeDatum = _irsdk.Data.TelemetryDataProperties["BrakeRaw"];
+                _clutchDatum = _irsdk.Data.TelemetryDataProperties["ClutchRaw"];
 
                 _isInitialized = true;
             }
 
+            throttle = _irsdk.Data.GetFloat(_throttleDatum);
+            brake = _irsdk.Data.GetFloat(_brakeDatum);
+            clutch = _irsdk.Data.GetFloat(_clutchDatum);
+
+            _inputGraphViewModel.AddPoints(throttle, brake, clutch);
+
             // Data contained in the Session Info
-            if (sessionInfo != null)
+            if (sessionInfo != null && _calculateCounter == 0)
             {
                 var weekendInfo = _irsdk.Data.SessionInfo.WeekendInfo;
                 string incidentLimit = sessionInfo.WeekendInfo.WeekendOptions.IncidentLimit;
@@ -173,6 +197,8 @@ namespace IRDCav
                 fuelLevel = _irsdk.Data.GetFloat(_fuelLevelDatum);
                 isOnTrack = _irsdk.Data.GetBool(_isOnTrackDatum);
                 sessionNum = _irsdk.Data.GetInt(_sessionNumDatum);
+                fuelLevel = _irsdk.Data.GetFloat(_fuelLevelDatum);
+                fuelLevel = _irsdk.Data.GetFloat(_fuelLevelDatum);
 
                 if (sessionNum > 0)
                 {
@@ -347,6 +373,13 @@ namespace IRDCav
                 _raceDataController.CalculateBestLaps();
                 _relativesViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetRelativeViewRaceData(9));
                 _dataViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetResultsViewRaceData(11, 3, _dataViewModel.SessionInfo.NumCarClasses));
+
+            }
+
+            _calculateCounter++;
+            if (_calculateCounter > _refreshInterval)
+            {
+                _calculateCounter = 0;
             }
         }
     }
