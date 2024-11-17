@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
         x:Class="IRDCav.Views.ResultsWindow"
         x:DataType="vm:DataViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/icon.ico"
         Title="iRDCav Results"
         Deactivated="OnWindowDeactivated"
 		SizeToContent="Height"

@@ -260,32 +260,32 @@ namespace IRDCav
                 // Get current race data from array and calculate deltas
                 _raceDataController.SetPlayerId(sessionInfo.DriverInfo.DriverCarIdx);
 
-                for (int i = 0; i < IRacingSdkConst.MaxNumCars; i++)
-                {
-                    if (lapArr[i] >= 0)
-                    {
-                        _raceDataController.SetFromLiveDataModel(i, new LiveDataModel
-                        {
-                            Id = i,
-                            Class = classArr[i],
-                            LapDistPct = lapDistPctArr[i],
-                            OnPitRoad = onPitRoadArr[i],
-                            Position = positionArr[i],
-                            ClassPosition = classPositionArr[i],
-                            EstTime = estTimeArr[i],
-                            LastLapTime = lastLapTimeArr[i],
-                            BestLapTime = bestLapTimeArr[i],
-                            BestLapNum = bestLapNumArr[i],
-                            TrackSurface = trackSurfaceArr[i],
-                            TrackLocation = trackLocationArr[i],
-                            SessionFlags = sessionFlagsArr[i],
-                        });
-                    }
-                }
-
                 // Get current race data from remaining structures and merge into existing data
                 if (drivers != null)
                 {
+                    for (int i = 0; i < IRacingSdkConst.MaxNumCars; i++)
+                    {
+                        if (lapArr[i] >= 0)
+                        {
+                            _raceDataController.SetFromLiveDataModel(i, new LiveDataModel
+                            {
+                                Id = i,
+                                Class = classArr[i],
+                                LapDistPct = lapDistPctArr[i],
+                                OnPitRoad = onPitRoadArr[i],
+                                Position = positionArr[i],
+                                ClassPosition = classPositionArr[i],
+                                EstTime = estTimeArr[i],
+                                LastLapTime = lastLapTimeArr[i],
+                                BestLapTime = bestLapTimeArr[i],
+                                BestLapNum = bestLapNumArr[i],
+                                TrackSurface = trackSurfaceArr[i],
+                                TrackLocation = trackLocationArr[i],
+                                SessionFlags = sessionFlagsArr[i],
+                            });
+                        }
+                    }
+
                     if (positions != null)
                     {
                         foreach (PositionModel position in positions)
@@ -346,6 +346,7 @@ namespace IRDCav
                     _dataViewModel.SessionInfo = sessionInfoModel;
                     _lastSessionInfo = sessionInfoModel;
                 }
+
                 _raceDataController.Update(_lastSessionInfo.TimeRemain);
 
                 // If the car is driving on track either only update fuel level or calculate lap fuel data.
@@ -372,8 +373,8 @@ namespace IRDCav
 
         private void OnRaceDataUpdated()
         {
-            _relativesViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetRelativeViewRaceData(9));
-            _dataViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetResultsViewRaceData(11, 3, _lastSessionInfo.NumCarClasses, _lastSessionInfo.SessionType));
+            _relativesViewModel.RaceDataList = _raceDataController.GetRelativeViewRaceData(9);
+            _dataViewModel.RaceDataList = _raceDataController.GetResultsViewRaceData(11, 3, _lastSessionInfo.NumCarClasses, _lastSessionInfo.SessionType);
         }
     }
 }

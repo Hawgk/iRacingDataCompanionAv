@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="400"
         x:Class="IRDCav.Views.RelativesWindow"
         x:DataType="vm:RelativesViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/icon.ico"
         Title="iRDCav Relatives"
         Deactivated="OnWindowDeactivated"
 		SizeToContent="Height"
@@ -355,6 +355,7 @@
 								Classes.NotMe="{Binding !IsMe}"
 								Classes.IsBehind="{Binding IsBehind}"
 								Classes.IsInfront="{Binding IsInfront}"
+								Classes.IsOnPitRoad="{Binding OnPitRoad}"
 								Text="{Binding ClassPosition, Converter={StaticResource PositionConverter}}"/>
 						</Grid>
 						<Grid
@@ -375,6 +376,7 @@
 								Classes.NotMe="{Binding !IsMe}"
 								Classes.IsBehind="{Binding IsBehind}"
 								Classes.IsInfront="{Binding IsInfront}"
+								Classes.IsOnPitRoad="{Binding OnPitRoad}"
 								Text="{Binding Name, Converter={StaticResource DriverNameConverter}, ConverterParameter=LastUpper}"/>
 						</Grid>
 						<Grid
@@ -388,6 +390,7 @@
 								Classes.NotMe="{Binding !IsMe}"
 								Classes.IsBehind="{Binding IsBehind}"
 								Classes.IsInfront="{Binding IsInfront}"
+								Classes.IsOnPitRoad="{Binding OnPitRoad}"
 								Text="{Binding Interval, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Interval}"/>
 						</Grid>
 						<Grid
@@ -401,6 +404,7 @@
 								Classes.NotMe="{Binding !IsMe}"
 								Classes.IsBehind="{Binding IsBehind}"
 								Classes.IsInfront="{Binding IsInfront}"
+								Classes.IsOnPitRoad="{Binding OnPitRoad}"
 								Text="{Binding LastLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
 						</Grid>
 					</Grid>

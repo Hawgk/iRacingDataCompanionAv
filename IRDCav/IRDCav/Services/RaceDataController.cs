@@ -2,6 +2,7 @@
 using IRSDKSharper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using static IRSDKSharper.IRacingSdkEnum;
@@ -14,9 +15,6 @@ namespace IRDCav.Services
 
     internal class RaceDataController
     {
-        public static int MICROSECTOR_COUNT = 20;
-        public static float MICROSECTOR_LENGTH = 1.0f / MICROSECTOR_COUNT;
-
         public event RaceDataReadyHandler? OnDataReady;
 
         private int _playerId = 0;
@@ -95,88 +93,11 @@ namespace IRDCav.Services
             _raceData[id].SetFromPositionModel(position);
         }
 
-        // Check if range between microsectors is valid for the interval calculation
-        // If any element in the range is zero for both last and best microsectors this returns false.
-        public float CalculateIntervalFromSectors(int carId, int floor, int ceil)
-        {
-            float interval = 0;
-
-            for (int sectorId = floor; sectorId < ceil; sectorId++)
-            {
-                if (_raceData[carId].MicroSectors[sectorId] == 0.0f &&
-                    _raceData[carId].BestMicroSectors[sectorId] == 0.0f)
-                {
-                    interval = 0;
-                    break;
-                }
-                else
-                {
-                    float sectorToAdd = _raceData[carId].MicroSectors[sectorId] > _raceData[carId].BestMicroSectors[sectorId] ? _raceData[carId].BestMicroSectors[sectorId] : _raceData[carId].MicroSectors[sectorId];
-                    float sectorStart = sectorId * MICROSECTOR_LENGTH;
-                    float sectorEnd = (sectorId + 1) * MICROSECTOR_LENGTH;
-
-                    // Lower sector bound. Interpolate between first and second point.
-                    if (sectorId == floor)
-                    {
-                        // Wrap if car went over the finish line
-                        int sid = sectorId + 1;
-                        if (sid >= MICROSECTOR_COUNT)
-                        {
-                            sid = 0;
-                        }
-                        // Select whichever is quicker
-                        float sectorToAddNext = _raceData[carId].BestMicroSectors[sid];
-                        if (sectorToAddNext == 0.0f || sectorToAddNext > _raceData[carId].MicroSectors[sid])
-                        {
-                            sectorToAddNext = _raceData[carId].MicroSectors[sid];
-                        }
-                        sectorToAdd = Interpolation.LinearInterpolate(_raceData[carId].LapDistPct, sectorStart, sectorEnd, sectorToAdd, sectorToAddNext);
-                    }
-                    // Upper sector bound. Interpolate between last and second to last point.
-                    else if (sectorId == ceil - 1)
-                    {
-                        // Wrap if car went over the finish line
-                        int sid = sectorId - 1;
-                        if (sid < 0)
-                        {
-                            sid = MICROSECTOR_COUNT - 1;
-                        }
-                        float sectorToAddPrev = _raceData[carId].BestMicroSectors[sid];
-                        if (sectorToAddPrev == 0.0f || sectorToAddPrev > _raceData[carId].MicroSectors[sid])
-                        {
-                            sectorToAddPrev = _raceData[carId].MicroSectors[sid];
-                        }
-                        sectorToAdd = Interpolation.LinearInterpolate(_raceData[carId].LapDistPct, sectorStart, sectorEnd, sectorToAddPrev, sectorToAdd);
-                    }
-
-                    interval += sectorToAdd;
-                }
-            }
-
-            return interval;
-        }
-
-        private int GetSectorId(float lapDist, bool isFloor)
-        {
-            float normalizedId = (float)(lapDist * 100 / (100.0f / MICROSECTOR_COUNT));
-            if (isFloor)
-            {
-                return (int)Math.Floor(normalizedId);
-            }
-            else
-            {
-                if (lapDist < 1.0f)
-                    return (int)Math.Ceiling(normalizedId);
-                return (int)Math.Floor(normalizedId);
-            }
-        }
-
         private void CalculateIntervals(double elapsedTime)
         {
             for (int carId = 0; carId < IRacingSdkConst.MaxNumCars; carId++)
             {
-                if ((_raceData[carId].SessionFlags & Flags.Checkered) != Flags.Checkered &&
-                    _raceData[carId].SessionFlags != 0 &&
+                if (_raceData[carId].SessionFlags != 0 &&
                     _raceData[carId].TrackSurface != TrkSurf.SurfaceNotInWorld &&
                     _raceData[carId].TrackSurface != TrkSurf.UndefinedMaterial)
                 {
@@ -192,56 +113,14 @@ namespace IRDCav.Services
                         // Elapsed time is then added into buckets.
                         // If a sector switch happened in last cycle the elapsed time is split
                         // into both buckets depending on the overlap.
-                        float sectorStart;
-                        float sectorEnd;
-                        float correction;
-                        int sectorIdx = GetSectorId(_raceData[carId].LapDistPct, true);
-                        int lastSectorIdx = GetSectorId(_raceData[carId].LastLapDistPct, true);
-
-                        if (sectorIdx > lastSectorIdx ||
-                            (sectorIdx == 0 && sectorIdx < lastSectorIdx) &&
-                            _raceData[carId].LastLapDistPct != _raceData[carId].LapDistPct)
-                        {
-                            sectorEnd = (lastSectorIdx + 1) * MICROSECTOR_LENGTH;
-                            correction = sectorEnd - _raceData[carId].LastLapDistPct;
-
-                            _raceData[carId].MicroSectors[lastSectorIdx] += (float)Math.Round(elapsedTime * correction, 3);
-
-                            // No best sector time exists yet or best sector time was slower.
-                            if ((_raceData[carId].MicroSectors[sectorIdx] - _raceData[carId].BestMicroSectors[sectorIdx]) >= (_raceData[carId].MicroSectors[sectorIdx] / 2) ||
-                                _raceData[carId].BestMicroSectors[sectorIdx] > _raceData[carId].MicroSectors[sectorIdx] &&
-                                _raceData[carId].MicroSectors[sectorIdx] != 0)
-                            {
-                                _raceData[carId].BestMicroSectors[sectorIdx] = _raceData[carId].MicroSectors[sectorIdx];
-                            }
-
-                            _raceData[carId].MicroSectors[sectorIdx] = 0;
-
-                            sectorStart = sectorIdx * MICROSECTOR_LENGTH;
-                            correction = _raceData[carId].LapDistPct - sectorStart;
-
-                            _raceData[carId].MicroSectors[sectorIdx] += (float)Math.Round(elapsedTime * correction, 3);
-                        }
-
-                        int floor = 0;
-                        int ceil = 0;
                         float calculatedInterval = 0;
-                        if (_raceData[carId].LapDistPct > _raceData[_playerId].LapDistPct)
-                        {
-                            floor = GetSectorId(_raceData[_playerId].LapDistPct, true);
-                            ceil = GetSectorId(_raceData[carId].LapDistPct, false);
-                        }
-                        else
-                        {
-                            floor = GetSectorId(_raceData[carId].LapDistPct, true);
-                            ceil = GetSectorId(_raceData[_playerId].LapDistPct, false);
-                        }
+
+                        _raceData[carId].MicroSectors.SetMicroSector(elapsedTime, _raceData[carId].LapDistPct, _raceData[carId].LastLapDistPct);
 
                         if (_raceData[carId].TrackLocation != TrkLoc.AproachingPits &&
-                            _raceData[carId].TrackLocation != TrkLoc.InPitStall &&
-                            _raceData[carId].OnPitRoad == false)
+                            _raceData[carId].TrackLocation != TrkLoc.InPitStall)
                         {
-                            calculatedInterval = CalculateIntervalFromSectors(carId, floor, ceil);
+                            calculatedInterval = _raceData[carId].MicroSectors.GetInterval(_raceData[carId].LapDistPct, _raceData[_playerId].LapDistPct); ;
                         }
 
                         /////////////////////////////////
@@ -296,12 +175,6 @@ namespace IRDCav.Services
                             delta = timeDiff;
                         }
 
-                        if (sectorIdx == lastSectorIdx &&
-                            _raceData[carId].LastLapDistPct != _raceData[carId].LapDistPct)
-                        {
-                            _raceData[carId].MicroSectors[sectorIdx] += (float)Math.Round(elapsedTime, 3);
-                        }
-
                         _raceData[carId].Interval = Math.Round(calculatedInterval, 1) != 0 && delta > calculatedInterval ? calculatedInterval : delta;
                         _raceData[carId].LapDelta = lapDelta;
                         _raceData[carId].LastLapDistPct = _raceData[carId].LapDistPct;
@@ -314,7 +187,10 @@ namespace IRDCav.Services
                 }
                 else
                 {
-                    _raceData[carId].ConsiderForRelative = false;
+                    _raceData[carId].Interval = 0;
+                    _raceData[carId].LapDelta = 0;
+                    _raceData[carId].LastLapDistPct = _raceData[carId].LapDistPct;
+                    _raceData[carId].ConsiderForRelative = _raceData[carId].IsMe ? true : false;
                 }
             }
         }
@@ -351,7 +227,7 @@ namespace IRDCav.Services
         //************************************************************************************************
         // MOVE TO SEPERATE CLASS
         //************************************************************************************************
-        public List<RaceDataModel> GetRelativeViewRaceData(int totalCount)
+        public ObservableCollection<RaceDataModel> GetRelativeViewRaceData(int totalCount)
         {
             int idx = 0;
             int localPlayerId = 0;
@@ -411,13 +287,13 @@ namespace IRDCav.Services
                 }
             }
 
-            return trimmedRaceData.ToList();
+            return new ObservableCollection<RaceDataModel>(trimmedRaceData);
         }
 
         //************************************************************************************************
         // MOVE TO SEPERATE CLASS
         //************************************************************************************************
-        public List<RaceDataModel> GetResultsViewRaceData(int totalCount, int perClassCount, int numCarClasses, string sessionType)
+        public ObservableCollection<RaceDataModel> GetResultsViewRaceData(int totalCount, int perClassCount, int numCarClasses, string sessionType)
         {
             int localPlayerId = 0;
             int lowerBound = 0;
@@ -573,7 +449,7 @@ namespace IRDCav.Services
                 }
             }
 
-            return returnList;
+            return new ObservableCollection<RaceDataModel>(returnList);
         }
     }
 }

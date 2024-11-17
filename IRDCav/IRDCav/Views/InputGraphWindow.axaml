@@ -7,6 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="8010" d:DesignHeight="450"
         x:Class="IRDCav.Views.InputGraphWindow"
         x:DataType="vm:InputGraphViewModel"
+        Icon="/Assets/icon.ico"
         Title="iRDCav Input Graph"
         Deactivated="OnWindowDeactivated"
 		SizeToContent="Height"

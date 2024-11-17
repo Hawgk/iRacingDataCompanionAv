@@ -89,24 +89,27 @@ namespace IRDCav.Services
             FuelDataModel fuelDataModel = new FuelDataModel();
 
             fuelDataModel.Level = level;
+            fuelDataModel.MinConsumption = _lastFuelData.MinConsumption;
+            fuelDataModel.AvgConsumption = _lastFuelData.AvgConsumption;
+            fuelDataModel.MaxConsumption = _lastFuelData.MaxConsumption;
 
             if (elapsedTime > 5)
             {
-                if (_lastFuelData.MinConsumption > _fuelDelta || _lastFuelData.MinConsumption == 0)
+                if (fuelDataModel.MinConsumption > _fuelDelta || fuelDataModel.MinConsumption == 0)
                 {
                     fuelDataModel.MinConsumption = _fuelDelta;
                 }
 
-                if (_lastFuelData.AvgConsumption == 0)
+                if (fuelDataModel.AvgConsumption == 0)
                 {
                     fuelDataModel.AvgConsumption = _fuelDelta;
                 }
                 else
                 {
-                    fuelDataModel.AvgConsumption = (_lastFuelData.AvgConsumption + _fuelDelta) / 2;
+                    fuelDataModel.AvgConsumption = (fuelDataModel.AvgConsumption + _fuelDelta) / 2;
                 }
 
-                if (_lastFuelData.MaxConsumption < _fuelDelta || _lastFuelData.MaxConsumption == 0)
+                if (fuelDataModel.MaxConsumption < _fuelDelta || fuelDataModel.MaxConsumption == 0)
                 {
                     fuelDataModel.MaxConsumption = _fuelDelta;
                 }

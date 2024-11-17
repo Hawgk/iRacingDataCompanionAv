@@ -2,6 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="IRDCav.App"
              xmlns:local="using:IRDCav"
+             xmlns:vm="using:IRDCav.ViewModels"
+             x:DataType="vm:ApplicationViewModel"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     <Application.DataTemplates>
@@ -24,9 +26,9 @@
 		<SolidColorBrush x:Key="ThemeWhite">#E8EDDF</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeBlue">#60C7DB</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeGray">#CFDBD5</SolidColorBrush>
+		<SolidColorBrush x:Key="ThemeMediumGray">#616160</SolidColorBrush>
 	</Application.Resources>
     <Application.Styles>
-		<SimpleTheme/>
 		<StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml"/>
 		<Style
 			Selector="Grid.IsMe">
@@ -68,6 +70,12 @@
 				Value="{StaticResource ThemeRed}"/>
 		</Style>
 		<Style
+			Selector="TextBlock.IsOnPitRoad">
+			<Setter
+				Property="Foreground"
+				Value="{StaticResource ThemeMediumGray}"/>
+		</Style>
+		<Style
 			Selector="TextBlock.IsInfront">
 			<Setter
 				Property="Foreground"
@@ -88,6 +96,18 @@
 				Property="HorizontalAlignment"
 				Value="Left"/>
 		</Style>
-        <FluentTheme />
+		<FluentTheme />
     </Application.Styles>
+
+	<TrayIcon.Icons>
+		<TrayIcons>
+			<TrayIcon Icon="/Assets/icon.ico" ToolTipText="iRDCav Overlay">
+				<TrayIcon.Menu>
+					<NativeMenu>
+						<NativeMenuItem Header="Exit" Command="{Binding ExitCommand}" />
+					</NativeMenu>
+				</TrayIcon.Menu>
+			</TrayIcon>
+		</TrayIcons>
+	</TrayIcon.Icons>
 </Application>

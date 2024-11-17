@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -29,6 +30,8 @@ namespace IRDCav
                 // Without this line you will get duplicate validations from both Avalonia and CT
                 BindingPlugins.DataValidators.RemoveAt(0);
                 desktop.Exit += OnExit;
+                desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                DataContext = new ApplicationViewModel();
 
                 DataViewModel standingViewModel = new DataViewModel();
                 RelativesViewModel relativesViewModel = new RelativesViewModel();

@@ -48,8 +48,7 @@ namespace IRDCav.Models
         public TrkLoc TrackLocation { get; set; }
         public Flags SessionFlags { get; set; }
 
-        public float[] MicroSectors { get; set; } = new float[RaceDataController.MICROSECTOR_COUNT];
-        public float[] BestMicroSectors { get; set; } = new float[RaceDataController.MICROSECTOR_COUNT];
+        public MicroSectorModel MicroSectors { get; set; } = new MicroSectorModel();
 
         public void SetFromLiveDataModel(LiveDataModel liveData)
         {
