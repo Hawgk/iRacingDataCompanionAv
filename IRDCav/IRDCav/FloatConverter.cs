@@ -18,13 +18,13 @@ namespace IRDCav
                 switch (targetCase)
                 {
                     case "Fuel":
-                        returnString = sourceValue.ToString("0.00") + " L    ";
+                        returnString = Math.Round(sourceValue, 2).ToString("0.00") + " L    ";
                         return returnString.PadLeft(11);
                     case "FuelPerLap":
-                        returnString = sourceValue.ToString("0.00") + " L/Lap";
+                        returnString = Math.Round(sourceValue, 2).ToString("0.00") + " L/Lap";
                         return returnString.PadLeft(11);
                     case "FuelPerMinute":
-                        returnString = sourceValue.ToString("0.00") + " L/Min";
+                        returnString = Math.Round(sourceValue, 2).ToString("0.00") + " L/Min";
                         return returnString.PadLeft(11);
                 }
             }

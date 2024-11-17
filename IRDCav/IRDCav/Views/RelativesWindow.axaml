@@ -16,7 +16,8 @@
         Background="White"
 		SystemDecorations="None"
 		Width="400"
-		LayoutUpdated="OnResize">
+		LayoutUpdated="OnResize"
+		IsVisible="{Binding IsVisible}">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition

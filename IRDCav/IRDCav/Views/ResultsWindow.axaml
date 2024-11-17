@@ -16,7 +16,8 @@
         Background="White"
 		SystemDecorations="None"
 		Width="560"
-		LayoutUpdated="OnResize">
+		LayoutUpdated="OnResize"
+		IsVisible="{Binding IsVisible}">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition
@@ -292,7 +293,7 @@
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
-								Text="{Binding Interval, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Interval}"/>
+								Text="{Binding Gap, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Gap}"/>
 						</Grid>
 					</Grid>
 				</DataTemplate>

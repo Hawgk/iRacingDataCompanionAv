@@ -40,19 +40,16 @@ namespace IRDCav
                 {
                     DataContext = standingViewModel,
                 };
-                resultsWindow.Show();
 
                 RelativesWindow relativesWindow = new RelativesWindow
                 {
                     DataContext = relativesViewModel,
                 };
-                relativesWindow.Show();
 
                 InputGraphWindow inputGraphWindow = new InputGraphWindow
                 {
                     DataContext = inputGraphViewModel,
                 };
-                inputGraphWindow.Show();
             }
 
             base.OnFrameworkInitializationCompleted();

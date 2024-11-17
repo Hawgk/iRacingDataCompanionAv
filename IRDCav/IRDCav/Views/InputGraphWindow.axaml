@@ -17,8 +17,12 @@
 		SystemDecorations="None"
 		Width="300"
 		MinHeight="120"
-		LayoutUpdated="OnResize">
+		LayoutUpdated="OnResize"
+		IsVisible="{Binding IsVisible}">
 	<Grid>
-		<oxy:PlotView Model="{Binding Model}" Background="Transparent" IsEnabled="false"/>
+		<oxy:PlotView
+			Model="{Binding Model}"
+			Background="Transparent"
+			IsEnabled="false"/>
 	</Grid>
 </Window>

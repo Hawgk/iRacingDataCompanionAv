@@ -1,11 +1,12 @@
 ﻿using IRDCav.Models;
 using IRDCav.ViewModels;
+using IRDCav.Services;
 using IRSDKSharper;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using static IRSDKSharper.IRacingSdkSessionInfo.DriverInfoModel;
 using static IRSDKSharper.IRacingSdkSessionInfo.SessionInfoModel.SessionModel;
+using static IRSDKSharper.IRacingSdkEnum;
 
 namespace IRDCav
 {
@@ -14,15 +15,16 @@ namespace IRDCav
         private static int _refreshInterval = 3;
 
         private bool _isInitialized = false;
-        private bool _isInitializedFast = false;
         private bool _firstLap = true;
         private bool _driving = false;
         private int _lastLapCount = 1;
         private int _calculateCounter = 0;
 
-        private RaceDataController _raceDataController = new RaceDataController();
+        private Services.RaceDataController _raceDataController = new Services.RaceDataController();
         private FuelDataController _fuelDataController = new FuelDataController();
 
+        private SessionInfoModel _lastSessionInfo = new SessionInfoModel();
+        
         private DataViewModel _dataViewModel;
         private RelativesViewModel _relativesViewModel;
         private InputGraphViewModel _inputGraphViewModel;
@@ -39,6 +41,9 @@ namespace IRDCav
         private IRacingSdkDatum _carIdxBestLapTimeDatum;
         private IRacingSdkDatum _carIdxBestLapNumDatum;
         private IRacingSdkDatum _carIdxLapDatum;
+        private IRacingSdkDatum _carIdxTrackSurfaceDatum;
+        private IRacingSdkDatum _carIdxTrackSurfaceMaterialDatum;
+        private IRacingSdkDatum _carIdxSessionFlagsDatum;
         private IRacingSdkDatum _lapBestLapTimeDatum;
         private IRacingSdkDatum _fuelLevelDatum;
         private IRacingSdkDatum _isOnTrackDatum;
@@ -57,6 +62,10 @@ namespace IRDCav
             _relativesViewModel = relativesViewModel;
             _inputGraphViewModel = inputGraphViewModel;
 
+            _dataViewModel.IsVisible = false;
+            _relativesViewModel.IsVisible = false;
+            _inputGraphViewModel.IsVisible = false;
+
             _irsdk = new IRacingSdk();
             _irsdk.OnConnected += OnConnected;
             _irsdk.OnDisconnected += OnDisconnected;
@@ -65,18 +74,29 @@ namespace IRDCav
 
             _irsdk.UpdateInterval = 2;
             _irsdk.Start();
+
+            _fuelDataController.OnUpdated += OnFuelUpdated;
+            _raceDataController.OnDataReady += OnRaceDataUpdated;
         }
 
         public void OnConnected()
         {
             _dataViewModel.IsConnected = true;
             _relativesViewModel.IsConnected = true;
+
+            _dataViewModel.IsVisible = true;
+            _relativesViewModel.IsVisible = true;
+            _inputGraphViewModel.IsVisible = true;
         }
 
         public void OnDisconnected()
         {
             _dataViewModel.IsConnected = false;
             _relativesViewModel.IsConnected = false;
+
+            _dataViewModel.IsVisible = false;
+            _relativesViewModel.IsVisible = false;
+            _inputGraphViewModel.IsVisible = false;
 
             _raceDataController.Clear();
             _fuelDataController.Clear();
@@ -86,7 +106,7 @@ namespace IRDCav
             _relativesViewModel.RaceDataList.Clear();
             _dataViewModel.RaceDataList.Clear();
 
-            _fuelDataController.SessionInfo = new Models.SessionInfoModel();
+            _lastSessionInfo = new SessionInfoModel();
             _relativesViewModel.SessionInfo = new Models.SessionInfoModel();
             _dataViewModel.SessionInfo = new Models.SessionInfoModel();
         }
@@ -115,6 +135,10 @@ namespace IRDCav
             float[] bestLapTimeArr = new float[IRacingSdkConst.MaxNumCars];
             int[] bestLapNumArr = new int[IRacingSdkConst.MaxNumCars];
             int[] lapArr = new int[IRacingSdkConst.MaxNumCars];
+            int[] trackLocationArr = new int[IRacingSdkConst.MaxNumCars];
+            int[] trackSurfaceArr = new int[IRacingSdkConst.MaxNumCars];
+            uint[] sessionFlagsArr = new uint[IRacingSdkConst.MaxNumCars];
+
             float lapBestLapTime = 0;
             float fuelLevel = 0;
             bool isOnTrack = false;
@@ -161,6 +185,9 @@ namespace IRDCav
                 _throttleDatum = _irsdk.Data.TelemetryDataProperties["ThrottleRaw"];
                 _brakeDatum = _irsdk.Data.TelemetryDataProperties["BrakeRaw"];
                 _clutchDatum = _irsdk.Data.TelemetryDataProperties["ClutchRaw"];
+                _carIdxTrackSurfaceDatum = _irsdk.Data.TelemetryDataProperties["CarIdxTrackSurface"];
+                _carIdxTrackSurfaceMaterialDatum = _irsdk.Data.TelemetryDataProperties["CarIdxTrackSurfaceMaterial"];
+                _carIdxSessionFlagsDatum = _irsdk.Data.TelemetryDataProperties["CarIdxSessionFlags"];
 
                 _isInitialized = true;
             }
@@ -193,12 +220,14 @@ namespace IRDCav
                 _irsdk.Data.GetFloatArray(_carIdxBestLapTimeDatum, bestLapTimeArr, 0, IRacingSdkConst.MaxNumCars);
                 _irsdk.Data.GetIntArray(_carIdxBestLapNumDatum, bestLapNumArr, 0, IRacingSdkConst.MaxNumCars);
                 _irsdk.Data.GetIntArray(_carIdxLapDatum, lapArr, 0, IRacingSdkConst.MaxNumCars);
+                _irsdk.Data.GetIntArray(_carIdxTrackSurfaceDatum, trackLocationArr, 0, IRacingSdkConst.MaxNumCars);
+                _irsdk.Data.GetIntArray(_carIdxTrackSurfaceMaterialDatum, trackSurfaceArr, 0, IRacingSdkConst.MaxNumCars);
+                _irsdk.Data.GetBitFieldArray("CarIdxSessionFlags", sessionFlagsArr, 0, IRacingSdkConst.MaxNumCars);
+
                 lapBestLapTime = _irsdk.Data.GetFloat(_lapBestLapTimeDatum);
                 fuelLevel = _irsdk.Data.GetFloat(_fuelLevelDatum);
                 isOnTrack = _irsdk.Data.GetBool(_isOnTrackDatum);
                 sessionNum = _irsdk.Data.GetInt(_sessionNumDatum);
-                fuelLevel = _irsdk.Data.GetFloat(_fuelLevelDatum);
-                fuelLevel = _irsdk.Data.GetFloat(_fuelLevelDatum);
 
                 if (sessionNum > 0)
                 {
@@ -217,98 +246,46 @@ namespace IRDCav
                 // TODO: Currently doesnt work with instant resets as the car stays registered as on track.
                 if (isOnTrack && _firstLap)
                 {
-                    _fuelDataController.StartTimer(fuelLevel);
+                    _fuelDataController.Start(fuelLevel);
                     _lastLapCount = lapArr[sessionInfo.DriverInfo.DriverCarIdx];
                     _firstLap = false;
                     _driving = true;
                 }
                 else if (!isOnTrack && _driving)
                 {
-                    _fuelDataController.StopTimer();
                     _firstLap = true;
                     _driving = false;
                 }
 
-                // If the car is driving on track either only update fuel level or calculate lap fuel data.
-                if (_driving)
+                // Get current race data from array and calculate deltas
+                _raceDataController.SetPlayerId(sessionInfo.DriverInfo.DriverCarIdx);
+
+                for (int i = 0; i < IRacingSdkConst.MaxNumCars; i++)
                 {
-                    if (lapArr[sessionInfo.DriverInfo.DriverCarIdx] - _lastLapCount > 0)
+                    if (lapArr[i] >= 0)
                     {
-                        _relativesViewModel.FuelData = _fuelDataController.GetLapFuelDataModel(fuelLevel);
-                    }
-                    else
-                    {
-                        _relativesViewModel.FuelData = _fuelDataController.GetFuelDataModel(fuelLevel);
+                        _raceDataController.SetFromLiveDataModel(i, new LiveDataModel
+                        {
+                            Id = i,
+                            Class = classArr[i],
+                            LapDistPct = lapDistPctArr[i],
+                            OnPitRoad = onPitRoadArr[i],
+                            Position = positionArr[i],
+                            ClassPosition = classPositionArr[i],
+                            EstTime = estTimeArr[i],
+                            LastLapTime = lastLapTimeArr[i],
+                            BestLapTime = bestLapTimeArr[i],
+                            BestLapNum = bestLapNumArr[i],
+                            TrackSurface = trackSurfaceArr[i],
+                            TrackLocation = trackLocationArr[i],
+                            SessionFlags = sessionFlagsArr[i],
+                        });
                     }
                 }
-
-                _lastLapCount = lapArr[sessionInfo.DriverInfo.DriverCarIdx];
 
                 // Get current race data from remaining structures and merge into existing data
                 if (drivers != null)
                 {
-                    // Get current race data from array and calculate deltas
-                    _raceDataController.Clear();
-                    _raceDataController.SetPlayerId(sessionInfo.DriverInfo.DriverCarIdx);
-
-                    for (int i = 0; i < IRacingSdkConst.MaxNumCars; i++)
-                    {
-                        int lapcountS = lapArr[sessionInfo.DriverInfo.DriverCarIdx];
-                        int lapcountC = lapArr[i];
-
-                        if (lapcountC >= 0)
-                        {
-                            // If the other car is up to half a lap in front, we consider the delta 'ahead', otherwise 'behind'.
-                            float delta = 0;
-                            int lapDelta = lapcountC - lapcountS;
-                            float L = bestLapTimeArr[i];
-                            float timeDiff = 0;
-
-                            if (L <= 0)
-                            {
-                                L = drivers[sessionInfo.DriverInfo.DriverCarIdx].CarClassEstLapTime;
-                            }
-
-                            float C = estTimeArr[i];
-                            float S = estTimeArr[sessionInfo.DriverInfo.DriverCarIdx];
-
-                            // Does the delta between us and the other car span across the start/finish line?
-                            bool wrap = Math.Abs(lapDistPctArr[i] - lapDistPctArr[sessionInfo.DriverInfo.DriverCarIdx]) > 0.5f;
-
-                            timeDiff = C - S;
-                            if (lapDistPctArr[i] - lapDistPctArr[sessionInfo.DriverInfo.DriverCarIdx] < 0.05f)
-                            {
-                                timeDiff = (lapDistPctArr[i] - lapDistPctArr[sessionInfo.DriverInfo.DriverCarIdx]) * L;
-                            }
-
-                            if (wrap)
-                            {
-                                delta = S > C ? timeDiff + L : timeDiff - L;
-                                lapDelta += S > C ? -1 : 1;
-                            }
-                            else
-                            {
-                                delta = timeDiff;
-                            }
-
-                            _raceDataController.SetFromLiveDataModel(i, new LiveDataModel
-                            {
-                                Id = i,
-                                Class = classArr[i],
-                                LapDistPct = lapDistPctArr[i],
-                                OnPitRoad = onPitRoadArr[i],
-                                Position = positionArr[i],
-                                ClassPosition = classPositionArr[i],
-                                Interval = delta,
-                                LapDelta = lapDelta,
-                                ConsiderForRelative = true,
-                                LastLapTime = lastLapTimeArr[i],
-                                BestLapTime = bestLapTimeArr[i],
-                                BestLapNum = bestLapNumArr[i],
-                            });
-                        }
-                    }
-
                     if (positions != null)
                     {
                         foreach (PositionModel position in positions)
@@ -365,15 +342,20 @@ namespace IRDCav
                         NumCarClasses = weekendInfo.NumCarClasses,
                     };
 
-                    _fuelDataController.SessionInfo = sessionInfoModel;
                     _relativesViewModel.SessionInfo = sessionInfoModel;
                     _dataViewModel.SessionInfo = sessionInfoModel;
+                    _lastSessionInfo = sessionInfoModel;
                 }
+                _raceDataController.Update(_lastSessionInfo.TimeRemain);
 
-                _raceDataController.CalculateBestLaps();
-                _relativesViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetRelativeViewRaceData(9));
-                _dataViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetResultsViewRaceData(11, 3, _dataViewModel.SessionInfo.NumCarClasses));
+                // If the car is driving on track either only update fuel level or calculate lap fuel data.
+                if (_driving)
+                {
+                    bool isLapComplete = lapArr[sessionInfo.DriverInfo.DriverCarIdx] - _lastLapCount > 0;
+                    _lastLapCount = lapArr[sessionInfo.DriverInfo.DriverCarIdx];
 
+                    _fuelDataController.Update(isLapComplete, fuelLevel, _lastSessionInfo.TimeRemain);
+                }
             }
 
             _calculateCounter++;
@@ -381,6 +363,17 @@ namespace IRDCav
             {
                 _calculateCounter = 0;
             }
+        }
+
+        private void OnFuelUpdated(FuelDataModel fuelData)
+        {
+            _relativesViewModel.FuelData = fuelData;
+        }
+
+        private void OnRaceDataUpdated()
+        {
+            _relativesViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetRelativeViewRaceData(9));
+            _dataViewModel.RaceDataList = new ObservableCollection<RaceDataModel>(_raceDataController.GetResultsViewRaceData(11, 3, _lastSessionInfo.NumCarClasses, _lastSessionInfo.SessionType));
         }
     }
 }

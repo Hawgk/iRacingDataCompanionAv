@@ -5,17 +5,25 @@ namespace IRDCav.ViewModels
 {
     public class RelativesViewModel : ViewModelBase
     {
+        private bool _isVisible = false;
         private bool _isConnected = false;
         private SessionInfoModel _sessionInfo = new SessionInfoModel();
         private FuelDataModel _fuelData = new FuelDataModel();
         private ObservableCollection<RaceDataModel> _raceDataList = new ObservableCollection<RaceDataModel>();
 
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged(nameof(IsVisible));
+            }
+        }
+
         public bool IsConnected
         {
-            get
-            {
-                return _isConnected;
-            }
+            get => _isConnected;
             set
             {
                 if (_isConnected != value)
@@ -28,10 +36,7 @@ namespace IRDCav.ViewModels
 
         public SessionInfoModel SessionInfo
         {
-            get
-            {
-                return _sessionInfo;
-            }
+            get => _sessionInfo;
             set
             {
                 if (_sessionInfo != value)
@@ -44,10 +49,7 @@ namespace IRDCav.ViewModels
 
         public FuelDataModel FuelData
         {
-            get
-            {
-                return _fuelData;
-            }
+            get => _fuelData;
             set
             {
                 _fuelData = value;
@@ -57,10 +59,7 @@ namespace IRDCav.ViewModels
 
         public ObservableCollection<RaceDataModel> RaceDataList
         {
-            get
-            {
-                return _raceDataList;
-            }
+            get => _raceDataList;
             set
             {
                 _raceDataList = value;

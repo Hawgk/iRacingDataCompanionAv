@@ -8,10 +8,21 @@ namespace IRDCav.ViewModels
 {
     public class InputGraphViewModel : ViewModelBase
     {
+        private bool _isVisible = false;
         private PlotModel _model = new PlotModel();
         private CircularBuffer<float> _throttlePoints = new CircularBuffer<float>(100);
         private CircularBuffer<float> _brakePoints = new CircularBuffer<float>(100);
         private CircularBuffer<float> _clutchPoints = new CircularBuffer<float>(100);
+
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged(nameof(IsVisible));
+            }
+        }
 
         public PlotModel Model
         {

@@ -5,11 +5,22 @@ namespace IRDCav.ViewModels
 {
     public class DataViewModel : ViewModelBase
     {
+        private bool _isVisible = false;
         private bool _isConnected = false;
         private string _incidentCount = string.Empty;
         private SessionInfoModel _sessionInfo = new SessionInfoModel();
         private TelemetryModel _telemetry = new TelemetryModel();
         private ObservableCollection<RaceDataModel> _raceDataList = new ObservableCollection<RaceDataModel>();
+
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged(nameof(IsVisible));
+            }
+        }
 
         public bool IsConnected
         {

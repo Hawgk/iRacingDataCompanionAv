@@ -1,4 +1,7 @@
-﻿using static IRSDKSharper.IRacingSdkSessionInfo.DriverInfoModel;
+﻿using System.Collections.Generic;
+using IRDCav.Services;
+using static IRSDKSharper.IRacingSdkEnum;
+using static IRSDKSharper.IRacingSdkSessionInfo.DriverInfoModel;
 using static IRSDKSharper.IRacingSdkSessionInfo.SessionInfoModel.SessionModel;
 
 namespace IRDCav.Models
@@ -32,10 +35,21 @@ namespace IRDCav.Models
         public int LapDelta { get; set; }
 
         public float LapDistPct { get; set; }
+        public float LastLapDistPct { get; set; }
         public float LastLapTime { get; set; }
         public float BestLapTime { get; set; }
+        public float EstLapTime { get; set; }
+        public float EstTime { get; set; }
         public float FastestLapTime { get; set; }
         public float Interval { get; set; }
+        public float Gap { get; set; }
+
+        public TrkSurf TrackSurface { get; set; }
+        public TrkLoc TrackLocation { get; set; }
+        public Flags SessionFlags { get; set; }
+
+        public float[] MicroSectors { get; set; } = new float[RaceDataController.MICROSECTOR_COUNT];
+        public float[] BestMicroSectors { get; set; } = new float[RaceDataController.MICROSECTOR_COUNT];
 
         public void SetFromLiveDataModel(LiveDataModel liveData)
         {
@@ -51,6 +65,10 @@ namespace IRDCav.Models
             LastLapTime = liveData.LastLapTime;
             BestLapTime = liveData.BestLapTime;
             BestLapNum = liveData.BestLapNum;
+            EstTime = liveData.EstTime;
+            TrackSurface = (TrkSurf)liveData.TrackSurface;
+            TrackLocation = (TrkLoc)liveData.TrackLocation;
+            SessionFlags = (Flags)liveData.SessionFlags;
 
             if (LapDelta < 0)
             {
@@ -100,6 +118,7 @@ namespace IRDCav.Models
             ClassStr = driver.CarClassShortName;
             CarName = driver.CarPath;
             CarNumber = driver.CarNumber;
+            EstLapTime = driver.CarClassEstLapTime;
             License = ((float)driver.IRating / 1000).ToString("0.0") + "k";
             Rating = driver.IRating;
             IsPaceCar = driver.CarIsPaceCar > 0 ? true : false;
@@ -112,11 +131,6 @@ namespace IRDCav.Models
             LapsCompleted = position.LapsComplete;
             FastestLapTime = position.FastestTime;
             LastLapTime = position.LastTime;
-
-            if (Interval != 0 && !IsMe)
-            {
-                IsActive = true;
-            }
         }
     }
 }

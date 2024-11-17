@@ -21,6 +21,23 @@ namespace IRDCav
                     {
                         switch (targetCase)
                         {
+                            case "Gap":
+                                if (sourceValueFloat > 60.0f || sourceValueFloat < -60.0f)
+                                {
+                                    returnString = TimeSpan.FromSeconds(Math.Round(Math.Abs(sourceValueFloat), 3)).ToString(@"m\:ss\.fff");
+                                }
+                                else
+                                {
+                                    returnString = TimeSpan.FromSeconds(Math.Round(Math.Abs(sourceValueFloat), 3)).ToString(@"s\.fff");
+                                }
+
+                                if (sourceValueFloat < 0.0f)
+                                {
+                                    returnString = "-" + returnString;
+                                }
+
+                                returnString = returnString.PadLeft(7);
+                                break;
                             case "Interval":
                                 if (sourceValueFloat > 60.0f || sourceValueFloat < -60.0f)
                                 {
