@@ -17,7 +17,7 @@ namespace IRDCav
             {
                 if (value is float sourceValueFloat)
                 {
-                    if (sourceValueFloat != 0.0f)
+                    if (sourceValueFloat != 0.0f && sourceValueFloat != float.NaN)
                     {
                         switch (targetCase)
                         {
@@ -66,7 +66,7 @@ namespace IRDCav
                 }
                 else if (value is double sourceValueDouble)
                 {
-                    if (sourceValueDouble > 0.0f)
+                    if (sourceValueDouble > 0.0f && sourceValueDouble != double.NaN)
                     {
                         switch (targetCase)
                         {

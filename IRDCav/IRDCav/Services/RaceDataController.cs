@@ -1,10 +1,11 @@
-﻿using IRDCav.Models;
+﻿using Avalonia.Controls;
+using IRDCav.Models;
 using IRSDKSharper;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using static IRSDKSharper.IRacingSdkEnum;
 using static IRSDKSharper.IRacingSdkSessionInfo.DriverInfoModel;
 using static IRSDKSharper.IRacingSdkSessionInfo.SessionInfoModel.SessionModel;
@@ -30,18 +31,13 @@ namespace IRDCav.Services
         {
             if (_lastTimeRemain != 0)
             {
-                Task t = new Task(() =>
-                {
-                    double elapsedTime = _lastTimeRemain - timeRemain;
-                    _lastTimeRemain = timeRemain;
+                double elapsedTime = _lastTimeRemain - timeRemain;
+                _lastTimeRemain = timeRemain;
 
-                    CalculateIntervals(elapsedTime);
-                    CalculateBestLaps();
+                CalculateIntervals(elapsedTime);
+                CalculateBestLaps();
 
-                    OnDataReady?.Invoke();
-                });
-
-                t.Start();
+                OnDataReady?.Invoke();
             }
             else
             {
@@ -93,6 +89,58 @@ namespace IRDCav.Services
             _raceData[id].SetFromPositionModel(position);
         }
 
+        private float EstimateInterval(int carId)
+        {
+            // More straight forward approach.
+            // This method is always available and is used as a fallback
+            // when the above method yields no result.
+            float interval = 0;
+            float lapTimeRef = _raceData[carId].FastestLapTime;
+            float lapTimePlayer = _raceData[_playerId].FastestLapTime;
+            float lapTime = 0;
+            float timeDiff = 0;
+
+            if (lapTimeRef <= 0)
+            {
+                lapTimeRef = _raceData[carId].EstLapTime;
+            }
+
+            if (lapTimePlayer <= 0)
+            {
+                lapTimePlayer = _raceData[_playerId].EstLapTime;
+            }
+
+            float C = _raceData[carId].LapDistPct;
+            float S = _raceData[_playerId].LapDistPct;
+
+            // Does the delta between us and the other car span across the start/finish line?
+            bool wrap = Math.Abs(_raceData[carId].LapDistPct - _raceData[_playerId].LapDistPct) >= 0.5f;
+
+            timeDiff = _raceData[carId].LapDistPct - _raceData[_playerId].LapDistPct;
+
+            if (timeDiff > 0)
+            {
+                timeDiff *= lapTimePlayer;
+                lapTime = lapTimePlayer;
+            }
+            else
+            {
+                timeDiff *= lapTimeRef;
+                lapTime = lapTimeRef;
+            }
+
+            if (wrap)
+            {
+                interval = S > C ? timeDiff + lapTime : timeDiff - lapTime;
+            }
+            else
+            {
+                interval = timeDiff;
+            }
+
+            return interval;
+        }
+
         private void CalculateIntervals(double elapsedTime)
         {
             for (int carId = 0; carId < IRacingSdkConst.MaxNumCars; carId++)
@@ -104,25 +152,10 @@ namespace IRDCav.Services
                     int lapcountS = _raceData[_playerId].LapsCompleted;
                     int lapcountC = _raceData[carId].LapsCompleted;
 
-                    if (lapcountC >= 0)
+                    if (lapcountC >= 0 &&
+                        !_raceData[carId].IsPaceCar)
                     {
-                        ////////////////////////////////
-                        // First interval calculation //
-                        ////////////////////////////////
-                        // Detects when a new sector is started.
-                        // Elapsed time is then added into buckets.
-                        // If a sector switch happened in last cycle the elapsed time is split
-                        // into both buckets depending on the overlap.
-                        float calculatedInterval = 0;
-
-                        _raceData[carId].MicroSectors.SetMicroSector(elapsedTime, _raceData[carId].LapDistPct, _raceData[carId].LastLapDistPct);
-
-                        if (_raceData[carId].TrackLocation != TrkLoc.AproachingPits &&
-                            _raceData[carId].TrackLocation != TrkLoc.InPitStall)
-                        {
-                            calculatedInterval = _raceData[carId].MicroSectors.GetInterval(_raceData[carId].LapDistPct, _raceData[_playerId].LapDistPct); ;
-                        }
-
+                        /*
                         /////////////////////////////////
                         // Second interval calculation //
                         /////////////////////////////////
@@ -150,7 +183,7 @@ namespace IRDCav.Services
                         float S = _raceData[_playerId].LapDistPct;
 
                         // Does the delta between us and the other car span across the start/finish line?
-                        bool wrap = Math.Abs(_raceData[carId].LapDistPct - _raceData[_playerId].LapDistPct) > 0.5f;
+                        bool wrap = Math.Abs(_raceData[carId].LapDistPct - _raceData[_playerId].LapDistPct) >= 0.5f;
 
                         timeDiff = _raceData[carId].LapDistPct - _raceData[_playerId].LapDistPct;
 
@@ -174,15 +207,37 @@ namespace IRDCav.Services
                         {
                             delta = timeDiff;
                         }
+                        */
+                        // Detects when a new sector is started.
+                        // Elapsed time is then added into buckets.
+                        // If a sector switch happened in last cycle the elapsed time is split
+                        // into both buckets depending on the overlap.
+                        float calculatedInterval = 0;
+                        int lapDelta = lapcountC - lapcountS;
 
-                        _raceData[carId].Interval = Math.Round(calculatedInterval, 1) != 0 && delta > calculatedInterval ? calculatedInterval : delta;
+                        _raceData[carId].MicroSectors.SetMicroSector(elapsedTime, _raceData[carId].LapDistPct, _raceData[carId].LastLapDistPct);
+
+                        if (_raceData[carId].TrackLocation != TrkLoc.AproachingPits &&
+                            _raceData[carId].TrackLocation != TrkLoc.InPitStall &&
+                            ((_raceData[carId].SessionFlags & Flags.Checkered) != Flags.Checkered))
+                        {
+                            calculatedInterval = _raceData[carId].MicroSectors.GetInterval(_raceData[carId].LapDistPct, _raceData[_playerId].LapDistPct);
+                        }
+
+                        if (_raceData[carId].MicroSectors.RecordedSectors == MicroSectorModel.MICROSECTOR_COUNT &&
+                            calculatedInterval != 0.0f)
+                        {
+                            _raceData[carId].Interval = (float)Math.Round(calculatedInterval, 3);
+                        }
+                        else
+                        {
+                            calculatedInterval = EstimateInterval(carId);
+                            _raceData[carId].Interval = (float)Math.Round(calculatedInterval, 3);
+                        }
+
                         _raceData[carId].LapDelta = lapDelta;
                         _raceData[carId].LastLapDistPct = _raceData[carId].LapDistPct;
-
-                        if (_raceData[carId].Interval != 0 || _raceData[carId].IsMe && ((_raceData[carId].SessionFlags & Flags.Checkered) != Flags.Checkered))
-                        {
-                            _raceData[carId].ConsiderForRelative = true;
-                        }
+                        _raceData[carId].ConsiderForRelative = true;
                     }
                 }
                 else

@@ -265,25 +265,22 @@ namespace IRDCav
                 {
                     for (int i = 0; i < IRacingSdkConst.MaxNumCars; i++)
                     {
-                        if (lapArr[i] >= 0)
+                        _raceDataController.SetFromLiveDataModel(i, new LiveDataModel
                         {
-                            _raceDataController.SetFromLiveDataModel(i, new LiveDataModel
-                            {
-                                Id = i,
-                                Class = classArr[i],
-                                LapDistPct = lapDistPctArr[i],
-                                OnPitRoad = onPitRoadArr[i],
-                                Position = positionArr[i],
-                                ClassPosition = classPositionArr[i],
-                                EstTime = estTimeArr[i],
-                                LastLapTime = lastLapTimeArr[i],
-                                BestLapTime = bestLapTimeArr[i],
-                                BestLapNum = bestLapNumArr[i],
-                                TrackSurface = trackSurfaceArr[i],
-                                TrackLocation = trackLocationArr[i],
-                                SessionFlags = sessionFlagsArr[i],
-                            });
-                        }
+                            Id = i,
+                            Class = classArr[i],
+                            LapDistPct = lapDistPctArr[i],
+                            OnPitRoad = onPitRoadArr[i],
+                            Position = positionArr[i],
+                            ClassPosition = classPositionArr[i],
+                            EstTime = estTimeArr[i],
+                            LastLapTime = lastLapTimeArr[i],
+                            BestLapTime = bestLapTimeArr[i],
+                            BestLapNum = bestLapNumArr[i],
+                            TrackSurface = trackSurfaceArr[i],
+                            TrackLocation = trackLocationArr[i],
+                            SessionFlags = sessionFlagsArr[i],
+                        });
                     }
 
                     if (positions != null)

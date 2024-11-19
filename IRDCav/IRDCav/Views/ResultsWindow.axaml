@@ -171,7 +171,6 @@
 			ItemsSource="{Binding RaceDataList}"
 			Background="{StaticResource ThemeIsNotMeBackground}"
 			Grid.IsSharedSizeScope="True"
-			MaxHeight="600"
 			VerticalAlignment="Stretch">
 			<ListBox.Styles>
 				<Style
