@@ -105,19 +105,28 @@
 			<Setter Property="BorderBrush" Value="{DynamicResource Overlay.Track}"/>
 			<Setter Property="BorderThickness" Value="0,0,0,1"/>
 		</Style>
-		<Style Selector="TextBlock.refuelAmount">
+		<Style Selector="StackPanel.fuelEstimates">
+			<Setter Property="Orientation" Value="Horizontal"/>
+			<Setter Property="Spacing" Value="14"/>
+		</Style>
+		<Style Selector="StackPanel.fuelEstimates TextBlock">
+			<Setter Property="LineHeight" Value="34"/>
+		</Style>
+		<Style Selector="StackPanel.fuelEstimate">
+			<Setter Property="Orientation" Value="Horizontal"/>
+			<Setter Property="Spacing" Value="5"/>
+		</Style>
+		<Style Selector="TextBlock.fuelAmount">
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+		<Style Selector="StackPanel.fuelEstimate.selected TextBlock.fuelAmount">
 			<Setter Property="FontSize" Value="26"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.PitRoad}"/>
 		</Style>
-		<Style Selector="TextBlock.refuelAmount.short">
+		<Style Selector="StackPanel.fuelEstimate.selected.short TextBlock.fuelAmount">
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.LapAhead}"/>
-		</Style>
-		<Style Selector="TextBlock.refuelUnit">
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="FontWeight" Value="SemiBold"/>
-			<Setter Property="VerticalAlignment" Value="Bottom"/>
-			<Setter Property="Margin" Value="-7,0,0,4"/>
 		</Style>
 		<Style Selector="StackPanel.fuelFacts TextBlock">
 			<Setter Property="FontSize" Value="12"/>

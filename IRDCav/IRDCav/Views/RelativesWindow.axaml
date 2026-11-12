@@ -12,6 +12,17 @@
         TransparencyLevelHint="Transparent"
         SystemDecorations="None"
         IsVisible="{Binding IsVisible}">
+	<Window.Resources>
+		<DataTemplate x:Key="FuelEstimateTemplate" x:DataType="vm:FuelEstimate">
+			<StackPanel
+				Classes="fuelEstimate"
+				Classes.selected="{Binding IsSelected}"
+				Classes.short="{Binding NeedsRefuel}">
+				<TextBlock Classes="label" Text="{Binding Label}"/>
+				<TextBlock Classes="fuelAmount" Text="{Binding Amount}"/>
+			</StackPanel>
+		</DataTemplate>
+	</Window.Resources>
 	<LayoutTransformControl HorizontalAlignment="Left" VerticalAlignment="Top">
 		<Border Classes="panel">
 			<StackPanel>
@@ -37,10 +48,12 @@
 				</Border>
 				<Border Classes="fuel">
 					<StackPanel Spacing="2">
-						<StackPanel Orientation="Horizontal" Spacing="10">
-							<TextBlock Classes="label" Text="{Binding Fuel.Label}" VerticalAlignment="Bottom" Margin="0,0,0,6"/>
-							<TextBlock Classes="refuelAmount" Classes.short="{Binding Fuel.NeedsRefuel}" Text="{Binding Fuel.Amount}"/>
-							<TextBlock Classes="refuelAmount refuelUnit" Classes.short="{Binding Fuel.NeedsRefuel}" Text="L"/>
+						<!-- All three estimates stay visible so the strategy can change mid-race; the configured one is enlarged. -->
+						<StackPanel Classes="fuelEstimates">
+							<TextBlock Classes="label" Text="REFUEL"/>
+							<ContentControl Content="{Binding Fuel.Minimum}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
+							<ContentControl Content="{Binding Fuel.Average}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
+							<ContentControl Content="{Binding Fuel.Maximum}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
 						</StackPanel>
 						<StackPanel Classes="fuelFacts" Orientation="Horizontal" Spacing="4">
 							<TextBlock Classes="value" Text="{Binding Fuel.Tank}"/>
