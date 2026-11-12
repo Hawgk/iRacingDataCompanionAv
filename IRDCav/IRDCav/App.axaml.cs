@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using IRDCav.Layout;
 using IRDCav.Presentation;
 using IRDCav.Services;
 using IRDCav.Telemetry;
@@ -23,6 +24,7 @@ namespace IRDCav
 
         private TelemetryProcessor? _processor;
         private OverlayRefresher? _refresher;
+        private ScreenWatcher? _screenWatcher;
 
         public override void Initialize()
         {
@@ -50,6 +52,7 @@ namespace IRDCav
                 _processor = CreateProcessor(store, inputs);
 
                 desktop.Exit += (_, _) => OnExit();
+                _screenWatcher?.Start();
                 _refresher.Start();
                 _processor.Start();
             }
@@ -58,17 +61,24 @@ namespace IRDCav
         }
 
         // Windows show and hide themselves through their IsVisible binding.
-        private static void CreateWindows(OverlayViewModels viewModels)
+        private void CreateWindows(OverlayViewModels viewModels)
         {
-            _ = new ResultsWindow { DataContext = viewModels.Results };
-            _ = new RelativesWindow { DataContext = viewModels.Relatives };
-            _ = new InputGraphWindow { DataContext = viewModels.InputGraph };
+            var results = new ResultsWindow { DataContext = viewModels.Results };
+            var relatives = new RelativesWindow { DataContext = viewModels.Relatives };
+            var inputGraph = new InputGraphWindow { DataContext = viewModels.InputGraph };
+
+            _screenWatcher = new ScreenWatcher(results.Screens);
+            var layout = new OverlayLayoutContext(new JsonOverlayLayoutStore(JsonOverlayLayoutStore.DefaultFilePath), _screenWatcher);
+            OverlayWindowBehavior.Attach(results, DefaultLayouts.Results, layout);
+            OverlayWindowBehavior.Attach(relatives, DefaultLayouts.Relatives, layout);
+            OverlayWindowBehavior.Attach(inputGraph, DefaultLayouts.InputGraph, layout);
         }
 
         private void OnExit()
         {
             _processor?.Stop();
             _refresher?.Stop();
+            _screenWatcher?.Stop();
         }
 
         private static TelemetryProcessor CreateProcessor(IOverlayStatePublisher publisher, IInputSink inputs)

@@ -8,12 +8,12 @@
         x:DataType="vm:RelativesViewModel"
         Icon="/Assets/icon.ico"
         Title="iRDCav Relatives"
-		SizeToContent="Height"
+		SizeToContent="WidthAndHeight"
         Background="White"
 		SystemDecorations="None"
-		Width="400"
 		IsVisible="{Binding IsVisible}">
-	<Grid>
+	<LayoutTransformControl>
+	<Grid Width="400">
 		<Grid.RowDefinitions>
 			<RowDefinition
 				Height="30"/>
@@ -407,4 +407,5 @@
 			</ListBox.ItemTemplate>
 		</ListBox>
 	</Grid>
+	</LayoutTransformControl>
 </Window>

@@ -8,12 +8,12 @@
         x:DataType="vm:ResultsViewModel"
         Icon="/Assets/icon.ico"
         Title="iRDCav Results"
-		SizeToContent="Height"
+		SizeToContent="WidthAndHeight"
         Background="White"
 		SystemDecorations="None"
-		Width="560"
 		IsVisible="{Binding IsVisible}">
-	<Grid>
+	<LayoutTransformControl>
+	<Grid Width="560">
 		<Grid.RowDefinitions>
 			<RowDefinition
 				Height="30"/>
@@ -294,4 +294,5 @@
 			</ListBox.ItemTemplate>
 		</ListBox>
 	</Grid>
+	</LayoutTransformControl>
 </Window>

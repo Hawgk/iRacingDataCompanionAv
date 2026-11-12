@@ -9,15 +9,15 @@
         x:DataType="vm:InputGraphViewModel"
         Icon="/Assets/icon.ico"
         Title="iRDCav Input Graph"
-		SizeToContent="Height"
+		SizeToContent="WidthAndHeight"
         Background="White"
 		SystemDecorations="None"
-		Width="300"
-		MinHeight="120"
 		IsVisible="{Binding IsVisible}">
-	<Grid>
+	<LayoutTransformControl>
+	<Grid Width="300" Height="120">
 		<views:InputTraceControl
 			Samples="{Binding Samples}"
 			Capacity="{Binding SampleCount}"/>
 	</Grid>
+	</LayoutTransformControl>
 </Window>
