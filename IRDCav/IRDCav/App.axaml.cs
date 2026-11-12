@@ -7,8 +7,10 @@ using IRDCav.Layout;
 using IRDCav.Presentation;
 using IRDCav.Services;
 using IRDCav.Telemetry;
+using IRDCav.UiTesting;
 using IRDCav.ViewModels;
 using IRDCav.Views;
+using System;
 using System.Text;
 
 namespace IRDCav
@@ -49,7 +51,9 @@ namespace IRDCav
                 var store = new OverlayStateStore();
                 var inputs = new InputTraceBuffer(InputTraceSampleCount);
                 _refresher = new OverlayRefresher(store, inputs, viewModels);
-                _feed = CreateProcessor(store, inputs);
+                _feed = StartupOptions.Parse(desktop.Args ?? Array.Empty<string>()).IsUiTestingMode
+                    ? CreateUiTestFeed(store, inputs)
+                    : CreateProcessor(store, inputs);
 
                 desktop.Exit += (_, _) => OnExit();
                 _screenWatcher?.Start();
@@ -88,11 +92,22 @@ namespace IRDCav
                 RaceData: new RaceDataController(new IntervalCalculator()),
                 Fuel: new FuelMonitor(new FuelCalculator()),
                 SessionInfoBuilder: new SessionInfoBuilder(),
-                RelativeBuilder: new RelativeListBuilder(RelativeRowCount),
-                StandingsBuilder: new StandingsListBuilder(StandingsPlayerWindowSize, StandingsLeadersPerClass));
+                RelativeBuilder: CreateRelativeBuilder(),
+                StandingsBuilder: CreateStandingsBuilder());
 
             return new TelemetryProcessor(services, publisher, inputs);
         }
 
+        /// <summary>Simulated race instead of iRacing, to check the overlays without the sim running.</summary>
+        private static UiTestFeed CreateUiTestFeed(IOverlayStatePublisher publisher, IInputSink inputs)
+        {
+            var scenario = new UiTestScenario(CreateRelativeBuilder(), CreateStandingsBuilder());
+            return new UiTestFeed(scenario, publisher, inputs);
+        }
+
+        private static RelativeListBuilder CreateRelativeBuilder() => new(RelativeRowCount);
+
+        private static StandingsListBuilder CreateStandingsBuilder() =>
+            new(StandingsPlayerWindowSize, StandingsLeadersPerClass);
     }
 }
