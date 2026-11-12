@@ -19,7 +19,7 @@ namespace IRDCav.Services
         public event RaceDataReadyHandler? OnDataReady;
 
         private int _playerId = 0;
-        private double _lastTimeRemain = 0;
+        private double _lastSessionTime = -1;
         private RaceDataModel[] _raceData = new RaceDataModel[IRacingSdkConst.MaxNumCars];
 
         public RaceDataController()
@@ -27,12 +27,15 @@ namespace IRDCav.Services
             Clear();
         }
 
-        public void Update(double timeRemain)
+        /// <param name="sessionTime">iRacing "SessionTime" (seconds since session start, counts up).</param>
+        public void Update(double sessionTime)
         {
-            if (_lastTimeRemain != 0)
+            if (_lastSessionTime >= 0)
             {
-                double elapsedTime = _lastTimeRemain - timeRemain;
-                _lastTimeRemain = timeRemain;
+                // Negative or huge steps (session change, replay jump) are rejected by the
+                // microsector model, which then simply restarts its current sector.
+                double elapsedTime = sessionTime - _lastSessionTime;
+                _lastSessionTime = sessionTime;
 
                 CalculateIntervals(elapsedTime);
                 CalculateBestLaps();
@@ -41,12 +44,14 @@ namespace IRDCav.Services
             }
             else
             {
-                _lastTimeRemain = timeRemain;
+                _lastSessionTime = sessionTime;
             }
         }
 
         public void Clear()
         {
+            _lastSessionTime = -1;
+
             for (int i = 0; i < IRacingSdkConst.MaxNumCars; i++)
             {
                 _raceData[i] = new RaceDataModel();
@@ -224,7 +229,7 @@ namespace IRDCav.Services
                             calculatedInterval = _raceData[carId].MicroSectors.GetInterval(_raceData[carId].LapDistPct, _raceData[_playerId].LapDistPct);
                         }
 
-                        if (_raceData[carId].MicroSectors.RecordedSectors == MicroSectorModel.MICROSECTOR_COUNT &&
+                        if (_raceData[carId].MicroSectors.IsComplete &&
                             calculatedInterval != 0.0f)
                         {
                             _raceData[carId].Interval = (float)Math.Round(calculatedInterval, 3);

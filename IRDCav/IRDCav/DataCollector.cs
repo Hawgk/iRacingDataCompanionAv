@@ -49,6 +49,7 @@ namespace IRDCav
         private IRacingSdkDatum _isOnTrackDatum;
         private IRacingSdkDatum _sessionTimeTotalDatum;
         private IRacingSdkDatum _sessionTimeRemainDatum;
+        private IRacingSdkDatum _sessionTimeDatum;
         private IRacingSdkDatum _sessionLapsRemainExDatum;
         private IRacingSdkDatum _sessionLapsTotalDatum;
         private IRacingSdkDatum _sessionNumDatum;
@@ -175,6 +176,7 @@ namespace IRDCav
                 _fuelLevelDatum = _irsdk.Data.TelemetryDataProperties["FuelLevel"];
                 _isOnTrackDatum = _irsdk.Data.TelemetryDataProperties["IsOnTrack"];
                 _sessionTimeRemainDatum = _irsdk.Data.TelemetryDataProperties["SessionTimeRemain"];
+                _sessionTimeDatum = _irsdk.Data.TelemetryDataProperties["SessionTime"];
                 _sessionTimeTotalDatum = _irsdk.Data.TelemetryDataProperties["SessionTimeTotal"];
                 _sessionLapsRemainExDatum = _irsdk.Data.TelemetryDataProperties["SessionLapsRemainEx"];
                 _sessionLapsTotalDatum = _irsdk.Data.TelemetryDataProperties["SessionLapsTotal"];
@@ -344,7 +346,7 @@ namespace IRDCav
                     _lastSessionInfo = sessionInfoModel;
                 }
 
-                _raceDataController.Update(_lastSessionInfo.TimeRemain);
+                _raceDataController.Update(_irsdk.Data.GetDouble(_sessionTimeDatum));
 
                 // If the car is driving on track either only update fuel level or calculate lap fuel data.
                 if (_driving)

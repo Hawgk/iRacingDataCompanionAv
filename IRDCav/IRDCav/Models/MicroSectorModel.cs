@@ -1,238 +1,198 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace IRDCav.Models
 {
-    public enum MicroSectorStatus
-    {
-        Initialized = -1,
-        NotComplete = 0,
-        Complete = 1,
-    }
-
-    public struct MicroSector
-    {
-        public float Value;
-        public MicroSectorStatus Status;
-    }
-
+    /// <summary>
+    /// Records per-car microsector times and uses the car's best microsectors
+    /// ("optimal lap") to convert a track-distance gap into a time gap.
+    /// </summary>
     public class MicroSectorModel
     {
-        private int _recordedSectors = 0;
-        public static int MICROSECTOR_COUNT = 20;
-        public static float MICROSECTOR_LENGTH = 1.0f / MICROSECTOR_COUNT;
+        public const int MICROSECTOR_COUNT = 20;
+        public const float MICROSECTOR_LENGTH = 1.0f / MICROSECTOR_COUNT;
 
-        public int RecordedSectors {
-            get => _recordedSectors;
-            set 
-            {
-                if (value <= MICROSECTOR_COUNT)
-                {
-                    _recordedSectors = value;
-                }
-            } 
+        // A tick in which a car moves further than this is treated as a teleport
+        // (tow, reset, pit exit, lapDistPct glitch) and invalidates the running sector.
+        private const float MAX_DISTANCE_PER_TICK = MICROSECTOR_LENGTH;
+        // Larger time steps indicate a pause, session change or reconnect.
+        private const double MAX_ELAPSED_PER_TICK = 1.0;
+
+        private int _currentSector = -1;
+        private double _currentTime = 0;
+        private bool _currentValid = false;
+
+        /// <summary>Number of microsectors that have a best time recorded.</summary>
+        public int RecordedSectors { get; private set; }
+
+        /// <summary>Sum of all best microsector times. Only meaningful when all sectors are recorded.</summary>
+        public float OptimalLapTime { get; private set; }
+
+        /// <summary>Last fully driven time of each microsector (0 if never completed).</summary>
+        public float[] MicroSectors { get; } = new float[MICROSECTOR_COUNT];
+
+        /// <summary>Best time of each microsector (0 if never completed).</summary>
+        public float[] BestMicroSectors { get; } = new float[MICROSECTOR_COUNT];
+
+        public bool IsComplete => RecordedSectors == MICROSECTOR_COUNT;
+
+        public static int GetSectorId(float lapDistPct)
+        {
+            int id = (int)(lapDistPct * MICROSECTOR_COUNT);
+            return Math.Clamp(id, 0, MICROSECTOR_COUNT - 1);
         }
 
-        public float OptimalLapTime { get; set; }
-
-        public MicroSector[] MicroSectors = new MicroSector[MICROSECTOR_COUNT];
-        public MicroSector[] BestMicroSectors = new MicroSector[MICROSECTOR_COUNT];
-
-        public MicroSectorModel()
+        /// <summary>
+        /// Time from the start/finish line to <paramref name="lapDistPct"/> along the optimal lap.
+        /// </summary>
+        private float TimeAt(float lapDistPct)
         {
-            for (int i = 0; i < MICROSECTOR_COUNT; i++)
+            lapDistPct = Math.Clamp(lapDistPct, 0.0f, 1.0f);
+            int sectorId = GetSectorId(lapDistPct);
+            float time = 0;
+
+            for (int i = 0; i < sectorId; i++)
             {
-                MicroSectors[i] = new MicroSector()
-                {
-                    Value = 0,
-                    Status = MicroSectorStatus.Initialized,
-                };
-                BestMicroSectors[i] = new MicroSector()
-                {
-                    Value = 0,
-                    Status = MicroSectorStatus.Initialized,
-                };
+                time += BestMicroSectors[i];
             }
+
+            float fraction = (lapDistPct - sectorId * MICROSECTOR_LENGTH) / MICROSECTOR_LENGTH;
+            return time + BestMicroSectors[sectorId] * Math.Clamp(fraction, 0.0f, 1.0f);
         }
 
-        private static int GetSectorId(float lapDist, bool isFloor)
+        /// <summary>
+        /// Time gap between this car and the player, based on this car's optimal lap.
+        /// Positive: car is ahead of the player. Negative: car is behind.
+        /// Returns 0 if not enough data is available.
+        /// </summary>
+        public float GetInterval(float lapDistPct, float playerLapDistPct)
         {
-            lapDist = lapDist >= 1.0f ? 0.9999f : lapDist;
-            lapDist = lapDist < 0.0f ? 0.0001f : lapDist;
-            float normalizedId = (float)(lapDist * 100 / (100.0f / MICROSECTOR_COUNT));
-
-            if (isFloor)
+            if (!IsComplete || OptimalLapTime <= 0 ||
+                lapDistPct < 0 || playerLapDistPct < 0)
             {
-                return (int)Math.Floor(normalizedId);
+                return 0;
+            }
+
+            // Time this car needs to drive forward from the player's position to its own position.
+            float interval = TimeAt(lapDistPct) - TimeAt(playerLapDistPct);
+            if (interval < 0)
+            {
+                interval += OptimalLapTime;
+            }
+
+            // More than half a lap ahead means the car is actually behind.
+            if (interval > OptimalLapTime / 2)
+            {
+                interval -= OptimalLapTime;
+            }
+
+            return interval;
+        }
+
+        /// <summary>
+        /// Feeds one telemetry step. Elapsed time is attributed to the microsector(s) driven
+        /// in this step; when a boundary is crossed the time is split proportionally to the
+        /// distance driven on each side of it.
+        /// </summary>
+        public void SetMicroSector(double elapsedTime, float lapDistPct, float lastLapDistPct)
+        {
+            if (lapDistPct < 0 || lastLapDistPct < 0 ||
+                elapsedTime < 0 || elapsedTime > MAX_ELAPSED_PER_TICK)
+            {
+                Invalidate(lapDistPct);
+                return;
+            }
+
+            // Forward distance driven, accounting for crossing the start/finish line.
+            float distance = lapDistPct - lastLapDistPct;
+            if (distance < -0.5f)
+            {
+                distance += 1.0f;
+            }
+            else if (distance > 0.5f)
+            {
+                distance -= 1.0f;
+            }
+
+            if (distance < 0 || distance > MAX_DISTANCE_PER_TICK)
+            {
+                // Driving backwards or teleported.
+                Invalidate(lapDistPct);
+                return;
+            }
+
+            int sectorId = GetSectorId(lapDistPct);
+            int lastSectorId = GetSectorId(lastLapDistPct);
+
+            if (_currentSector != lastSectorId)
+            {
+                // Lost track of the car (first sample, or after an invalidation).
+                _currentSector = lastSectorId;
+                _currentTime = 0;
+                _currentValid = false;
+            }
+
+            if (sectorId == lastSectorId)
+            {
+                // Standing still also accumulates time; the car really is spending it in this sector.
+                _currentTime += elapsedTime;
+            }
+            else if (sectorId == (lastSectorId + 1) % MICROSECTOR_COUNT)
+            {
+                float boundary = (lastSectorId + 1) * MICROSECTOR_LENGTH;
+                double fractionBefore = Math.Clamp((boundary - lastLapDistPct) / distance, 0.0f, 1.0f);
+
+                _currentTime += elapsedTime * fractionBefore;
+                if (_currentValid)
+                {
+                    CommitSector(lastSectorId, (float)_currentTime);
+                }
+
+                _currentSector = sectorId;
+                _currentTime = elapsedTime * (1.0 - fractionBefore);
+                _currentValid = true;
             }
             else
             {
-                if (lapDist < 1.0f)
-                    return (int)Math.Ceiling(normalizedId);
-                return (int)Math.Floor(normalizedId);
+                Invalidate(lapDistPct);
             }
         }
 
-        private float CalculateIntervalFromSectors(float lapDistPct, float playerLapDistPct, int floor, int ceil)
+        private void Invalidate(float lapDistPct)
         {
-            float interval = 0;
-            int virtualCeil = floor > ceil ? ceil + MICROSECTOR_COUNT : ceil;
-
-            //for (int sectorId = floor; sectorId < virtualCeil; sectorId++)
-            Parallel.For(floor, virtualCeil, delegate (int sectorId, ParallelLoopState state)
-            {
-                int virtualSectorId = sectorId < MICROSECTOR_COUNT ? sectorId : sectorId - MICROSECTOR_COUNT;
-
-                if (virtualSectorId < 0 || virtualSectorId >= MICROSECTOR_COUNT)
-                {
-                    interval = 0;
-                    state.Break();
-                    //break;
-                }
-                else
-                {
-                    float sectorStart = virtualSectorId * MICROSECTOR_LENGTH;
-                    float sectorEnd = (virtualSectorId + 1) * MICROSECTOR_LENGTH;
-                    float timeStart = 0.0f;
-                    float timeEnd = BestMicroSectors[virtualSectorId].Value;
-                    float lowerRefDist = lapDistPct < playerLapDistPct && floor < ceil ? lapDistPct : playerLapDistPct;
-                    float upperRefDist = lapDistPct >= playerLapDistPct || floor >= ceil ? lapDistPct : playerLapDistPct;
-
-                    // Both cars are in same sector.
-                    if (floor == ceil - 1)
-                    {
-                        sectorEnd = upperRefDist - sectorStart;
-                        sectorStart = lowerRefDist - sectorStart;
-                        timeStart = timeEnd * (sectorStart / MICROSECTOR_LENGTH);
-                        timeEnd = timeEnd * (sectorEnd / MICROSECTOR_LENGTH);
-                    }
-                    // Lower sector bound. Interpolate between first and second point.
-                    else if (sectorId == floor && sectorId != ceil - 1)
-                    {
-                        sectorStart = lowerRefDist - sectorStart;
-                        timeStart = timeEnd * (sectorStart / MICROSECTOR_LENGTH);
-                    }
-                    // Upper sector bound. Interpolate between last and second to last point.
-                    else if (sectorId == virtualCeil - 1)
-                    {
-                        sectorEnd = upperRefDist - sectorStart;
-                        timeEnd = timeEnd * (sectorEnd / MICROSECTOR_LENGTH);
-                    }
-
-                    interval += (timeEnd - timeStart);
-                }
-            });
-            return interval;
+            _currentSector = lapDistPct >= 0 ? GetSectorId(lapDistPct) : -1;
+            _currentTime = 0;
+            _currentValid = false;
         }
 
-        public float GetInterval(float lapDistPct, float playerLapDistPct)
+        private void CommitSector(int sectorId, float time)
         {
-            float interval = 0;
-
-            if (RecordedSectors == MICROSECTOR_COUNT)
+            if (time <= 0)
             {
-                bool wrap = Math.Abs(lapDistPct - playerLapDistPct) >= 0.5f;
-                int floor = 0;
-                int ceil = 0;
-
-                // Check if car is in front of player
-                if (lapDistPct > playerLapDistPct || wrap)
-                {
-                    floor = GetSectorId(playerLapDistPct, true);
-                    ceil = GetSectorId(lapDistPct, false);
-                    interval = CalculateIntervalFromSectors(lapDistPct, playerLapDistPct, floor, ceil);
-                }
-                else
-                {
-                    floor = GetSectorId(lapDistPct, true);
-                    ceil = GetSectorId(playerLapDistPct, false);
-                    interval = -CalculateIntervalFromSectors(lapDistPct, playerLapDistPct, floor, ceil);
-                }
-
-                if (interval > OptimalLapTime / 2)
-                {
-                    interval -= OptimalLapTime;
-                }
-                else if (-interval > OptimalLapTime / 2)
-                {
-                    interval += OptimalLapTime;
-                }
+                return;
             }
 
-            return interval;
-        }
+            MicroSectors[sectorId] = time;
 
-        public void SetMicroSector(double elapsedTime, float lapDistPct, float lastLapDistPct)
-        {
-            // Detects when a new sector is started.
-            // Elapsed time is then added into buckets.
-            // If a sector switch happened in last cycle the elapsed time is split
-            // into both buckets depending on the overlap.
-            float sectorStart;
-            float sectorEnd;
-            float correction;
-
-            int sectorIdx = GetSectorId(lapDistPct < 1.0f ? lapDistPct : 0.99f, true);
-            int lastSectorIdx = GetSectorId(lastLapDistPct < 0.0f ? 0.01f : lastLapDistPct, true);
-
-            if (lastLapDistPct != lapDistPct)
+            if (BestMicroSectors[sectorId] == 0)
             {
-                if (sectorIdx > lastSectorIdx ||
-                    (sectorIdx == 0 && sectorIdx < lastSectorIdx))
-                {
-                    sectorEnd = (lastSectorIdx + 1) * MICROSECTOR_LENGTH;
-                    correction = (sectorEnd - lastLapDistPct) / MICROSECTOR_LENGTH;
-
-                    MicroSectors[lastSectorIdx].Value += (float)Math.Round(elapsedTime * correction, 3);
-                    // Only change status if MicroSector is not initialized. This prevents
-                    // incomplete sectors to be used in interval calculation. Incomplete sectors
-                    // are set to NotComplete.
-                    if (MicroSectors[lastSectorIdx].Status != MicroSectorStatus.Initialized)
-                    {
-                        MicroSectors[lastSectorIdx].Status = MicroSectorStatus.Complete;
-                        if (RecordedSectors < MICROSECTOR_COUNT)
-                        {
-                            OptimalLapTime += MicroSectors[sectorIdx].Value;
-                        }
-                    }
-                    else
-                    {
-                        MicroSectors[lastSectorIdx].Status = MicroSectorStatus.NotComplete;
-                    }
-
-                    if (MicroSectors[sectorIdx].Status == MicroSectorStatus.Complete &&
-                        (BestMicroSectors[sectorIdx].Value == 0.0f || BestMicroSectors[sectorIdx].Value > MicroSectors[sectorIdx].Value))
-                    {
-                        if (BestMicroSectors[sectorIdx].Value > MicroSectors[sectorIdx].Value)
-                        {
-                            OptimalLapTime -= BestMicroSectors[sectorIdx].Value - MicroSectors[sectorIdx].Value;
-                        }
-                        BestMicroSectors[sectorIdx].Value = MicroSectors[sectorIdx].Value;
-                        BestMicroSectors[sectorIdx].Status = MicroSectorStatus.Complete;
-                        RecordedSectors++;
-                    }
-
-                    MicroSectors[sectorIdx].Value = 0;
-
-                    sectorStart = sectorIdx * MICROSECTOR_LENGTH;
-                    correction = (lapDistPct - sectorStart) / MICROSECTOR_LENGTH;
-
-                    MicroSectors[sectorIdx].Value += (float)Math.Round(elapsedTime * correction, 3);
-                    MicroSectors[sectorIdx].Status = MicroSectorStatus.NotComplete;
-                } 
-                else if (sectorIdx == lastSectorIdx)
-                {
-                    MicroSectors[sectorIdx].Value += (float)Math.Round(elapsedTime, 3);
-
-                    // Only change status if MicroSector is not initialized. This prevents
-                    // incomplete sectors to be used in interval calculation.
-                    if (MicroSectors[sectorIdx].Status != MicroSectorStatus.Initialized)
-                    {
-                        MicroSectors[sectorIdx].Status = MicroSectorStatus.NotComplete;
-                    }
-                }
+                BestMicroSectors[sectorId] = time;
+                RecordedSectors++;
             }
+            else if (time < BestMicroSectors[sectorId])
+            {
+                BestMicroSectors[sectorId] = time;
+            }
+            else
+            {
+                return;
+            }
+
+            float optimal = 0;
+            foreach (float best in BestMicroSectors)
+            {
+                optimal += best;
+            }
+            OptimalLapTime = optimal;
         }
     }
 }
