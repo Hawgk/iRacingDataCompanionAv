@@ -4,9 +4,7 @@ namespace IRDCav.UiTesting
 {
     internal sealed record DemoCarClass(string Name, string Color, float LapTime);
 
-    internal sealed record DemoLicense(string Class, string Color);
-
-    internal sealed record DemoDriver(string Name, string CarNumber, DemoCarClass CarClass, int IRating, DemoLicense License);
+    internal sealed record DemoDriver(string Name, string CarNumber, DemoCarClass CarClass, int IRating, string LicenseColor);
 
     /// <summary>
     /// Fictional multi-class field. It contains edge cases the overlays must handle:
@@ -16,12 +14,12 @@ namespace IRDCav.UiTesting
     {
         public const string PlayerName = "Test Player";
 
-        private static readonly DemoLicense LicenseA = new("A", "#0153DB");
-        private static readonly DemoLicense LicenseB = new("B", "#00C702");
-        private static readonly DemoLicense LicenseC = new("C", "#FEEC04");
-        private static readonly DemoLicense LicenseD = new("D", "#FC8A27");
-        private static readonly DemoLicense LicenseR = new("R", "#FC0706");
-        private static readonly DemoLicense LicenseUndefined = new("R", string.Empty);
+        private const string LicenseA = "#0153DB";
+        private const string LicenseB = "#00C702";
+        private const string LicenseC = "#FEEC04";
+        private const string LicenseD = "#FC8A27";
+        private const string LicenseR = "#FC0706";
+        private const string LicenseUndefined = "";
 
         private static readonly DemoCarClass Prototype = new("LMP2", "#33CEFF", 98.5f);
         private static readonly DemoCarClass Gt3 = new("GT3", "#FFDA59", 105.2f);

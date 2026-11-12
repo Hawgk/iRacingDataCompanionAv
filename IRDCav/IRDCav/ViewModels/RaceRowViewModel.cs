@@ -22,7 +22,6 @@ namespace IRDCav.ViewModels
         [ObservableProperty] private string _carNumber = string.Empty;
         [ObservableProperty] private string _className = string.Empty;
         [ObservableProperty] private string _license = string.Empty;
-        [ObservableProperty] private string _safetyRating = string.Empty;
         [ObservableProperty] private string _classColor = string.Empty;
         [ObservableProperty] private string _licenseColor = string.Empty;
 
@@ -58,7 +57,6 @@ namespace IRDCav.ViewModels
             CarNumber = row.CarNumber;
             ClassName = row.ClassName;
             License = row.License;
-            SafetyRating = row.SafetyRating;
             ClassColor = row.ClassColor;
             LicenseColor = row.LicenseColor;
         }

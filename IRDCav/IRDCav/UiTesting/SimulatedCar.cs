@@ -74,8 +74,6 @@ namespace IRDCav.UiTesting
 
         private double NextLapTime() => _baseLapTime * (1 + (_random.NextDouble() - 0.5) * LapTimeVariation);
 
-        private static double SafetyRatingOf(DemoDriver driver) => 1.5 + driver.IRating % 287 / 100.0;
-
         private static RaceDataModel CreateModel(DemoDriver driver, int id) => new()
         {
             Id = id,
@@ -86,8 +84,7 @@ namespace IRDCav.UiTesting
             ClassStr = driver.CarClass.Name,
             ClassColor = driver.CarClass.Color,
             License = ((float)driver.IRating / 1000).ToString("0.0") + "k",
-            SafetyRating = $"{driver.License.Class} {SafetyRatingOf(driver):0.00}",
-            LicenseColor = driver.License.Color,
+            LicenseColor = driver.LicenseColor,
             EstLapTime = driver.CarClass.LapTime,
         };
     }

@@ -23,8 +23,6 @@ namespace IRDCav.Models
         public string ClassStr { get; set; } = string.Empty;
         public string CarNumber { get; set; } = string.Empty;
         public string License { get; set; } = string.Empty;
-        public string SafetyRating { get; set; } = string.Empty;
-
         /// <summary>"#RRGGBB", or empty when unknown.</summary>
         public string ClassColor { get; set; } = string.Empty;
 
@@ -78,7 +76,6 @@ namespace IRDCav.Models
             CarNumber = driver.CarNumber;
             EstLapTime = driver.CarClassEstLapTime;
             License = ((float)driver.IRating / 1000).ToString("0.0") + "k";
-            SafetyRating = driver.LicString;
             IsPaceCar = driver.CarIsPaceCar > 0;
             ClassColor = ToColor(driver.CarClassColor);
             LicenseColor = ToColor(driver.LicColor);
