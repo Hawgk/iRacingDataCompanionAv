@@ -40,7 +40,7 @@
     ]
   },
   "relatives": {
-    "showColumnTitles": false,
+    "showColumnTitles": true,
     "columns": [
       "Position",
       "CarNumber",

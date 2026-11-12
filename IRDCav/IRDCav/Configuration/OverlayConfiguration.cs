@@ -90,7 +90,7 @@ namespace IRDCav.Configuration
 
         public ListOverlayConfiguration Relatives { get; init; } = new()
         {
-            ShowColumnTitles = false,
+            ShowColumnTitles = true,
             Columns = new List<RaceColumn>
             {
                 RaceColumn.Position, RaceColumn.CarNumber, RaceColumn.Driver,
