@@ -107,34 +107,34 @@
 		<Style Selector="Border.fuel">
 			<Setter Property="Padding" Value="11,8,11,9"/>
 		</Style>
-		<!--
-		A grid of value + caption cells: refuel estimates in the first row, the fuel facts below,
-		so both rows share their columns. Each row shares one line height to stay centered.
-		-->
+		<!-- Fuel table: values right-aligned in their columns, captions left-aligned in theirs. Each row shares one line height to stay centered. -->
 		<Style Selector="TextBlock.fuelRowLabel">
 			<Setter Property="Margin" Value="0,0,12,0"/>
 		</Style>
 		<Style Selector="StackPanel.fuelCell">
 			<Setter Property="Orientation" Value="Horizontal"/>
 			<Setter Property="Spacing" Value="4"/>
-			<Setter Property="Margin" Value="0,0,16,0"/>
 		</Style>
-		<Style Selector="TextBlock.estimateRow, StackPanel.estimate > TextBlock">
+		<Style Selector="TextBlock.estimateRow">
 			<Setter Property="LineHeight" Value="{DynamicResource Overlay.MixedLineHeight}"/>
 		</Style>
-		<Style Selector="TextBlock.factRow, StackPanel.fact > TextBlock">
+		<Style Selector="TextBlock.factRow">
 			<Setter Property="LineHeight" Value="{DynamicResource Overlay.FactLineHeight}"/>
 		</Style>
 		<Style Selector="TextBlock.fuelValue">
 			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="HorizontalAlignment" Value="Right"/>
 		</Style>
-		<Style Selector="StackPanel.estimate.selected > TextBlock.fuelValue">
+		<Style Selector="TextBlock.fuelCaption">
+			<Setter Property="Margin" Value="4,0,16,0"/>
+		</Style>
+		<Style Selector="TextBlock.fuelValue.selected">
 			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Large}"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Large}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.PitRoad}"/>
 		</Style>
-		<Style Selector="StackPanel.estimate.selected.short > TextBlock.fuelValue">
+		<Style Selector="TextBlock.fuelValue.selected.short">
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.LapAhead}"/>
 		</Style>
 
