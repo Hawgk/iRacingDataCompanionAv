@@ -22,8 +22,14 @@ namespace IRDCav.Views
         [DllImport("user32.dll")]
         public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
 
+        /// <summary>Makes the window click-through and topmost. Does nothing outside of Windows.</summary>
         public static void ToTransparentWindow(this Window window)
         {
+            if (!OperatingSystem.IsWindows())
+            {
+                return;
+            }
+
             window.Initialized += delegate {
                 IPlatformHandle? platformHandle = window.TryGetPlatformHandle();
                 if (platformHandle != null)
