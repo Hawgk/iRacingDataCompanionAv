@@ -49,7 +49,7 @@ namespace IRDCav.Configuration
         public const double Max = 60;
 
         /// <summary>Labels, column titles, badges and class headers.</summary>
-        public double Small { get; init; } = 10;
+        public double Small { get; init; } = 11;
 
         /// <summary>All values and list rows.</summary>
         public double Normal { get; init; } = 13;
@@ -70,6 +70,9 @@ namespace IRDCav.Configuration
     /// <summary>User settings from config.json. Every value has a default, so the file may leave any of them out.</summary>
     public sealed record OverlayConfiguration
     {
+        /// <summary>"Lekton" and "Inter" ship with the app; any other name must be an installed font.</summary>
+        public string Font { get; init; } = "Lekton";
+
         public ColorScheme ColorScheme { get; init; } = new();
         public FontSizesConfiguration FontSizes { get; init; } = new();
         public FuelConfiguration Fuel { get; init; } = new();

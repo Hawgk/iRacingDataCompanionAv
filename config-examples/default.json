@@ -1,4 +1,5 @@
 {
+  "font": "Lekton",
   "colorScheme": {
     "background": "#DB141518",
     "surface": "#E61E1F23",
@@ -14,7 +15,7 @@
     "brake": "#FFF0A3A0"
   },
   "fontSizes": {
-    "small": 10,
+    "small": 11,
     "normal": 13,
     "large": 22
   },

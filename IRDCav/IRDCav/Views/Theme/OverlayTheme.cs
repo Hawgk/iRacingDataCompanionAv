@@ -36,6 +36,7 @@ namespace IRDCav.Views.Theme
             AddBaseBrushes(application.Resources, configuration.ColorScheme);
             AddStateBrushes(application.Resources, configuration.ColorScheme);
             AddFontSizes(application.Resources, configuration.FontSizes);
+            application.Resources["Overlay.FontFamily"] = OverlayFonts.Resolve(configuration.Font);
             application.Resources["GapConverter"] = new SignedTimeConverter(configuration.Decimals.Gap);
             application.Resources["IntervalConverter"] = new SignedTimeConverter(configuration.Decimals.Interval);
             application.Styles.Add(TabularDigits());

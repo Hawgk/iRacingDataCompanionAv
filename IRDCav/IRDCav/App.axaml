@@ -35,7 +35,7 @@
 
 		<!-- Overlay windows and panels -->
 		<Style Selector="Window.overlay">
-			<Setter Property="FontFamily" Value="fonts:Inter#Inter"/>
+			<Setter Property="FontFamily" Value="{DynamicResource Overlay.FontFamily}"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Normal}"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.Text}"/>
 		</Style>

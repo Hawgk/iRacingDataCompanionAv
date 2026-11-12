@@ -9,10 +9,12 @@ You can leave out any key; whatever is missing keeps its default. If the file ca
 | `default.json` | Every setting with its default value |
 | `classic-colors.json` | The original iRDCav colors; only the color scheme is set |
 | `compact.json` | Smaller fonts and only the essential columns |
-| `large-text.json` | Larger fonts and fewer columns for small or distant screens |
+| `large-text.json` | Larger fonts in Inter and fewer columns for small or distant screens |
 | `multiclass-endurance.json` | Class and pit columns, gaps with 3 decimals, refuel amount for the highest consumption |
 
 ## Settings
+
+**`font`**: the font of all overlays. `Lekton` (the default, monospace) and `Inter` ship with iRDCav. Any other name must be a font installed on your system, for example `"Consolas"`. A name that isn't installed silently falls back to a system font.
 
 **`colorScheme`**: colors as `#RRGGBB` or `#AARRGGBB` (`AA` is the opacity, `00` transparent to `FF` opaque).
 
@@ -32,9 +34,9 @@ You can leave out any key; whatever is missing keeps its default. If the file ca
 
 | Key | Used for |
 |---|---|
-| `small` | Labels, captions, column titles, badges and class headers |
-| `normal` | All values and list rows |
-| `large` | Time remaining and the selected refuel amount |
+| `small` | Labels, captions, column titles, badges and class headers (default 11) |
+| `normal` | All values and list rows (default 13) |
+| `large` | Time remaining and the selected refuel amount (default 22) |
 
 **`fuel.refuelEstimate`**: which of the three refuel amounts is shown large: `Minimum`, `Average` or `Maximum` consumption. All three are always shown.
 

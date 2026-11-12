@@ -70,6 +70,10 @@ namespace IRDCav.Configuration
             {
                 throw new InvalidDataException("A section is empty or set to null.");
             }
+            if (string.IsNullOrWhiteSpace(configuration.Font))
+            {
+                throw new InvalidDataException("The font name is empty.");
+            }
             ValidateFontSizes(configuration.FontSizes);
             ValidateDecimals(configuration.Decimals);
             return configuration;
