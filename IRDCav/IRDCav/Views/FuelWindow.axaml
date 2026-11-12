@@ -17,7 +17,13 @@
 				Classes="fuelCell estimate"
 				Classes.selected="{Binding IsSelected}"
 				Classes.short="{Binding NeedsRefuel}">
-				<TextBlock Classes="fuelValue" Text="{Binding Amount}"/>
+				<TextBlock Classes="fuelValue" Text="{Binding Value}"/>
+				<TextBlock Classes="label" Text="{Binding Caption}"/>
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="FuelLapsTemplate" x:DataType="vm:FuelEstimate">
+			<StackPanel Classes="fuelCell fact">
+				<TextBlock Classes="fuelValue" Text="{Binding Value}"/>
 				<TextBlock Classes="label" Text="{Binding Caption}"/>
 			</StackPanel>
 		</DataTemplate>
@@ -46,26 +52,22 @@
 					</DockPanel>
 				</Border>
 				<Border Classes="fuel">
-					<!-- All three refuel estimates stay visible so the strategy can change mid-race; the configured one is enlarged. -->
-					<Grid ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
-						<TextBlock Grid.Row="0" Grid.Column="0" Classes="label fuelRowLabel estimateRow" Text="REFUEL"/>
-						<ContentControl Grid.Row="0" Grid.Column="1" Content="{Binding Fuel.Minimum}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
-						<ContentControl Grid.Row="0" Grid.Column="2" Content="{Binding Fuel.Average}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
-						<ContentControl Grid.Row="0" Grid.Column="3" Content="{Binding Fuel.Maximum}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
-
-						<TextBlock Grid.Row="1" Grid.Column="0" Classes="label fuelRowLabel factRow" Text="FUEL"/>
-						<StackPanel Grid.Row="1" Grid.Column="1" Classes="fuelCell fact">
+					<!-- All three estimates stay visible so the strategy can change mid-race; the configured one is enlarged. -->
+					<Grid ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto">
+						<StackPanel Grid.Row="0" Grid.ColumnSpan="4" Classes="fuelCell fact" Margin="0,0,0,2">
 							<TextBlock Classes="fuelValue" Text="{Binding Fuel.Tank}"/>
 							<TextBlock Classes="label" Text="L LEFT"/>
 						</StackPanel>
-						<StackPanel Grid.Row="1" Grid.Column="2" Classes="fuelCell fact">
-							<TextBlock Classes="fuelValue" Text="{Binding Fuel.PerLap}"/>
-							<TextBlock Classes="label" Text="L/LAP"/>
-						</StackPanel>
-						<StackPanel Grid.Row="1" Grid.Column="3" Classes="fuelCell fact">
-							<TextBlock Classes="fuelValue" Text="{Binding Fuel.Laps}"/>
-							<TextBlock Classes="label" Text="LAPS LEFT"/>
-						</StackPanel>
+
+						<TextBlock Grid.Row="1" Grid.Column="0" Classes="label fuelRowLabel estimateRow" Text="REFUEL L"/>
+						<ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding Fuel.RefuelMinimum}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
+						<ContentControl Grid.Row="1" Grid.Column="2" Content="{Binding Fuel.RefuelAverage}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
+						<ContentControl Grid.Row="1" Grid.Column="3" Content="{Binding Fuel.RefuelMaximum}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
+
+						<TextBlock Grid.Row="2" Grid.Column="0" Classes="label fuelRowLabel factRow" Text="LAPS LEFT"/>
+						<ContentControl Grid.Row="2" Grid.Column="1" Content="{Binding Fuel.LapsMinimum}" ContentTemplate="{StaticResource FuelLapsTemplate}"/>
+						<ContentControl Grid.Row="2" Grid.Column="2" Content="{Binding Fuel.LapsAverage}" ContentTemplate="{StaticResource FuelLapsTemplate}"/>
+						<ContentControl Grid.Row="2" Grid.Column="3" Content="{Binding Fuel.LapsMaximum}" ContentTemplate="{StaticResource FuelLapsTemplate}"/>
 					</Grid>
 				</Border>
 			</StackPanel>
