@@ -50,9 +50,9 @@ namespace IRDCav.Presentation
             ApplyVisibility(state.IsConnected);
             _viewModels.Results.SessionInfo = state.Session;
             _viewModels.Results.RaceDataList.Update(state.Standings);
-            _viewModels.Relatives.SessionInfo = state.Session;
-            _viewModels.Relatives.FuelData = state.Fuel;
             _viewModels.Relatives.RaceDataList.Update(state.Relatives);
+            _viewModels.Fuel.SessionInfo = state.Session;
+            _viewModels.Fuel.FuelData = state.Fuel;
         }
 
         private void RefreshInputs()
@@ -69,6 +69,7 @@ namespace IRDCav.Presentation
         {
             _viewModels.Results.IsVisible = isVisible;
             _viewModels.Relatives.IsVisible = isVisible;
+            _viewModels.Fuel.IsVisible = isVisible;
             _viewModels.InputGraph.IsVisible = isVisible;
         }
     }

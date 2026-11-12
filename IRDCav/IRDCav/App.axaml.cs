@@ -76,7 +76,8 @@ namespace IRDCav
 
         private static OverlayViewModels CreateViewModels(OverlayConfiguration configuration) => new(
             new ResultsViewModel(configuration.Standings),
-            new RelativesViewModel(configuration.Relatives, configuration.Fuel.RefuelEstimate),
+            new RelativesViewModel(configuration.Relatives),
+            new FuelViewModel(configuration.Fuel.RefuelEstimate),
             new InputGraphViewModel(InputTraceSampleCount));
 
         // Windows show and hide themselves through their IsVisible binding.
@@ -84,12 +85,14 @@ namespace IRDCav
         {
             var results = new ResultsWindow { DataContext = viewModels.Results };
             var relatives = new RelativesWindow { DataContext = viewModels.Relatives };
+            var fuel = new FuelWindow { DataContext = viewModels.Fuel };
             var inputGraph = new InputGraphWindow { DataContext = viewModels.InputGraph };
 
             _screenWatcher = new ScreenWatcher(results.Screens);
             var layout = new OverlayLayoutContext(new JsonOverlayLayoutStore(JsonOverlayLayoutStore.DefaultFilePath), _screenWatcher);
             OverlayWindowBehavior.Attach(results, DefaultLayouts.Results, layout);
             OverlayWindowBehavior.Attach(relatives, DefaultLayouts.Relatives, layout);
+            OverlayWindowBehavior.Attach(fuel, DefaultLayouts.Fuel, layout);
             OverlayWindowBehavior.Attach(inputGraph, DefaultLayouts.InputGraph, layout);
         }
 

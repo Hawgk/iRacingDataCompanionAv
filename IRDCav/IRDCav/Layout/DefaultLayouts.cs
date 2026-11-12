@@ -16,6 +16,14 @@ namespace IRDCav.Layout
             Vertical = Anchor.End,
         });
 
+        /// <summary>Right above the relatives: nine 26 pixel rows plus margins, and a 12 pixel gap.</summary>
+        public static readonly OverlayDefinition Fuel = new("fuel", new OverlayPlacement
+        {
+            Horizontal = Anchor.End,
+            Vertical = Anchor.End,
+            OffsetY = -(9 * 26 + 8 + 12) / 1440.0,
+        });
+
         public static readonly OverlayDefinition InputGraph = new("inputGraph", new OverlayPlacement
         {
             Horizontal = Anchor.Center,

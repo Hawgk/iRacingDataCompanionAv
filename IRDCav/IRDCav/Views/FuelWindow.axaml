@@ -1,0 +1,74 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:IRDCav.ViewModels"
+        x:Class="IRDCav.Views.FuelWindow"
+        x:DataType="vm:FuelViewModel"
+        Classes="overlay"
+        Icon="/Assets/icon.ico"
+        Title="iRDCav Fuel"
+        SizeToContent="WidthAndHeight"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        SystemDecorations="None"
+        IsVisible="{Binding IsVisible}">
+	<Window.Resources>
+		<DataTemplate x:Key="FuelEstimateTemplate" x:DataType="vm:FuelEstimate">
+			<StackPanel
+				Classes="fuelCell estimate"
+				Classes.selected="{Binding IsSelected}"
+				Classes.short="{Binding NeedsRefuel}">
+				<TextBlock Classes="fuelValue" Text="{Binding Amount}"/>
+				<TextBlock Classes="label" Text="{Binding Caption}"/>
+			</StackPanel>
+		</DataTemplate>
+	</Window.Resources>
+	<LayoutTransformControl HorizontalAlignment="Left" VerticalAlignment="Top">
+		<Border Classes="panel">
+			<StackPanel>
+				<Border Classes="header">
+					<DockPanel>
+						<StackPanel Classes="headerRow" DockPanel.Dock="Right" ToolTip.Tip="Wind relative to your car">
+							<Viewbox Classes="icon windArrow" RenderTransform="{Binding SessionInfo.WindAngle, Converter={StaticResource RotationConverter}}">
+								<Path Data="{StaticResource Icon.WindArrow}"/>
+							</Viewbox>
+							<TextBlock Text="{Binding SessionInfo.WindSpeed, StringFormat='{}{0:0} km/h'}"/>
+						</StackPanel>
+						<StackPanel Classes="headerRow">
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.AirTemperature}"/></Viewbox>
+							<TextBlock Classes="weatherValue" Text="{Binding SessionInfo.AirTemp}"/>
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.TrackTemperature}"/></Viewbox>
+							<TextBlock Classes="weatherValue" Text="{Binding SessionInfo.SurfaceTemp}"/>
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.Humidity}"/></Viewbox>
+							<TextBlock Classes="weatherValue" Text="{Binding SessionInfo.Humidity}"/>
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.Precipitation}"/></Viewbox>
+							<TextBlock Text="{Binding SessionInfo.Precipitation}"/>
+						</StackPanel>
+					</DockPanel>
+				</Border>
+				<Border Classes="fuel">
+					<!-- All three refuel estimates stay visible so the strategy can change mid-race; the configured one is enlarged. -->
+					<Grid ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+						<TextBlock Grid.Row="0" Grid.Column="0" Classes="label fuelRowLabel estimateRow" Text="REFUEL"/>
+						<ContentControl Grid.Row="0" Grid.Column="1" Content="{Binding Fuel.Minimum}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
+						<ContentControl Grid.Row="0" Grid.Column="2" Content="{Binding Fuel.Average}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
+						<ContentControl Grid.Row="0" Grid.Column="3" Content="{Binding Fuel.Maximum}" ContentTemplate="{StaticResource FuelEstimateTemplate}"/>
+
+						<TextBlock Grid.Row="1" Grid.Column="0" Classes="label fuelRowLabel factRow" Text="FUEL"/>
+						<StackPanel Grid.Row="1" Grid.Column="1" Classes="fuelCell fact">
+							<TextBlock Classes="fuelValue" Text="{Binding Fuel.Tank}"/>
+							<TextBlock Classes="label" Text="L LEFT"/>
+						</StackPanel>
+						<StackPanel Grid.Row="1" Grid.Column="2" Classes="fuelCell fact">
+							<TextBlock Classes="fuelValue" Text="{Binding Fuel.PerLap}"/>
+							<TextBlock Classes="label" Text="L/LAP"/>
+						</StackPanel>
+						<StackPanel Grid.Row="1" Grid.Column="3" Classes="fuelCell fact">
+							<TextBlock Classes="fuelValue" Text="{Binding Fuel.Laps}"/>
+							<TextBlock Classes="label" Text="LAPS LEFT"/>
+						</StackPanel>
+					</Grid>
+				</Border>
+			</StackPanel>
+		</Border>
+	</LayoutTransformControl>
+</Window>

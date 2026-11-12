@@ -106,8 +106,6 @@
 		<!-- Fuel -->
 		<Style Selector="Border.fuel">
 			<Setter Property="Padding" Value="11,8,11,9"/>
-			<Setter Property="BorderBrush" Value="{DynamicResource Overlay.Track}"/>
-			<Setter Property="BorderThickness" Value="0,0,0,1"/>
 		</Style>
 		<!--
 		A grid of value + caption cells: refuel estimates in the first row, the fuel facts below,
