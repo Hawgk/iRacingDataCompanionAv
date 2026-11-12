@@ -20,8 +20,6 @@ namespace IRDCav.Views.Theme
         private const byte ChipAlpha = 0x29;
         private const byte TrackAlpha = 0x17;
 
-        // The column widths in RaceColumnLayout are designed for this normal font size.
-        private const double DesignNormalFontSize = 13;
         private const double RowHeightPerNormalSize = 2;
         private const double TitleRowHeightPerSmallSize = 2;
         private const double FactLineHeightPerNormalSize = 1.5;
@@ -29,7 +27,11 @@ namespace IRDCav.Views.Theme
         private const double IconSizePerNormalSize = 1.25;
         private const double StripeHeightPerNormalSize = 1.1;
 
-        public const string ColumnWidthScaleKey = "Overlay.ColumnWidthScale";
+        public const string DigitWidthKey = "Overlay.DigitWidth";
+        public const string TitleCharacterWidthKey = "Overlay.TitleCharacterWidth";
+
+        // Must match the LetterSpacing of TextBlock.columnTitle in App.axaml.
+        private const double ColumnTitleLetterSpacing = 1;
 
         public static void Apply(Application application, OverlayConfiguration configuration)
         {
@@ -77,13 +79,15 @@ namespace IRDCav.Views.Theme
             resources["Overlay.MixedLineHeight"] = Math.Ceiling(sizes.Large * MixedLineHeightPerLargeSize);
             resources["Overlay.IconSize"] = Math.Round(sizes.Normal * IconSizePerNormalSize);
             resources["Overlay.StripeHeight"] = Math.Round(sizes.Normal * StripeHeightPerNormalSize);
-            resources[ColumnWidthScaleKey] = sizes.Normal / DesignNormalFontSize;
         }
 
         private static void AddFont(IResourceDictionary resources, FontFamily family, FontSizesConfiguration sizes)
         {
             resources["Overlay.FontFamily"] = family;
-            double offset = CapitalCentering.OffsetOf(family);
+            double digitAdvance = FontMeasurement.DigitAdvance(family);
+            resources[DigitWidthKey] = digitAdvance * sizes.Normal;
+            resources[TitleCharacterWidthKey] = digitAdvance * sizes.Small + ColumnTitleLetterSpacing;
+            double offset = FontMeasurement.CapitalOffset(family);
             resources["Overlay.TextShift.Small"] = new TranslateTransform(0, -offset * sizes.Small);
             resources["Overlay.TextShift.Normal"] = new TranslateTransform(0, -offset * sizes.Normal);
             resources["Overlay.TextShift.Large"] = new TranslateTransform(0, -offset * sizes.Large);

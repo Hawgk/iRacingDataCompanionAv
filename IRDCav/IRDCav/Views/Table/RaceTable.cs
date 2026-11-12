@@ -28,6 +28,7 @@ namespace IRDCav.Views.Table
             AvaloniaProperty.Register<RaceTable, IEnumerable?>(nameof(Rows));
 
         private const string TemplateKeyPrefix = "RaceColumn.";
+        private const double FallbackCharacterWidth = 8;
 
         private readonly StackPanel _titles = new() { Orientation = Orientation.Horizontal, Classes = { "columnTitles" }, IsVisible = false };
         private readonly ItemsControl _items = new();
@@ -74,22 +75,20 @@ namespace IRDCav.Views.Table
 
         private void BuildColumns()
         {
-            double widthScale = ColumnWidthScale();
-            var columns = Columns
-                .Select(column => (Layout: RaceColumnLayout.Of(column).Scaled(widthScale), Template: CellTemplate(column)))
-                .ToList();
+            var metrics = new ColumnMetrics(Measure(OverlayTheme.DigitWidthKey), Measure(OverlayTheme.TitleCharacterWidthKey));
+            List<SizedColumn> columns = Columns.Select(column => SizedColumn.Of(column, metrics)).ToList();
 
             _titles.Children.Clear();
-            _titles.Children.AddRange(columns.Select(column => Cell(column.Layout, TitleText(column.Layout))));
+            _titles.Children.AddRange(columns.Select(column => Cell(column, TitleText(column.Layout))));
             _items.ItemTemplate = new FuncDataTemplate<RaceRowViewModel>((_, _) =>
-                new RaceRowView(columns.Select(column => Cell(column.Layout, Build(column.Template)))));
+                new RaceRowView(columns.Select(column => Cell(column, Build(column.Template)))));
         }
 
-        /// <summary>Columns grow with the configured font size; 1 when no theme was applied.</summary>
-        private static double ColumnWidthScale() =>
-            Application.Current?.TryGetResource(OverlayTheme.ColumnWidthScaleKey, null, out object? scale) == true && scale is double value
+        /// <summary>A character width published by the theme; a typical value when no theme was applied.</summary>
+        private static double Measure(string resourceKey) =>
+            Application.Current?.TryGetResource(resourceKey, null, out object? width) == true && width is double value
                 ? value
-                : 1;
+                : FallbackCharacterWidth;
 
         private static IDataTemplate CellTemplate(RaceColumn column)
         {
@@ -106,11 +105,20 @@ namespace IRDCav.Views.Table
 
         private static Control TitleText(RaceColumnLayout layout) => new TextBlock { Text = layout.Title, Classes = { "columnTitle" } };
 
-        private static Control Cell(RaceColumnLayout layout, Control content)
+        private static Control Cell(SizedColumn column, Control content)
         {
-            content.HorizontalAlignment = layout.Alignment;
+            content.HorizontalAlignment = column.Layout.Alignment;
             content.VerticalAlignment = VerticalAlignment.Center;
-            return new Border { Width = layout.Width, Classes = { "cell" }, Child = content };
+            return new Border { Width = column.Width, Classes = { "cell" }, Child = content };
+        }
+
+        private sealed record SizedColumn(RaceColumnLayout Layout, double Width, IDataTemplate Template)
+        {
+            public static SizedColumn Of(RaceColumn column, ColumnMetrics metrics)
+            {
+                RaceColumnLayout layout = RaceColumnLayout.Of(column);
+                return new SizedColumn(layout, layout.WidthFor(metrics), CellTemplate(column));
+            }
         }
     }
 }
