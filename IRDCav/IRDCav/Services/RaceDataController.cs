@@ -78,8 +78,8 @@ namespace IRDCav.Services
             _lastSessionTime = sessionTime;
         }
 
-        /// <summary>Copies of all cars that are safe to hand to another thread.</summary>
-        public IReadOnlyList<RaceDataModel> Snapshot() => _cars.Select(car => car.Snapshot()).ToArray();
+        /// <summary>Live car state. Only valid on the telemetry thread; never hand it to the UI.</summary>
+        public IReadOnlyCollection<RaceDataModel> Cars => _cars;
 
         private void MarkClassFastestLaps()
         {

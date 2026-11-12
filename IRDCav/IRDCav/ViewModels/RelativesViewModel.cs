@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using IRDCav.Models;
-using System;
-using System.Collections.Generic;
 
 namespace IRDCav.ViewModels
 {
@@ -16,7 +14,6 @@ namespace IRDCav.ViewModels
         [ObservableProperty]
         private FuelDataModel _fuelData = new();
 
-        [ObservableProperty]
-        private IReadOnlyList<RaceDataModel> _raceDataList = Array.Empty<RaceDataModel>();
+        public RaceRowCollection RaceDataList { get; } = new();
     }
 }

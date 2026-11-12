@@ -1,17 +1,14 @@
-﻿using CircularBuffer;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using IRDCav.Telemetry;
 using OxyPlot;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IRDCav.ViewModels
 {
     public partial class InputGraphViewModel : ViewModelBase
     {
-        private const int SampleCount = 100;
-
-        private readonly CircularBuffer<float> _throttle = new(SampleCount);
-        private readonly CircularBuffer<float> _brake = new(SampleCount);
+        private readonly int _sampleCount;
 
         [ObservableProperty]
         private bool _isVisible;
@@ -19,13 +16,19 @@ namespace IRDCav.ViewModels
         [ObservableProperty]
         private PlotModel _model = new();
 
-        public void AddSample(InputSample sample)
+        public InputGraphViewModel(int sampleCount)
         {
-            _throttle.PushBack(ToPercent(sample.Throttle));
-            _brake.PushBack(ToPercent(sample.Brake));
-            Model = InputPlotFactory.Create(_throttle, _brake, SampleCount);
+            _sampleCount = sampleCount;
         }
 
-        private static float ToPercent(float value) => (float)Math.Round(value * 100, 0);
+        public void SetSamples(IReadOnlyList<InputSample> samples)
+        {
+            Model = InputPlotFactory.Create(
+                samples.Select(sample => ToPercent(sample.Throttle)),
+                samples.Select(sample => ToPercent(sample.Brake)),
+                _sampleCount);
+        }
+
+        private static float ToPercent(float value) => value * 100;
     }
 }

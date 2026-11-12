@@ -53,9 +53,6 @@ namespace IRDCav.Models
 
         public MicroSectorModel MicroSectors { get; set; } = new MicroSectorModel();
 
-        /// <summary>Shallow copy for handing to the UI thread while the original keeps being updated.</summary>
-        public RaceDataModel Snapshot() => (RaceDataModel)MemberwiseClone();
-
         public void ApplyTelemetry(CarTelemetry telemetry)
         {
             Id = telemetry.Id;

@@ -1,4 +1,4 @@
-using IRDCav.Models;
+﻿using IRDCav.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace IRDCav.Services
             _rowCount = rowCount;
         }
 
-        public IReadOnlyList<RaceDataModel> Build(IEnumerable<RaceDataModel> cars)
+        public IReadOnlyList<RaceRow> Build(IEnumerable<RaceDataModel> cars)
         {
             List<RaceDataModel> byInterval = cars
                 .Where(car => car.ConsiderForRelative && !car.IsPaceCar)
@@ -26,7 +26,7 @@ namespace IRDCav.Services
             int firstIndex = playerIndex - _rowCount / 2;
 
             return Enumerable.Range(firstIndex, _rowCount)
-                .Select(index => index >= 0 && index < byInterval.Count ? byInterval[index] : new RaceDataModel())
+                .Select(index => index >= 0 && index < byInterval.Count ? RaceRow.From(byInterval[index]) : RaceRow.Empty)
                 .ToList();
         }
     }
