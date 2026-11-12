@@ -1,4 +1,5 @@
-﻿using IRDCav.Presentation;
+using IRDCav.Models;
+using IRDCav.Presentation;
 using IRDCav.Telemetry;
 using IRSDKSharper;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace IRDCav.Services
     {
         // Race data is processed on every n-th frame only; inputs on every frame.
         private const int RaceDataFrameInterval = 4;
+        private const int NoSessionInfo = -1;
 
         private readonly ITelemetrySource _source;
         private readonly RaceDataController _raceData;
@@ -26,6 +28,9 @@ namespace IRDCav.Services
 
         private OverlayState _state = OverlayState.Disconnected;
         private int _frameCounter;
+        private int _sessionInfoVersion = NoSessionInfo;
+        private int _sessionNum = NoSessionInfo;
+        private SessionInfoModel _sessionSummary = new();
 
         public TelemetryProcessor(TelemetryServices services, IOverlayStatePublisher publisher, IInputSink inputs)
         {
@@ -54,6 +59,7 @@ namespace IRDCav.Services
         {
             _raceData.Clear();
             _fuel.Reset();
+            _sessionInfoVersion = NoSessionInfo;
             _inputs.Clear();
             Publish(OverlayState.Disconnected);
         }
@@ -86,25 +92,41 @@ namespace IRDCav.Services
             SessionTelemetry session = frame.ReadSession();
             IReadOnlyList<CarTelemetry> cars = frame.ReadCars();
 
-            OverlayState state = _state with { IsConnected = true };
-            state = UpdateSessionInfo(state, sessionInfo, session);
+            ApplySessionInfoIfChanged(frame.SessionInfoVersion, sessionInfo, session);
             MergeRaceData(sessionInfo, session, cars);
+
+            OverlayState state = _state with
+            {
+                IsConnected = true,
+                Session = _sessionSummary with { TimeRemain = session.TimeRemain },
+            };
             state = WithRaceRows(state);
             state = UpdateFuel(state, session, cars[sessionInfo.DriverInfo.DriverCarIdx].Lap);
             Publish(state);
         }
 
-        private OverlayState UpdateSessionInfo(OverlayState state, IRacingSdkSessionInfo sessionInfo, SessionTelemetry session) =>
-            sessionInfo.WeekendInfo != null
-                ? state with { Session = _sessionInfoBuilder.Build(sessionInfo, session) }
-                : state;
+        /// <summary>Recomputes everything derived from the session info YAML, which changes rarely.</summary>
+        private void ApplySessionInfoIfChanged(int version, IRacingSdkSessionInfo sessionInfo, SessionTelemetry session)
+        {
+            if (version == _sessionInfoVersion && session.SessionNum == _sessionNum)
+            {
+                return;
+            }
+            _sessionInfoVersion = version;
+            _sessionNum = session.SessionNum;
+
+            _raceData.ApplyDrivers(sessionInfo.DriverInfo.Drivers ?? new());
+            if (sessionInfo.WeekendInfo != null)
+            {
+                _sessionSummary = _sessionInfoBuilder.Build(sessionInfo, session);
+            }
+        }
 
         private void MergeRaceData(IRacingSdkSessionInfo sessionInfo, SessionTelemetry session, IReadOnlyList<CarTelemetry> cars)
         {
             _raceData.SetPlayer(sessionInfo.DriverInfo.DriverCarIdx);
             _raceData.ApplyTelemetry(cars);
             _raceData.ApplyPositions(CurrentResults(sessionInfo, session.SessionNum));
-            _raceData.ApplyDrivers(sessionInfo.DriverInfo.Drivers ?? new());
             _raceData.Advance(session.SessionTime);
         }
 

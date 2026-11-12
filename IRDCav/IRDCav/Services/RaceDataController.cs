@@ -1,4 +1,4 @@
-﻿using IRDCav.Models;
+using IRDCav.Models;
 using IRDCav.Telemetry;
 using IRSDKSharper;
 using System.Collections.Generic;
@@ -41,10 +41,11 @@ namespace IRDCav.Services
             _player.IsMe = true;
         }
 
-        public void ApplyTelemetry(IEnumerable<CarTelemetry> cars)
+        public void ApplyTelemetry(IReadOnlyList<CarTelemetry> cars)
         {
-            foreach (CarTelemetry car in cars)
+            for (int i = 0; i < cars.Count; i++)
             {
+                CarTelemetry car = cars[i];
                 _cars[car.Id].ApplyTelemetry(car);
             }
         }

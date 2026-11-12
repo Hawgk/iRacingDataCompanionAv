@@ -1,9 +1,9 @@
-﻿using static IRSDKSharper.IRacingSdkEnum;
+using static IRSDKSharper.IRacingSdkEnum;
 
 namespace IRDCav.Telemetry
 {
     /// <summary>Per-car values from the iRacing CarIdx* telemetry arrays.</summary>
-    public sealed record CarTelemetry
+    public readonly record struct CarTelemetry
     {
         public int Id { get; init; }
         public int Lap { get; init; }

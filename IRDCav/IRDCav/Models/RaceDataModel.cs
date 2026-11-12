@@ -1,4 +1,4 @@
-﻿using IRDCav.Telemetry;
+using IRDCav.Telemetry;
 using static IRSDKSharper.IRacingSdkEnum;
 using static IRSDKSharper.IRacingSdkSessionInfo.DriverInfoModel;
 using static IRSDKSharper.IRacingSdkSessionInfo.SessionInfoModel.SessionModel;
@@ -53,7 +53,7 @@ namespace IRDCav.Models
 
         public MicroSectorModel MicroSectors { get; set; } = new MicroSectorModel();
 
-        public void ApplyTelemetry(CarTelemetry telemetry)
+        public void ApplyTelemetry(in CarTelemetry telemetry)
         {
             Id = telemetry.Id;
             Lap = telemetry.Lap;
