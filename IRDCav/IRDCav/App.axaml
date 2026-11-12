@@ -1,18 +1,18 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="IRDCav.App"
-             xmlns:local="using:IRDCav"
+             xmlns:conv="using:IRDCav.Converters"
              xmlns:vm="using:IRDCav.ViewModels"
              x:DataType="vm:ApplicationViewModel"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 	<Application.Resources>
-		<local:SecToTimeConverter x:Key="SecToTimeConverter"/>
-		<local:IntToLapConverter x:Key="IntToLapConverter"/>
-		<local:DriverNameConverter x:Key="DriverNameConverter"/>
-		<local:FloatConverter x:Key="FloatConverter"/>
-		<local:PositionConverter x:Key="PositionConverter"/>
-		<local:CarNumberConverter x:Key="CarNumberConverter"/>
+		<conv:SecToTimeConverter x:Key="SecToTimeConverter"/>
+		<conv:IntToLapConverter x:Key="IntToLapConverter"/>
+		<conv:DriverNameConverter x:Key="DriverNameConverter"/>
+		<conv:FloatConverter x:Key="FloatConverter"/>
+		<conv:PositionConverter x:Key="PositionConverter"/>
+		<conv:CarNumberConverter x:Key="CarNumberConverter"/>
 		<SolidColorBrush x:Key="ThemeFuelBackground">#60FF7247</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeIsNotMeBackground">#C0242423</SolidColorBrush>
 		<SolidColorBrush x:Key="ThemeIsMeBackground">#C03B3B3A</SolidColorBrush>
