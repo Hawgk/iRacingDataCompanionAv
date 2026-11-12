@@ -105,36 +105,34 @@
 			<Setter Property="BorderBrush" Value="{DynamicResource Overlay.Track}"/>
 			<Setter Property="BorderThickness" Value="0,0,0,1"/>
 		</Style>
-		<Style Selector="StackPanel.fuelEstimates">
-			<Setter Property="Orientation" Value="Horizontal"/>
-			<Setter Property="Spacing" Value="14"/>
+		<!--
+		A grid of value + caption cells: refuel estimates in the first row, the fuel facts below,
+		so both rows share their columns. Each row shares one line height to stay centered.
+		-->
+		<Style Selector="TextBlock.fuelRowLabel">
+			<Setter Property="Margin" Value="0,0,12,0"/>
 		</Style>
-		<Style Selector="StackPanel.fuelEstimates TextBlock">
+		<Style Selector="StackPanel.fuelCell">
+			<Setter Property="Orientation" Value="Horizontal"/>
+			<Setter Property="Spacing" Value="4"/>
+			<Setter Property="Margin" Value="0,0,16,0"/>
+		</Style>
+		<Style Selector="TextBlock.estimateRow, StackPanel.estimate > TextBlock">
 			<Setter Property="LineHeight" Value="{DynamicResource Overlay.MixedLineHeight}"/>
 		</Style>
-		<Style Selector="StackPanel.fuelEstimate">
-			<Setter Property="Orientation" Value="Horizontal"/>
-			<Setter Property="Spacing" Value="5"/>
+		<Style Selector="TextBlock.factRow, StackPanel.fact > TextBlock">
+			<Setter Property="LineHeight" Value="{DynamicResource Overlay.FactLineHeight}"/>
 		</Style>
-		<Style Selector="TextBlock.fuelAmount">
-			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Normal}"/>
+		<Style Selector="TextBlock.fuelValue">
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
-		<Style Selector="StackPanel.fuelEstimate.selected TextBlock.fuelAmount">
+		<Style Selector="StackPanel.estimate.selected > TextBlock.fuelValue">
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Large}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.PitRoad}"/>
 		</Style>
-		<Style Selector="StackPanel.fuelEstimate.selected.short TextBlock.fuelAmount">
+		<Style Selector="StackPanel.estimate.selected.short > TextBlock.fuelValue">
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.LapAhead}"/>
-		</Style>
-		<Style Selector="StackPanel.fuelFacts TextBlock">
-			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Normal}"/>
-			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
-		</Style>
-		<Style Selector="StackPanel.fuelFacts TextBlock.value">
-			<Setter Property="Foreground" Value="{DynamicResource Overlay.Text}"/>
-			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
 
 		<!-- Race tables. Row states first, so the cell styles after them win. -->

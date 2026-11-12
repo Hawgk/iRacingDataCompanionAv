@@ -6,10 +6,11 @@ namespace IRDCav.ViewModels
     /// <summary>Fuel to add at the next stop to reach the finish, for one consumption estimate.</summary>
     public sealed record FuelEstimate
     {
-        public string Label { get; init; } = string.Empty;
-
         /// <summary>Liters to add; negative when that much is spare.</summary>
         public string Amount { get; init; } = FuelSummary.Unknown;
+
+        /// <summary>Unit and estimate, shown after the amount, e.g. "L AVG".</summary>
+        public string Caption { get; init; } = string.Empty;
 
         public bool NeedsRefuel { get; init; }
 
@@ -52,17 +53,17 @@ namespace IRDCav.ViewModels
             /// <param name="leftAtFinish">Fuel left at the finish; negative is the amount to add.</param>
             public FuelEstimate Create(RefuelEstimate estimate, float leftAtFinish) => new()
             {
-                Label = LabelOf(estimate),
-                Amount = HasEstimates ? (-leftAtFinish).ToString("0.0") + " L" : Unknown,
+                Amount = HasEstimates ? (-leftAtFinish).ToString("0.0") : Unknown,
+                Caption = CaptionOf(estimate),
                 NeedsRefuel = HasEstimates && leftAtFinish < 0,
                 IsSelected = estimate == Selected,
             };
 
-            private static string LabelOf(RefuelEstimate estimate) => estimate switch
+            private static string CaptionOf(RefuelEstimate estimate) => estimate switch
             {
-                RefuelEstimate.Minimum => "MIN",
-                RefuelEstimate.Maximum => "MAX",
-                _ => "AVG",
+                RefuelEstimate.Minimum => "L MIN",
+                RefuelEstimate.Maximum => "L MAX",
+                _ => "L AVG",
             };
         }
     }
