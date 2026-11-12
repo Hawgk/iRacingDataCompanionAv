@@ -21,22 +21,25 @@ The repo has no test project and no linter configuration.
 
 ## Architecture
 
-**Startup** (`App.axaml.cs`): this file creates the three view models and the three windows (`ResultsWindow`, `RelativesWindow`, `InputGraphWindow`), plus a single `DataCollector` that holds references to all three view models. `ShutdownMode` is `OnExplicitShutdown`, so closing a window doesn't exit the app. Exiting goes through `ApplicationViewModel.ExitCommand`, and `OnExit` stops the SDK.
+Data flows one way: `Telemetry/` → `Services/` → `Presentation/` → `ViewModels/` → `Views/`.
 
-**Data flow**: data moves in one direction, from the SDK through `DataCollector` and the controllers into the view models.
-- `DataCollector` subscribes to `IRacingSdk` events (`OnConnected`, `OnDisconnected`, `OnTelemetryData`). The SDK runs with `UpdateInterval = 2`. On the first telemetry tick, `IRacingSdkDatum` handles are looked up by name and cached.
-- The input trace (throttle, brake, clutch) updates on every tick. The heavier race and session processing runs only once every `_refreshInterval + 1` ticks, gated by `_calculateCounter`.
-- Each processing cycle fills per-car `CarIdx*` arrays, wraps them in `LiveDataModel`, and merges them into `RaceDataController` together with the session-info `DriverModel`/`PositionModel` data. It also builds a `SessionInfoModel` (SOF, temperatures, incidents, time remaining).
-- `RaceDataController` holds a fixed `RaceDataModel[MaxNumCars]` indexed by carIdx. `Update(timeRemain)` computes intervals and the per-class fastest laps, then raises `OnDataReady`. `DataCollector` handles that event by pulling `GetRelativeViewRaceData(...)` and `GetResultsViewRaceData(...)` and assigning **new** `ObservableCollection`s to the view models.
-- `FuelDataController` uses lap-completion detection (a change in the player's `CarIdxLap`) plus a stopwatch to compute per-lap fuel usage. It pushes results through its `OnUpdated` event into `RelativesViewModel.FuelData`.
+**Composition root** (`App.axaml.cs`): this is the only place where objects get created and wired together. It builds the view models (grouped in `OverlayViewModels`), the three windows, every service, and the `TelemetryProcessor`, using constructor injection throughout. `ShutdownMode` is `OnExplicitShutdown`; the app exits through `ApplicationViewModel.ExitCommand` in the tray menu.
 
-**Interval calculation** (`RaceDataController.CalculateIntervals` + `Models/MicroSectorModel.cs`): each car splits a lap into `MICROSECTOR_COUNT` (20) microsectors. The time elapsed between updates goes into those buckets, and when a sector boundary falls inside one update, the time is split between the two sectors. Once a car has recorded all 20 sectors, the interval comes from summing sector times between the car and the player. Until then, or when the sector method returns 0, `EstimateInterval` is the fallback: the difference in lap-distance percentage scaled by the best or estimated lap time, with handling for gaps that wrap across the start/finish line. Elapsed time is derived from changes in `SessionTimeRemain`, not wall-clock time.
+**Telemetry** (`Telemetry/`): `ITelemetrySource` wraps IRSDKSharper (`IRacingTelemetrySource`, `UpdateInterval = 2`). For each tick it raises `FrameReceived` with an `ITelemetryFrame`, whose `Read*` methods read values only on request. `IRacingTelemetryFrame` looks up the `IRacingSdkDatum` handles once per connection. `CarTelemetry` holds the per-car `CarIdx*` values.
 
-**View models** extend `ViewModelBase` (CommunityToolkit `ObservableObject`) but mostly use hand-written properties that call `OnPropertyChanged`. Models are plain POCOs with no change notification, so the UI refreshes only when a whole object or collection is replaced. Value converters for display formatting (lap times, positions, names, car numbers) sit at the project root. Compiled bindings are on by default (`AvaloniaUseCompiledBindingsByDefault`), so XAML bindings need `x:DataType`.
+**Services** (`Services/`), all running on the SDK thread:
+- `TelemetryProcessor` routes frames. Inputs are processed on every frame, race data only on every 4th frame (`RaceDataFrameInterval`).
+- `RaceDataController` holds the `RaceDataModel[MaxNumCars]` indexed by carIdx and merges live telemetry, session results (`PositionModel`) and drivers (`DriverModel`) into it. `Advance(sessionTime)` runs `IntervalCalculator`, then marks the fastest lap per class. `Snapshot()` returns copies that are safe to hand to the UI.
+- `RelativeListBuilder` and `StandingsListBuilder` turn a snapshot into display rows. A default `RaceDataModel` is used as an empty row.
+- `SessionInfoBuilder` builds the header `SessionInfoModel`. `FuelMonitor` detects stints and completed laps; `FuelCalculator` computes the statistics.
 
-**Threading caveat**: `OnTelemetryData` runs on IRSDKSharper's background thread and sets view-model properties directly, without dispatching to the UI thread.
+**Interval calculation** (`IntervalCalculator` + `Models/MicroSectorModel.cs`): each car splits a lap into 20 microsectors. Elapsed `SessionTime` is added to the sector being driven. When a tick crosses a sector boundary, the time is split by the distance driven on each side of it. The best time of each sector is kept, and their sum is the optimal lap. Teleports, driving backwards and large time steps discard the sector in progress. Once all sectors are recorded, the interval is the time this car needs, on its optimal lap, to drive from the player's position to its own (positive = ahead). Before that, and while the car is approaching or in the pits or has taken the checkered flag, `EstimateInterval` scales the lap-distance difference by the best or estimated lap time. `LapDelta` comes from `CarIdxLap + CarIdxLapDistPct`.
 
-**Overlay windows**: each window calls `WindowTransparency.ToTransparentWindow(this)` before `InitializeComponent()`. Pressing F6 toggles "move mode", which changes the background and allows dragging. Window positioning and clamping use a hard-coded 2560x1440 screen size.
+**Threading**: `OverlayPresenter` (implementing `IOverlayPresenter`) is the only code that touches view models from outside the UI thread, and it marshals every update through `IUiDispatcher`. Keep it that way, and pass the UI only snapshots or immutable records (`FuelDataModel` and `SessionInfoModel` are records).
+
+**View models** use CommunityToolkit `[ObservableProperty]`. Models don't notify on change, so the UI refreshes when a whole object or list is replaced. Compiled bindings are on by default (`AvaloniaUseCompiledBindingsByDefault`), so XAML bindings need `x:DataType`. Value converters are in `Converters/` and derive from `OneWayConverter`.
+
+**Overlay windows**: each window calls `WindowTransparency.ToTransparentWindow(this)` (Win32 click-through and topmost) before `InitializeComponent()`. It then calls `OverlayWindowBehavior.Attach(this, initialPosition)` *after* it, so the XAML background gets overridden. The behavior handles F6 move mode, dragging, staying topmost and clamping to the screen. The screen size is hard-coded to 2560x1440.
 
 ## Rules
 
