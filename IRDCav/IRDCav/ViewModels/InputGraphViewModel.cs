@@ -1,34 +1,26 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using IRDCav.Telemetry;
-using OxyPlot;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace IRDCav.ViewModels
 {
     public partial class InputGraphViewModel : ViewModelBase
     {
-        private readonly int _sampleCount;
-
         [ObservableProperty]
         private bool _isVisible;
 
         [ObservableProperty]
-        private PlotModel _model = new();
+        private IReadOnlyList<InputSample> _samples = Array.Empty<InputSample>();
 
         public InputGraphViewModel(int sampleCount)
         {
-            _sampleCount = sampleCount;
+            SampleCount = sampleCount;
         }
 
-        public void SetSamples(IReadOnlyList<InputSample> samples)
-        {
-            Model = InputPlotFactory.Create(
-                samples.Select(sample => ToPercent(sample.Throttle)),
-                samples.Select(sample => ToPercent(sample.Brake)),
-                _sampleCount);
-        }
+        /// <summary>Number of samples that fill the whole trace width.</summary>
+        public int SampleCount { get; }
 
-        private static float ToPercent(float value) => value * 100;
+        public void SetSamples(IReadOnlyList<InputSample> samples) => Samples = samples;
     }
 }

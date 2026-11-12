@@ -26,7 +26,6 @@
 		<SolidColorBrush x:Key="ThemeMediumGray">#616160</SolidColorBrush>
 	</Application.Resources>
     <Application.Styles>
-		<StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml"/>
 		<Style
 			Selector="Grid.IsMe">
 			<Setter

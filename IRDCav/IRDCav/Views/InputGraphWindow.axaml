@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:IRDCav.ViewModels"
-        xmlns:oxy="using:OxyPlot.Avalonia"
+        xmlns:views="using:IRDCav.Views"
         mc:Ignorable="d" d:DesignWidth="8010" d:DesignHeight="450"
         x:Class="IRDCav.Views.InputGraphWindow"
         x:DataType="vm:InputGraphViewModel"
@@ -16,9 +16,8 @@
 		MinHeight="120"
 		IsVisible="{Binding IsVisible}">
 	<Grid>
-		<oxy:PlotView
-			Model="{Binding Model}"
-			Background="Transparent"
-			IsEnabled="false"/>
+		<views:InputTraceControl
+			Samples="{Binding Samples}"
+			Capacity="{Binding SampleCount}"/>
 	</Grid>
 </Window>
