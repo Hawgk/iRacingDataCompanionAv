@@ -49,15 +49,17 @@ namespace IRDCav.Views
         {
             int maxX = (int)(ScreenWidth - _window.Width);
             int maxY = (int)(ScreenHeight - _window.Height);
-            int x = _window.Position.X < 0 ? 0 : Math.Min(_window.Position.X, maxX);
-            int y = Math.Min(_window.Position.Y, maxY);
-
-            var position = new PixelPoint(x, y);
+            var position = new PixelPoint(
+                ClampToScreen(_window.Position.X, maxX),
+                ClampToScreen(_window.Position.Y, maxY));
             if (position != _window.Position)
             {
                 _window.Position = position;
             }
         }
+
+        private static int ClampToScreen(int coordinate, int max) =>
+            coordinate < 0 ? 0 : Math.Min(coordinate, max);
 
         private void OnKeyDown(KeyEventArgs args)
         {
