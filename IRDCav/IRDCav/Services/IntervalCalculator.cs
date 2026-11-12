@@ -37,7 +37,7 @@ namespace IRDCav.Services
         {
             car.MicroSectors.Record(elapsedTime, car.LapDistPct, car.LastLapDistPct);
             car.Interval = MathF.Round(CalculateInterval(car, player), 3);
-            car.LapDelta = car.LapsCompleted - player.LapsCompleted;
+            car.LapDelta = CalculateLapDelta(car, player);
             car.LastLapDistPct = car.LapDistPct;
             car.ConsiderForRelative = true;
         }
@@ -58,6 +58,17 @@ namespace IRDCav.Services
                 return interval;
             }
             return EstimateInterval(car, player);
+        }
+
+        /// <summary>
+        /// Whole laps between the cars based on total distance driven, so a car that just
+        /// crossed the line ahead of the player is not counted as a lap ahead.
+        /// </summary>
+        private static int CalculateLapDelta(RaceDataModel car, RaceDataModel player)
+        {
+            float carDistance = car.Lap + car.LapDistPct;
+            float playerDistance = player.Lap + player.LapDistPct;
+            return (int)MathF.Round(carDistance - playerDistance);
         }
 
         private static bool CanUseMicroSectors(RaceDataModel car) =>
