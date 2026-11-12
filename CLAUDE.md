@@ -21,25 +21,34 @@ The repo has no test project and no linter configuration.
 
 ## Architecture
 
-Data flows one way: `Telemetry/` → `Services/` → `Presentation/` → `ViewModels/` → `Views/`.
+Data flows one way: `Telemetry/` → `Services/` → `Presentation/` (state store) ← `ViewModels/` → `Views/`. The telemetry side never calls the UI; the UI pulls.
 
-**Composition root** (`App.axaml.cs`): this is the only place where objects get created and wired together. It builds the view models (grouped in `OverlayViewModels`), the three windows, every service, and the `TelemetryProcessor`, using constructor injection throughout. `ShutdownMode` is `OnExplicitShutdown`; the app exits through `ApplicationViewModel.ExitCommand` in the tray menu.
+**Composition root** (`App.axaml.cs`): this is the only place where objects get created and wired together: view models (`OverlayViewModels`), windows and their `OverlayWindowBehavior`, the state store, the input buffer, the refresher, and the `TelemetryProcessor` with its services. Everything is passed in through constructors. `ShutdownMode` is `OnExplicitShutdown`; the app exits through `ApplicationViewModel.ExitCommand` in the tray menu.
 
-**Telemetry** (`Telemetry/`): `ITelemetrySource` wraps IRSDKSharper (`IRacingTelemetrySource`, `UpdateInterval = 2`). For each tick it raises `FrameReceived` with an `ITelemetryFrame`, whose `Read*` methods read values only on request. `IRacingTelemetryFrame` looks up the `IRacingSdkDatum` handles once per connection. `CarTelemetry` holds the per-car `CarIdx*` values.
+**Telemetry** (`Telemetry/`): `ITelemetrySource` wraps IRSDKSharper (`IRacingTelemetrySource`, `UpdateInterval = 2`, i.e. 30 frames/s). For each tick it raises `FrameReceived` with an `ITelemetryFrame`, whose `Read*` methods read values only on request. `IRacingTelemetryFrame` looks up the datum handles once per connection and reuses its read buffers: the list from `ReadCars()` is overwritten on the next call. `SessionInfoVersion` changes whenever the session info YAML changes.
 
 **Services** (`Services/`), all running on the SDK thread:
-- `TelemetryProcessor` routes frames. Inputs are processed on every frame, race data only on every 4th frame (`RaceDataFrameInterval`).
-- `RaceDataController` holds the `RaceDataModel[MaxNumCars]` indexed by carIdx and merges live telemetry, session results (`PositionModel`) and drivers (`DriverModel`) into it. `Advance(sessionTime)` runs `IntervalCalculator`, then marks the fastest lap per class. `Snapshot()` returns copies that are safe to hand to the UI.
-- `RelativeListBuilder` and `StandingsListBuilder` turn a snapshot into display rows. A default `RaceDataModel` is used as an empty row.
+- `TelemetryProcessor` pushes inputs into the `IInputSink` on every frame. Every 4th frame (`RaceDataFrameInterval`) it processes race data and publishes an immutable `OverlayState`. Anything derived from the session info YAML (driver data, the session header) is rebuilt only when `SessionInfoVersion` or the session changes.
+- `RaceDataController` holds the mutable `RaceDataModel[MaxNumCars]` indexed by carIdx and merges telemetry, session results and drivers into it. `Advance(sessionTime)` runs `IntervalCalculator`, then marks the fastest lap per class. `Cars` must never leave the telemetry thread.
+- `RelativeListBuilder` and `StandingsListBuilder` turn the cars into immutable `RaceRow`s; `RaceRow.Empty` is an empty display row.
 - `SessionInfoBuilder` builds the header `SessionInfoModel`. `FuelMonitor` detects stints and completed laps; `FuelCalculator` computes the statistics.
 
 **Interval calculation** (`IntervalCalculator` + `Models/MicroSectorModel.cs`): each car splits a lap into 20 microsectors. Elapsed `SessionTime` is added to the sector being driven. When a tick crosses a sector boundary, the time is split by the distance driven on each side of it. The best time of each sector is kept, and their sum is the optimal lap. Teleports, driving backwards and large time steps discard the sector in progress. Once all sectors are recorded, the interval is the time this car needs, on its optimal lap, to drive from the player's position to its own (positive = ahead). Before that, and while the car is approaching or in the pits or has taken the checkered flag, `EstimateInterval` scales the lap-distance difference by the best or estimated lap time. `LapDelta` comes from `CarIdxLap + CarIdxLapDistPct`.
 
-**Threading**: `OverlayPresenter` (implementing `IOverlayPresenter`) is the only code that touches view models from outside the UI thread, and it marshals every update through `IUiDispatcher`. Keep it that way, and pass the UI only snapshots or immutable records (`FuelDataModel` and `SessionInfoModel` are records).
+**Decoupling and threading** (`Presentation/`): the producer side writes into two thread-safe structures and never blocks on the UI:
+- `OverlayStateStore`: a slot that keeps only the latest `OverlayState`, written with `Volatile`. A state the UI misses is simply replaced, so nothing can queue up.
+- `InputTraceBuffer`: a fixed-size ring buffer that takes a short lock and has a version counter.
 
-**View models** use CommunityToolkit `[ObservableProperty]`. Models don't notify on change, so the UI refreshes when a whole object or list is replaced. Compiled bindings are on by default (`AvaloniaUseCompiledBindingsByDefault`), so XAML bindings need `x:DataType`. Value converters are in `Converters/` and derive from `OneWayConverter`.
+`OverlayRefresher` runs a `DispatcherTimer` on the UI thread at background priority (~30 Hz). It pulls the latest values and does nothing when neither the state reference nor the input version changed. Keep it this way: never touch view models from the telemetry thread, and publish only immutable data.
 
-**Overlay windows**: each window calls `WindowTransparency.ToTransparentWindow(this)` (Win32 click-through and topmost) before `InitializeComponent()`. It then calls `OverlayWindowBehavior.Attach(this, initialPosition)` *after* it, so the XAML background gets overridden. The behavior handles F6 move mode, dragging, staying topmost and clamping to the screen. The screen size is hard-coded to 2560x1440.
+**View models** use CommunityToolkit `[ObservableProperty]`. The list views bind to a `RaceRowCollection` of reused `RaceRowViewModel`s that are updated in place, so only the cells that changed re-render. Don't replace the collections. Compiled bindings are on by default (`AvaloniaUseCompiledBindingsByDefault`), so XAML bindings and `DataTemplate`s need `x:DataType`. Value converters are in `Converters/` and derive from `OneWayConverter`. The input graph is drawn by `Views/InputTraceControl`, which renders polylines directly; there's no chart library.
+
+**Overlay windows and layout** (`Layout/`, `Views/OverlayWindowBehavior.cs`):
+- **Window setup:** each window calls `WindowTransparency.ToTransparentWindow(this)` (Win32 click-through and topmost) before `InitializeComponent()`. Its content must be wrapped in a `LayoutTransformControl`, with the design size set on the inner element (`SizeToContent="WidthAndHeight"`).
+- **Placement:** `OverlayPlacement` anchors a window point (start, center or end on each axis) to the same relative point on the screen, plus an offset as a fraction of the screen size. `PlacementCalculator` holds the pure math.
+- **Scaling:** content is scaled by `screenHeightDIP / 1440 * userScale`, so an overlay covers the same share of the screen on any resolution or DPI setting.
+- **Move mode:** F6 toggles it. You can drag a window (also to another monitor) and change its scale with the mouse wheel. When you leave move mode, the anchor is picked from the screen third the window sits in, and the placement is saved by `JsonOverlayLayoutStore` to `%APPDATA%/iRDCav/layout.json`.
+- **Re-applying:** placements are applied again when the window size, its DPI or the monitor setup changes. `ScreenWatcher` polls for monitor changes because Avalonia 11.1 has no event for that. The defaults (`DefaultLayouts`) reproduce the original 2560x1440 layout.
 
 ## Rules
 
