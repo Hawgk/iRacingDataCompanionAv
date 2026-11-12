@@ -21,6 +21,9 @@ namespace IRDCav.Telemetry
         private readonly IRacingSdkDatum _sessionTimeRemain;
         private readonly IRacingSdkDatum _fuelLevel;
         private readonly IRacingSdkDatum _isOnTrack;
+        private readonly IRacingSdkDatum _windDirection;
+        private readonly IRacingSdkDatum _windSpeed;
+        private readonly IRacingSdkDatum _heading;
 
         private readonly IRacingSdkDatum _carLap;
         private readonly IRacingSdkDatum _carLapDistPct;
@@ -56,6 +59,9 @@ namespace IRDCav.Telemetry
             _sessionTimeRemain = Resolve("SessionTimeRemain");
             _fuelLevel = Resolve("FuelLevel");
             _isOnTrack = Resolve("IsOnTrack");
+            _windDirection = Resolve("WindDir");
+            _windSpeed = Resolve("WindVel");
+            _heading = Resolve("YawNorth");
 
             _carLap = Resolve("CarIdxLap");
             _carLapDistPct = Resolve("CarIdxLapDistPct");
@@ -77,6 +83,9 @@ namespace IRDCav.Telemetry
             TimeRemain = _data.GetDouble(_sessionTimeRemain),
             FuelLevel = _data.GetFloat(_fuelLevel),
             IsOnTrack = _data.GetBool(_isOnTrack),
+            WindDirection = _data.GetFloat(_windDirection),
+            WindSpeed = _data.GetFloat(_windSpeed),
+            Heading = _data.GetFloat(_heading),
         };
 
         public IReadOnlyList<CarTelemetry> ReadCars()

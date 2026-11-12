@@ -21,8 +21,8 @@ namespace IRDCav.Services
 
             return new SessionInfoModel
             {
-                AirTemp = FirstWord(weekend.TrackAirTemp) + "°C",
-                SurfaceTemp = FirstWord(weekend.TrackSurfaceTemp) + "°C",
+                AirTemp = FirstWord(weekend.TrackAirTemp) + "°",
+                SurfaceTemp = FirstWord(weekend.TrackSurfaceTemp) + "°",
                 Precipitation = FirstWord(weekend.TrackPrecipitation) + "%",
                 Humidity = FirstWord(weekend.TrackRelativeHumidity) + "%",
                 DriverClassName = player?.CarClassShortName ?? string.Empty,
@@ -50,8 +50,15 @@ namespace IRDCav.Services
             {
                 return string.Empty;
             }
-            string sessionName = sessions[sessionNum].SessionName;
-            return sessionName.Length > 0 ? sessionName[0].ToString() : string.Empty;
+            return SessionLetter(sessions[sessionNum].SessionType);
         }
+
+        // iRacing session types include "Practice", "Open Qualify", "Lone Qualify", "Warmup" and "Race".
+        private static string SessionLetter(string sessionType) => sessionType switch
+        {
+            _ when sessionType.Contains("Race") => "R",
+            _ when sessionType.Contains("Qualify") => "Q",
+            _ => "P",
+        };
     }
 }

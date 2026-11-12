@@ -10,9 +10,7 @@ namespace IRDCav.Models
     /// </summary>
     public class RaceDataModel
     {
-        private const string DefaultBackgroundColor = "#C0242423";
-        private const string UndefinedLicenseColor = "#60FF7247";
-        private const string TranslucentAlpha = "#60";
+        private const string UndefinedSdkColor = "0xundefined";
 
         public int Id { get; set; }
         public bool IsMe { get; set; }
@@ -25,8 +23,13 @@ namespace IRDCav.Models
         public string ClassStr { get; set; } = string.Empty;
         public string CarNumber { get; set; } = string.Empty;
         public string License { get; set; } = string.Empty;
-        public string ClassColor { get; set; } = DefaultBackgroundColor;
-        public string LicenseColor { get; set; } = DefaultBackgroundColor;
+        public string SafetyRating { get; set; } = string.Empty;
+
+        /// <summary>"#RRGGBB", or empty when unknown.</summary>
+        public string ClassColor { get; set; } = string.Empty;
+
+        /// <summary>"#RRGGBB", or empty when unknown.</summary>
+        public string LicenseColor { get; set; } = string.Empty;
 
         public int Position { get; set; }
         public int ClassPosition { get; set; }
@@ -36,8 +39,8 @@ namespace IRDCav.Models
         /// <summary>Laps this car is ahead of (positive) or behind (negative) the player.</summary>
         public int LapDelta { get; set; }
 
-        public bool IsBehind => LapDelta > 0;
-        public bool IsInfront => LapDelta < 0;
+        public bool IsLapAhead => LapDelta > 0;
+        public bool IsLapBehind => LapDelta < 0;
 
         public float LapDistPct { get; set; }
         public float LastLapDistPct { get; set; }
@@ -75,9 +78,10 @@ namespace IRDCav.Models
             CarNumber = driver.CarNumber;
             EstLapTime = driver.CarClassEstLapTime;
             License = ((float)driver.IRating / 1000).ToString("0.0") + "k";
+            SafetyRating = driver.LicString;
             IsPaceCar = driver.CarIsPaceCar > 0;
-            ClassColor = ToTranslucentColor(driver.CarClassColor);
-            LicenseColor = ToLicenseColor(driver.LicColor);
+            ClassColor = ToColor(driver.CarClassColor);
+            LicenseColor = ToColor(driver.LicColor);
         }
 
         public void ApplyPosition(PositionModel position)
@@ -89,10 +93,8 @@ namespace IRDCav.Models
             LastLapTime = position.LastTime;
         }
 
-        private static string ToLicenseColor(string sdkColor) =>
-            sdkColor == "0xundefined" ? UndefinedLicenseColor : ToTranslucentColor(sdkColor);
-
-        // iRacing reports colors as "0xRRGGBB".
-        private static string ToTranslucentColor(string sdkColor) => TranslucentAlpha + sdkColor.Substring(2);
+        // iRacing reports colors as "0xRRGGBB" or "0xundefined".
+        private static string ToColor(string sdkColor) =>
+            sdkColor == UndefinedSdkColor || sdkColor.Length < 3 ? string.Empty : "#" + sdkColor.Substring(2);
     }
 }

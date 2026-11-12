@@ -6,8 +6,8 @@ using System.Linq;
 namespace IRDCav.Services
 {
     /// <summary>
-    /// Builds the standings view grouped by class. Other classes show their leaders only;
-    /// the player's class shows its leaders plus a window of cars around the player.
+    /// Builds the standings view grouped by class, each class under a header row. Other classes
+    /// show their leaders only; the player's class shows its leaders plus a window of cars around the player.
     /// </summary>
     internal sealed class StandingsListBuilder
     {
@@ -32,8 +32,9 @@ namespace IRDCav.Services
             {
                 List<RaceRow> classRows = classCars.Key == playerClass
                     ? BuildPlayerClassRows(classCars.Select(RaceRow.From).ToList())
-                    : BuildOtherClassRows(classCars.Select(RaceRow.From));
+                    : classCars.Select(RaceRow.From).Take(_leadersPerClass).ToList();
 
+                rows.Add(RaceRow.ClassHeader(classCars.Key, classCars.First().ClassColor));
                 rows.AddRange(WithGaps(classRows, sessionType));
             }
             return rows;
@@ -45,16 +46,9 @@ namespace IRDCav.Services
                 .OrderBy(car => car.Position)
                 .GroupBy(car => car.ClassStr);
 
-        private List<RaceRow> BuildOtherClassRows(IEnumerable<RaceRow> classCars)
-        {
-            List<RaceRow> rows = classCars.Take(_leadersPerClass).ToList();
-            rows.Add(RaceRow.Empty);
-            return rows;
-        }
-
         /// <summary>
         /// The leaders are separated from the window around the player by an empty row
-        /// whenever the window does not start at the class leader.
+        /// whenever cars between them are left out.
         /// </summary>
         private List<RaceRow> BuildPlayerClassRows(List<RaceRow> classCars)
         {
@@ -63,7 +57,7 @@ namespace IRDCav.Services
             int leaderCount = Math.Min(_leadersPerClass, windowStart);
 
             List<RaceRow> rows = classCars.Take(leaderCount).ToList();
-            if (leaderCount > 0)
+            if (windowStart > leaderCount)
             {
                 rows.Add(RaceRow.Empty);
             }

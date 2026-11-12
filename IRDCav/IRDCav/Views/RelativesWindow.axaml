@@ -348,8 +348,8 @@
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
-								Classes.IsBehind="{Binding IsBehind}"
-								Classes.IsInfront="{Binding IsInfront}"
+								Classes.IsBehind="{Binding IsLapAhead}"
+								Classes.IsInfront="{Binding IsLapBehind}"
 								Classes.IsOnPitRoad="{Binding OnPitRoad}"
 								Text="{Binding ClassPosition, Converter={StaticResource PositionConverter}}"/>
 						</Grid>
@@ -369,8 +369,8 @@
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
-								Classes.IsBehind="{Binding IsBehind}"
-								Classes.IsInfront="{Binding IsInfront}"
+								Classes.IsBehind="{Binding IsLapAhead}"
+								Classes.IsInfront="{Binding IsLapBehind}"
 								Classes.IsOnPitRoad="{Binding OnPitRoad}"
 								Text="{Binding Name, Converter={StaticResource DriverNameConverter}, ConverterParameter=LastUpper}"/>
 						</Grid>
@@ -383,8 +383,8 @@
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
-								Classes.IsBehind="{Binding IsBehind}"
-								Classes.IsInfront="{Binding IsInfront}"
+								Classes.IsBehind="{Binding IsLapAhead}"
+								Classes.IsInfront="{Binding IsLapBehind}"
 								Classes.IsOnPitRoad="{Binding OnPitRoad}"
 								Text="{Binding Interval, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Interval}"/>
 						</Grid>
@@ -397,8 +397,8 @@
 								Classes="DefaultStyle"
 								Classes.IsMe="{Binding IsMe}"
 								Classes.NotMe="{Binding !IsMe}"
-								Classes.IsBehind="{Binding IsBehind}"
-								Classes.IsInfront="{Binding IsInfront}"
+								Classes.IsBehind="{Binding IsLapAhead}"
+								Classes.IsInfront="{Binding IsLapBehind}"
 								Classes.IsOnPitRoad="{Binding OnPitRoad}"
 								Text="{Binding LastLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
 						</Grid>

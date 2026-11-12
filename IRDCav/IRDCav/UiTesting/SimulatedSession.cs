@@ -10,6 +10,8 @@ namespace IRDCav.UiTesting
         private const double SessionSeconds = 60 * 60;
         private const double SecondsPerIncident = 5 * 60;
         private const int IncidentLimit = 17;
+        private const double WindFromTrack = 35;
+        private const double WindSpeed = 14;
 
         private const float TankCapacity = 60f;
         private const double StintSeconds = 30 * 60;
@@ -22,8 +24,8 @@ namespace IRDCav.UiTesting
             DemoDriver[] playerClass = PlayerClassDrivers();
             return new SessionInfoModel
             {
-                AirTemp = "24°C",
-                SurfaceTemp = "37°C",
+                AirTemp = "24°",
+                SurfaceTemp = "37°",
                 Precipitation = "0%",
                 Humidity = "48%",
                 LapsString = $"{race.Player.Lap + 1}",
@@ -33,6 +35,8 @@ namespace IRDCav.UiTesting
                 SOF = (int)playerClass.Average(driver => driver.IRating),
                 DriverCount = playerClass.Length,
                 TimeRemain = TimeRemain(race),
+                WindAngle = (WindFromTrack + race.Player.LapDistPct * 360) % 360,
+                WindSpeed = WindSpeed,
             };
         }
 

@@ -95,11 +95,7 @@ namespace IRDCav.Services
             ApplySessionInfoIfChanged(frame.SessionInfoVersion, sessionInfo, session);
             MergeRaceData(sessionInfo, session, cars);
 
-            OverlayState state = _state with
-            {
-                IsConnected = true,
-                Session = _sessionSummary with { TimeRemain = session.TimeRemain },
-            };
+            OverlayState state = _state with { IsConnected = true, Session = LiveSessionSummary(session) };
             state = WithRaceRows(state);
             state = UpdateFuel(state, session, cars[sessionInfo.DriverInfo.DriverCarIdx].Lap);
             Publish(state);
@@ -121,6 +117,14 @@ namespace IRDCav.Services
                 _sessionSummary = _sessionInfoBuilder.Build(sessionInfo, session);
             }
         }
+
+        private SessionInfoModel LiveSessionSummary(SessionTelemetry session) =>
+            _sessionSummary with
+            {
+                TimeRemain = session.TimeRemain,
+                WindAngle = WindCalculator.RelativeAngle(session.WindDirection, session.Heading),
+                WindSpeed = WindCalculator.ToKmh(session.WindSpeed),
+            };
 
         private void MergeRaceData(IRacingSdkSessionInfo sessionInfo, SessionTelemetry session, IReadOnlyList<CarTelemetry> cars)
         {

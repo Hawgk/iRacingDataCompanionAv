@@ -9,17 +9,22 @@ namespace IRDCav.ViewModels
     /// </summary>
     public partial class RaceRowViewModel : ViewModelBase
     {
+        [ObservableProperty] private bool _isCar;
+        [ObservableProperty] private bool _isClassHeader;
+
         [ObservableProperty] private bool _isMe;
         [ObservableProperty] private bool _isFastest;
-        [ObservableProperty] private bool _isBehind;
-        [ObservableProperty] private bool _isInfront;
+        [ObservableProperty] private bool _isLapAhead;
+        [ObservableProperty] private bool _isLapBehind;
         [ObservableProperty] private bool _onPitRoad;
 
         [ObservableProperty] private string _name = string.Empty;
         [ObservableProperty] private string _carNumber = string.Empty;
+        [ObservableProperty] private string _className = string.Empty;
         [ObservableProperty] private string _license = string.Empty;
-        [ObservableProperty] private string _classColor = RaceRow.Empty.ClassColor;
-        [ObservableProperty] private string _licenseColor = RaceRow.Empty.LicenseColor;
+        [ObservableProperty] private string _safetyRating = string.Empty;
+        [ObservableProperty] private string _classColor = string.Empty;
+        [ObservableProperty] private string _licenseColor = string.Empty;
 
         [ObservableProperty] private int _classPosition;
         [ObservableProperty] private int _lapsCompleted;
@@ -31,16 +36,35 @@ namespace IRDCav.ViewModels
 
         public void Apply(RaceRow row)
         {
+            ApplyState(row);
+            ApplyIdentity(row);
+            ApplyTiming(row);
+        }
+
+        private void ApplyState(RaceRow row)
+        {
+            IsCar = row.Kind == RaceRowKind.Car;
+            IsClassHeader = row.Kind == RaceRowKind.ClassHeader;
             IsMe = row.IsMe;
             IsFastest = row.IsFastest;
-            IsBehind = row.IsBehind;
-            IsInfront = row.IsInfront;
+            IsLapAhead = row.IsLapAhead;
+            IsLapBehind = row.IsLapBehind;
             OnPitRoad = row.OnPitRoad;
+        }
+
+        private void ApplyIdentity(RaceRow row)
+        {
             Name = row.Name;
             CarNumber = row.CarNumber;
+            ClassName = row.ClassName;
             License = row.License;
+            SafetyRating = row.SafetyRating;
             ClassColor = row.ClassColor;
             LicenseColor = row.LicenseColor;
+        }
+
+        private void ApplyTiming(RaceRow row)
+        {
             ClassPosition = row.ClassPosition;
             LapsCompleted = row.LapsCompleted;
             Interval = row.Interval;

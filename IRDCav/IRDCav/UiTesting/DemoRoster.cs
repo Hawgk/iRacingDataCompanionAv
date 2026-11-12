@@ -4,7 +4,9 @@ namespace IRDCav.UiTesting
 {
     internal sealed record DemoCarClass(string Name, string Color, float LapTime);
 
-    internal sealed record DemoDriver(string Name, string CarNumber, DemoCarClass CarClass, int IRating, string LicenseColor);
+    internal sealed record DemoLicense(string Class, string Color);
+
+    internal sealed record DemoDriver(string Name, string CarNumber, DemoCarClass CarClass, int IRating, DemoLicense License);
 
     /// <summary>
     /// Fictional multi-class field. It contains edge cases the overlays must handle:
@@ -14,16 +16,16 @@ namespace IRDCav.UiTesting
     {
         public const string PlayerName = "Test Player";
 
-        private const string LicenseA = "#600153DB";
-        private const string LicenseB = "#6000C702";
-        private const string LicenseC = "#60FEEC04";
-        private const string LicenseD = "#60FC8A27";
-        private const string LicenseR = "#60FC0706";
-        private const string LicenseUndefined = "#60FF7247";
+        private static readonly DemoLicense LicenseA = new("A", "#0153DB");
+        private static readonly DemoLicense LicenseB = new("B", "#00C702");
+        private static readonly DemoLicense LicenseC = new("C", "#FEEC04");
+        private static readonly DemoLicense LicenseD = new("D", "#FC8A27");
+        private static readonly DemoLicense LicenseR = new("R", "#FC0706");
+        private static readonly DemoLicense LicenseUndefined = new("R", string.Empty);
 
-        private static readonly DemoCarClass Prototype = new("LMP2", "#6033CEFF", 98.5f);
-        private static readonly DemoCarClass Gt3 = new("GT3", "#60FFDA59", 105.2f);
-        private static readonly DemoCarClass Gt4 = new("GT4", "#60AE6BFF", 112.8f);
+        private static readonly DemoCarClass Prototype = new("LMP2", "#33CEFF", 98.5f);
+        private static readonly DemoCarClass Gt3 = new("GT3", "#FFDA59", 105.2f);
+        private static readonly DemoCarClass Gt4 = new("GT4", "#AE6BFF", 112.8f);
 
         public static IReadOnlyList<DemoDriver> Drivers { get; } = new[]
         {

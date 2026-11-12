@@ -14,8 +14,14 @@
         public string DriverClassName { get; init; } = string.Empty;
         public string IncidentCount { get; init; } = string.Empty;
 
-        /// <summary>First letter of the session name, e.g. "P", "Q" or "R".</summary>
+        /// <summary>"P" for practice, "Q" for qualifying, "R" for race.</summary>
         public string SessionType { get; init; } = string.Empty;
+
+        /// <summary>Where the wind comes from relative to the player's car, clockwise in degrees. 0 is a headwind.</summary>
+        public double WindAngle { get; init; }
+
+        /// <summary>Wind speed in km/h.</summary>
+        public double WindSpeed { get; init; }
 
         public int SOF { get; init; }
         public int DriverCount { get; init; }
