@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:IRDCav.ViewModels"
+             x:Class="IRDCav.Views.Table.RaceRowView"
+             x:DataType="vm:RaceRowViewModel">
+	<Panel Classes="raceRow">
+		<Border
+			Classes="carRow"
+			Classes.me="{Binding IsMe}"
+			Classes.lapAhead="{Binding IsLapAhead}"
+			Classes.lapBehind="{Binding IsLapBehind}"
+			Classes.pit="{Binding OnPitRoad}"
+			IsVisible="{Binding IsCar}">
+			<StackPanel x:Name="Cells" Orientation="Horizontal"/>
+		</Border>
+		<TextBlock
+			Classes="classHeader"
+			IsVisible="{Binding IsClassHeader}"
+			Text="{Binding ClassName}"
+			Foreground="{Binding ClassColor, Converter={StaticResource TintConverter}, ConverterParameter=Text}"/>
+	</Panel>
+</UserControl>

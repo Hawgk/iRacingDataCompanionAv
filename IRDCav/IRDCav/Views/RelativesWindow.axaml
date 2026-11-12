@@ -1,411 +1,72 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:IRDCav.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="400"
+        xmlns:table="using:IRDCav.Views.Table"
         x:Class="IRDCav.Views.RelativesWindow"
         x:DataType="vm:RelativesViewModel"
+        Classes="overlay"
         Icon="/Assets/icon.ico"
         Title="iRDCav Relatives"
-		SizeToContent="WidthAndHeight"
-        Background="White"
-		SystemDecorations="None"
-		IsVisible="{Binding IsVisible}">
-	<LayoutTransformControl>
-	<Grid Width="400">
-		<Grid.RowDefinitions>
-			<RowDefinition
-				Height="30"/>
-			<RowDefinition
-				Height="*"/>
-			<RowDefinition
-				Height="*"/>
-		</Grid.RowDefinitions>
-		<Grid
-			Grid.Row="0"
-			VerticalAlignment="Center"
-			HorizontalAlignment="Stretch"
-			Background="{StaticResource ThemeFuelBackground}">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-				<ColumnDefinition
-					Width="Auto"/>
-			</Grid.ColumnDefinitions>
-			<Grid
-				Grid.Column="0"
-				Margin="3,0,0,0">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="&#xf2cb;"
-					Margin="0,1,0,0"
-					FontSize="14"/>
-			</Grid>
-			<Grid
-				Grid.Column="1">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding SessionInfo.AirTemp}"/>
-			</Grid>
-			<Grid
-				Grid.Column="2"
-				Margin="10,0,0,0">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="&#xf018;"
-					Margin="0,1,0,0"/>
-			</Grid>
-			<Grid
-				Grid.Column="3">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding SessionInfo.SurfaceTemp}"/>
-			</Grid>
-			<Grid
-				Grid.Column="4"
-				Margin="10,0,0,0">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="&#xe318;"
-					Margin="0,-4,0,0"
-					FontSize="20"/>
-			</Grid>
-			<Grid
-				Grid.Column="5">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding SessionInfo.Precipitation}"/>
-			</Grid>
-			<Grid
-				Grid.Column="6"
-				Margin="10,0,0,0">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="&#xe373;"
-					Margin="0,-3,0,0"
-					FontSize="21"/>
-			</Grid>
-			<Grid
-				Grid.Column="7"
-				Margin="0,0,5,0">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding SessionInfo.Humidity}"/>
-			</Grid>
-		</Grid>
-		<Grid
-			Grid.Row="1"
-			VerticalAlignment="Center"
-			HorizontalAlignment="Left"
-			Grid.IsSharedSizeScope="True"
-			Margin="0,0,0,5">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition
-					SharedSizeGroup="A"
-					Width="Auto"/>
-				<ColumnDefinition
-					SharedSizeGroup="B"
-					Width="Auto"/>
-				<ColumnDefinition
-					SharedSizeGroup="C"
-					Width="Auto"/>
-				<ColumnDefinition
-					SharedSizeGroup="D"
-					Width="Auto"/>
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition
-					Height="Auto"/>
-				<RowDefinition
-					Height="Auto"/>
-				<RowDefinition
-					Height="Auto"/>
-				<RowDefinition
-					Height="Auto"/>
-				<RowDefinition
-					Height="Auto"/>
-				<RowDefinition
-					Height="Auto"/>
-				<RowDefinition
-					Height="Auto"/>
-			</Grid.RowDefinitions>
-			<Grid
-				Grid.Row="1"
-				Grid.Column="0">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="Fuel"
-					FontWeight="Bold"/>
-			</Grid>
-			<Grid
-				Grid.Row="1"
-				Grid.Column="1">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding FuelData.Level, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="2"
-				Grid.Column="0">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="Last"
-					FontWeight="Bold"/>
-			</Grid>
-			<Grid
-				Grid.Row="2"
-				Grid.Column="1">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding FuelData.LastConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerLap}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="3"
-				Grid.Column="0">
-				<TextBlock
-					HorizontalAlignment="Center"
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="&#xf0f86;"
-					Margin="0,-1,0,0"
-					FontSize="17"
-					FontWeight="Bold"/>
-			</Grid>
-			<Grid
-				Grid.Row="3"
-				Grid.Column="1">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding FuelData.MinConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerLap}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="3"
-				Grid.Column="2">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding FuelData.FuelPerMinuteMin, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerMinute}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="3"
-				Grid.Column="3">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeRed}"
-					Text="{Binding FuelData.RefuelMin, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="4"
-				Grid.Column="0">
-				<TextBlock
-					HorizontalAlignment="Center"
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="&#xf0f85;"
-					Margin="0,-1,0,0"
-					FontSize="17"
-					FontWeight="Bold"/>
-			</Grid>
-			<Grid
-				Grid.Row="4"
-				Grid.Column="1">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding FuelData.AvgConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerLap}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="4"
-				Grid.Column="2">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding FuelData.FuelPerMinuteAvg, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerMinute}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="4"
-				Grid.Column="3">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeYellow}"
-					Text="{Binding FuelData.RefuelAvg, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="5"
-				Grid.Column="0">
-				<TextBlock
-					HorizontalAlignment="Center"
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="&#xf04c5;"
-					Margin="0,-1,0,0"
-					FontSize="17"
-					FontWeight="Bold"/>
-			</Grid>
-			<Grid
-				Grid.Row="5"
-				Grid.Column="1">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding FuelData.MaxConsumption, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerLap}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="5"
-				Grid.Column="2">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding FuelData.FuelPerMinuteMax, Converter={StaticResource FloatConverter}, ConverterParameter=FuelPerMinute}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-			<Grid
-				Grid.Row="5"
-				Grid.Column="3">
-				<TextBlock
-					Classes="DefaultStyle"
-					Foreground="{StaticResource ThemeGray}"
-					Text="{Binding FuelData.RefuelMax, Converter={StaticResource FloatConverter}, ConverterParameter=Fuel}"
-					HorizontalAlignment="Right"/>
-			</Grid>
-		</Grid>
-		<ListBox
-			Grid.Row="2"
-			ItemsSource="{Binding RaceDataList}"
-			Background="{StaticResource ThemeIsNotMeBackground}"
-			Grid.IsSharedSizeScope="True"
-			VerticalAlignment="Stretch">
-			<ListBox.Styles>
-				<Style
-					Selector="ListBoxItem">
-					<Setter
-						Property="Padding"
-						Value="0"/>
-					<Setter
-						Property="IsEnabled"
-						Value="False"/>
-				</Style>
-			</ListBox.Styles>
-			<ListBox.ItemTemplate>
-				<DataTemplate x:DataType="vm:RaceRowViewModel">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition
-								SharedSizeGroup="A"
-								Width="Auto"/>
-							<ColumnDefinition
-								SharedSizeGroup="B"
-								Width="Auto"/>
-							<ColumnDefinition
-								Width="*"/>
-							<ColumnDefinition
-								SharedSizeGroup="C"
-								Width="Auto"/>
-							<ColumnDefinition
-								SharedSizeGroup="D"
-								Width="Auto"/>
-						</Grid.ColumnDefinitions>
-						<Grid
-							Classes.IsMe="{Binding IsMe}"
-							Classes.NotMe="{Binding !IsMe}"
-							Grid.Column="0">
-							<TextBlock
-								Classes="DefaultStyle"
-								Classes.IsMe="{Binding IsMe}"
-								Classes.NotMe="{Binding !IsMe}"
-								Classes.IsBehind="{Binding IsLapAhead}"
-								Classes.IsInfront="{Binding IsLapBehind}"
-								Classes.IsOnPitRoad="{Binding OnPitRoad}"
-								Text="{Binding ClassPosition, Converter={StaticResource PositionConverter}}"/>
-						</Grid>
-						<Grid
-							Grid.Column="1"
-							Background="{Binding ClassColor}">
-							<TextBlock
-								Classes="DefaultStyle"
-								Foreground="{StaticResource ThemeWhite}"
-								Text="{Binding CarNumber, Converter={StaticResource CarNumberConverter}}"/>
-						</Grid>
-						<Grid
-							Classes.IsMe="{Binding IsMe}"
-							Classes.NotMe="{Binding !IsMe}"
-							Grid.Column="2">
-							<TextBlock
-								Classes="DefaultStyle"
-								Classes.IsMe="{Binding IsMe}"
-								Classes.NotMe="{Binding !IsMe}"
-								Classes.IsBehind="{Binding IsLapAhead}"
-								Classes.IsInfront="{Binding IsLapBehind}"
-								Classes.IsOnPitRoad="{Binding OnPitRoad}"
-								Text="{Binding Name, Converter={StaticResource DriverNameConverter}, ConverterParameter=LastUpper}"/>
-						</Grid>
-						<Grid
-							Classes.IsMe="{Binding IsMe}"
-							Classes.NotMe="{Binding !IsMe}"
-							Grid.Column="3">
-							<TextBlock
-								HorizontalAlignment="Right"
-								Classes="DefaultStyle"
-								Classes.IsMe="{Binding IsMe}"
-								Classes.NotMe="{Binding !IsMe}"
-								Classes.IsBehind="{Binding IsLapAhead}"
-								Classes.IsInfront="{Binding IsLapBehind}"
-								Classes.IsOnPitRoad="{Binding OnPitRoad}"
-								Text="{Binding Interval, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Interval}"/>
-						</Grid>
-						<Grid
-							Classes.IsMe="{Binding IsMe}"
-							Classes.NotMe="{Binding !IsMe}"
-							Grid.Column="4">
-							<TextBlock
-								HorizontalAlignment="Right"
-								Classes="DefaultStyle"
-								Classes.IsMe="{Binding IsMe}"
-								Classes.NotMe="{Binding !IsMe}"
-								Classes.IsBehind="{Binding IsLapAhead}"
-								Classes.IsInfront="{Binding IsLapBehind}"
-								Classes.IsOnPitRoad="{Binding OnPitRoad}"
-								Text="{Binding LastLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
-						</Grid>
-					</Grid>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
-	</Grid>
+        SizeToContent="WidthAndHeight"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        SystemDecorations="None"
+        IsVisible="{Binding IsVisible}">
+	<LayoutTransformControl HorizontalAlignment="Left" VerticalAlignment="Top">
+		<Border Classes="panel">
+			<StackPanel>
+				<Border Classes="header">
+					<DockPanel>
+						<StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="5" ToolTip.Tip="Wind relative to your car">
+							<Path
+								Classes="icon windArrow"
+								Data="{StaticResource Icon.WindArrow}"
+								RenderTransform="{Binding SessionInfo.WindAngle, Converter={StaticResource RotationConverter}}"/>
+							<TextBlock Text="{Binding SessionInfo.WindSpeed, StringFormat='{}{0:0} km/h'}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" Spacing="12">
+							<StackPanel Orientation="Horizontal" Spacing="4">
+								<Path Classes="icon" Data="{StaticResource Icon.AirTemperature}"/>
+								<TextBlock Text="{Binding SessionInfo.AirTemp}"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal" Spacing="4">
+								<Path Classes="icon" Data="{StaticResource Icon.TrackTemperature}"/>
+								<TextBlock Text="{Binding SessionInfo.SurfaceTemp}"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal" Spacing="4">
+								<Path Classes="icon" Data="{StaticResource Icon.Humidity}"/>
+								<TextBlock Text="{Binding SessionInfo.Humidity}"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal" Spacing="4">
+								<Path Classes="icon" Data="{StaticResource Icon.Precipitation}"/>
+								<TextBlock Text="{Binding SessionInfo.Precipitation}"/>
+							</StackPanel>
+						</StackPanel>
+					</DockPanel>
+				</Border>
+				<Border Classes="fuel">
+					<StackPanel Spacing="2">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Classes="label" Text="{Binding Fuel.Label}" VerticalAlignment="Bottom" Margin="0,0,0,6"/>
+							<TextBlock Classes="refuelAmount" Classes.short="{Binding Fuel.NeedsRefuel}" Text="{Binding Fuel.Amount}"/>
+							<TextBlock Classes="refuelAmount refuelUnit" Classes.short="{Binding Fuel.NeedsRefuel}" Text="L"/>
+						</StackPanel>
+						<StackPanel Classes="fuelFacts" Orientation="Horizontal" Spacing="4">
+							<TextBlock Classes="value" Text="{Binding Fuel.Tank}"/>
+							<TextBlock Text="L in tank" Margin="0,0,10,0"/>
+							<TextBlock Classes="value" Text="{Binding Fuel.PerLap}"/>
+							<TextBlock Text="L/lap" Margin="0,0,10,0"/>
+							<TextBlock Classes="value" Text="{Binding Fuel.Laps}"/>
+							<TextBlock Text="laps"/>
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<table:RaceTable
+					Margin="0,4"
+					Columns="{Binding Columns}"
+					ShowColumnTitles="{Binding ShowColumnTitles}"
+					Rows="{Binding RaceDataList}"/>
+			</StackPanel>
+		</Border>
 	</LayoutTransformControl>
 </Window>

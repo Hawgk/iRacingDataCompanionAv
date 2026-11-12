@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using IRDCav.Configuration;
 using IRDCav.Layout;
 using IRDCav.Presentation;
 using IRDCav.Services;
@@ -10,6 +11,7 @@ using IRDCav.Telemetry;
 using IRDCav.UiTesting;
 using IRDCav.ViewModels;
 using IRDCav.Views;
+using IRDCav.Views.Theme;
 using System;
 using System.Text;
 
@@ -44,8 +46,9 @@ namespace IRDCav
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 DataContext = new ApplicationViewModel();
 
-                var viewModels = new OverlayViewModels(
-                    new ResultsViewModel(), new RelativesViewModel(), new InputGraphViewModel(InputTraceSampleCount));
+                OverlayConfiguration configuration = LoadConfiguration();
+                OverlayTheme.Apply(this, configuration);
+                OverlayViewModels viewModels = CreateViewModels(configuration);
                 CreateWindows(viewModels);
 
                 var store = new OverlayStateStore();
@@ -63,6 +66,18 @@ namespace IRDCav
 
             base.OnFrameworkInitializationCompleted();
         }
+
+        private static OverlayConfiguration LoadConfiguration()
+        {
+            var file = new JsonOverlayConfigurationFile(JsonOverlayConfigurationFile.DefaultFilePath);
+            file.CreateIfMissing();
+            return file.Read();
+        }
+
+        private static OverlayViewModels CreateViewModels(OverlayConfiguration configuration) => new(
+            new ResultsViewModel(configuration.Standings),
+            new RelativesViewModel(configuration.Relatives, configuration.Fuel.RefuelEstimate),
+            new InputGraphViewModel(InputTraceSampleCount));
 
         // Windows show and hide themselves through their IsVisible binding.
         private void CreateWindows(OverlayViewModels viewModels)

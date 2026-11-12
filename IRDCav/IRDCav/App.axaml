@@ -4,96 +4,200 @@
              xmlns:conv="using:IRDCav.Converters"
              xmlns:vm="using:IRDCav.ViewModels"
              x:DataType="vm:ApplicationViewModel"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+             RequestedThemeVariant="Dark">
+	<!--
+	Colors are not defined here: OverlayTheme publishes them from config.json as
+	"Overlay.*" brushes, so every color below is a DynamicResource.
+	-->
 	<Application.Resources>
-		<conv:SecToTimeConverter x:Key="SecToTimeConverter"/>
-		<conv:IntToLapConverter x:Key="IntToLapConverter"/>
-		<conv:DriverNameConverter x:Key="DriverNameConverter"/>
-		<conv:FloatConverter x:Key="FloatConverter"/>
-		<conv:PositionConverter x:Key="PositionConverter"/>
-		<conv:CarNumberConverter x:Key="CarNumberConverter"/>
-		<SolidColorBrush x:Key="ThemeFuelBackground">#60FF7247</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeIsNotMeBackground">#C0242423</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeIsMeBackground">#C03B3B3A</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeDarkGray">#333533</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeBlack">#242423</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeYellow">#F5CB5C</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeRed">#FF7247</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeWhite">#E8EDDF</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeBlue">#60C7DB</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeGray">#CFDBD5</SolidColorBrush>
-		<SolidColorBrush x:Key="ThemeMediumGray">#616160</SolidColorBrush>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://IRDCav/Views/Table/RaceColumnTemplates.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+
+			<conv:SecToTimeConverter x:Key="SecToTimeConverter"/>
+			<conv:DriverNameConverter x:Key="DriverNameConverter"/>
+			<conv:PositiveNumberConverter x:Key="PositiveNumberConverter"/>
+			<conv:TintConverter x:Key="TintConverter"/>
+			<conv:RotationConverter x:Key="RotationConverter"/>
+
+			<!-- Stroked icons on a 24 unit grid. -->
+			<StreamGeometry x:Key="Icon.AirTemperature">M14 4v10.5a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z</StreamGeometry>
+			<StreamGeometry x:Key="Icon.TrackTemperature">M5 21L9 3M19 21L15 3M12 5v2M12 11v2M12 17v3</StreamGeometry>
+			<StreamGeometry x:Key="Icon.Humidity">M12 3C12 3 18 9.5 18 14a6 6 0 0 1-12 0C6 9.5 12 3 12 3z</StreamGeometry>
+			<StreamGeometry x:Key="Icon.Precipitation">M7 15a4 4 0 0 1-0.6-7.95A6 6 0 0 1 17.5 8.2A3.5 3.5 0 0 1 17 15M8 18v2M12 17v3M16 18v2</StreamGeometry>
+			<StreamGeometry x:Key="Icon.WindArrow">M12 20V4M6 10l6-6l6 6</StreamGeometry>
+		</ResourceDictionary>
 	</Application.Resources>
-    <Application.Styles>
-		<Style
-			Selector="Grid.IsMe">
-			<Setter
-				Property="Background"
-				Value="{StaticResource ThemeIsMeBackground}"/>
+
+	<Application.Styles>
+		<FluentTheme/>
+
+		<!-- Overlay windows and panels -->
+		<Style Selector="Window.overlay">
+			<Setter Property="FontFamily" Value="fonts:Inter#Inter"/>
+			<Setter Property="FontSize" Value="13"/>
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.Text}"/>
 		</Style>
-		<Style
-			Selector="Grid.NotMe">
-			<Setter
-				Property="Background"
-				Value="{StaticResource ThemeIsNotMeBackground}"/>
+		<Style Selector="Border.panel">
+			<Setter Property="Background" Value="{DynamicResource Overlay.Background}"/>
+			<Setter Property="CornerRadius" Value="6"/>
+			<Setter Property="ClipToBounds" Value="True"/>
 		</Style>
-		<Style
-			Selector="TextBlock.NotMe">
-			<Setter
-				Property="Foreground"
-				Value="{StaticResource ThemeWhite}"/>
+		<Style Selector="Border.header">
+			<Setter Property="Background" Value="{DynamicResource Overlay.Surface}"/>
+			<Setter Property="Padding" Value="10,7"/>
 		</Style>
-		<Style
-			Selector="TextBlock.IsMe">
-			<Setter
-				Property="Foreground"
-				Value="{StaticResource ThemeWhite}"/>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
-		<Style
-			Selector="TextBlock.IsFastest">
-			<Setter
-				Property="Foreground"
-				Value="{StaticResource ThemeYellow}"/>
-			<Setter
-				Property="FontWeight"
-				Value="Normal"/>
+		<Style Selector="TextBlock.label">
+			<Setter Property="FontSize" Value="10"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="LetterSpacing" Value="0.9"/>
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
 		</Style>
-		<Style
-			Selector="TextBlock.IsBehind">
-			<Setter
-				Property="Foreground"
-				Value="{StaticResource ThemeRed}"/>
+		<Style Selector="TextBlock.timeLeft">
+			<Setter Property="FontSize" Value="18"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
-		<Style
-			Selector="TextBlock.IsOnPitRoad">
-			<Setter
-				Property="Foreground"
-				Value="{StaticResource ThemeMediumGray}"/>
+		<Style Selector="TextBlock.incidents">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.Warning}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
-		<Style
-			Selector="TextBlock.IsInfront">
-			<Setter
-				Property="Foreground"
-				Value="{StaticResource ThemeBlue}"/>
+		<Style Selector="Path.icon">
+			<Setter Property="Width" Value="14"/>
+			<Setter Property="Height" Value="14"/>
+			<Setter Property="Stretch" Value="Uniform"/>
+			<Setter Property="Stroke" Value="{DynamicResource Overlay.TextMuted}"/>
+			<Setter Property="StrokeThickness" Value="1.6"/>
+			<Setter Property="StrokeLineCap" Value="Round"/>
+			<Setter Property="StrokeJoin" Value="Round"/>
 		</Style>
-		<Style
-			Selector="TextBlock.DefaultStyle">
-			<Setter
-				Property="Padding"
-				Value="7,5"/>
-			<Setter
-				Property="FontSize"
-				Value="15"/>
-			<Setter
-				Property="FontFamily"
-				Value="M+1Code Nerd Font Propo"/>
-			<Setter
-				Property="HorizontalAlignment"
-				Value="Left"/>
+		<Style Selector="Path.windArrow">
+			<Setter Property="Stroke" Value="{DynamicResource Overlay.Text}"/>
 		</Style>
-		<FluentTheme />
-    </Application.Styles>
+
+		<!-- Fuel -->
+		<Style Selector="Border.fuel">
+			<Setter Property="Padding" Value="11,8,11,9"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource Overlay.Track}"/>
+			<Setter Property="BorderThickness" Value="0,0,0,1"/>
+		</Style>
+		<Style Selector="TextBlock.refuelAmount">
+			<Setter Property="FontSize" Value="26"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.PitRoad}"/>
+		</Style>
+		<Style Selector="TextBlock.refuelAmount.short">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.LapAhead}"/>
+		</Style>
+		<Style Selector="TextBlock.refuelUnit">
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="VerticalAlignment" Value="Bottom"/>
+			<Setter Property="Margin" Value="-7,0,0,4"/>
+		</Style>
+		<Style Selector="StackPanel.fuelFacts TextBlock">
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
+		</Style>
+		<Style Selector="StackPanel.fuelFacts TextBlock.value">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.Text}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+
+		<!-- Race tables. Row states first, so the cell styles after them win. -->
+		<Style Selector="Panel.raceRow">
+			<Setter Property="Height" Value="26"/>
+		</Style>
+		<Style Selector="Border.carRow">
+			<Setter Property="Padding" Value="6,0"/>
+		</Style>
+		<Style Selector="StackPanel.columnTitles">
+			<Setter Property="Margin" Value="6,0"/>
+			<Setter Property="Height" Value="20"/>
+		</Style>
+		<Style Selector="TextBlock.columnTitle">
+			<Setter Property="FontSize" Value="9.5"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="LetterSpacing" Value="1"/>
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
+		</Style>
+		<Style Selector="Border.cell">
+			<Setter Property="Padding" Value="5,0"/>
+			<Setter Property="ClipToBounds" Value="True"/>
+		</Style>
+		<Style Selector="TextBlock.classHeader">
+			<Setter Property="Margin" Value="11,0"/>
+			<Setter Property="FontSize" Value="10.5"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+			<Setter Property="LetterSpacing" Value="0.8"/>
+			<Setter Property="VerticalAlignment" Value="Bottom"/>
+			<Setter Property="Padding" Value="0,0,0,4"/>
+		</Style>
+		<Style Selector="Border.carRow.me">
+			<Setter Property="Background" Value="{DynamicResource Overlay.PlayerRow}"/>
+		</Style>
+		<Style Selector="Border.carRow.lapAhead TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.LapAhead}"/>
+		</Style>
+		<Style Selector="Border.carRow.lapBehind TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.LapBehind}"/>
+		</Style>
+		<Style Selector="Border.carRow.pit TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
+		</Style>
+		<Style Selector="Border.carRow.me TextBlock.driver">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.PlayerHighlight}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+		<Style Selector="TextBlock.driver">
+			<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+		</Style>
+		<Style Selector="TextBlock.carNumber">
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+		<Style Selector="TextBlock.carClass">
+			<Setter Property="FontSize" Value="10.5"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+		</Style>
+		<Style Selector="Border.classStripe">
+			<Setter Property="Width" Value="3"/>
+			<Setter Property="Height" Value="14"/>
+			<Setter Property="CornerRadius" Value="1"/>
+		</Style>
+		<Style Selector="TextBlock.fastest">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.FastestLap}"/>
+		</Style>
+
+		<!-- Chips -->
+		<Style Selector="Border.chip">
+			<Setter Property="CornerRadius" Value="3"/>
+			<Setter Property="Padding" Value="5,1"/>
+		</Style>
+		<Style Selector="Border.chip > TextBlock">
+			<Setter Property="FontSize" Value="10.5"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+		</Style>
+		<Style Selector="Border.pitChip">
+			<Setter Property="Background" Value="{DynamicResource Overlay.PitRoadChip}"/>
+		</Style>
+		<Style Selector="Border.pitChip > TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.PitRoad}"/>
+			<Setter Property="LetterSpacing" Value="0.6"/>
+		</Style>
+		<Style Selector="Border.sessionChip">
+			<Setter Property="Background" Value="{DynamicResource Overlay.Text}"/>
+			<Setter Property="MinWidth" Value="20"/>
+		</Style>
+		<Style Selector="Border.sessionChip > TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.OnText}"/>
+			<Setter Property="FontSize" Value="11"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+		</Style>
+	</Application.Styles>
 
 	<TrayIcon.Icons>
 		<TrayIcons>

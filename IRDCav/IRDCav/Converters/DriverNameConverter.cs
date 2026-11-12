@@ -1,12 +1,9 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace IRDCav.Converters
 {
-    /// <summary>
-    /// Parameter "LastUpper": "John Doe" → "DOE".
-    /// Parameter "ShortUpper": "John Doe" → "J. DOE".
-    /// </summary>
+    /// <summary>"John Michael Doe" → "J. M. Doe".</summary>
     public class DriverNameConverter : OneWayConverter
     {
         protected override object Convert(object? value, string? parameter)
@@ -17,15 +14,8 @@ namespace IRDCav.Converters
             }
 
             string[] parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            return parameter switch
-            {
-                "LastUpper" => LastName(parts),
-                "ShortUpper" => Initials(parts) + LastName(parts),
-                _ => UnsupportedValue(value, parameter),
-            };
+            return Initials(parts) + (parts.LastOrDefault() ?? string.Empty);
         }
-
-        private static string LastName(string[] parts) => parts.LastOrDefault()?.ToUpper() ?? string.Empty;
 
         private static string Initials(string[] parts) =>
             string.Concat(parts.SkipLast(1).Select(part => part[0] + ". "));
