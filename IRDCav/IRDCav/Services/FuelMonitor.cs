@@ -1,4 +1,4 @@
-using IRDCav.Models;
+﻿using IRDCav.Models;
 using IRDCav.Telemetry;
 
 namespace IRDCav.Services
@@ -36,7 +36,11 @@ namespace IRDCav.Services
             RecordFuel(session, playerLap);
         }
 
-        public void Reset() => _calculator.Reset();
+        public void Reset()
+        {
+            IsDriving = false;
+            _calculator.Reset();
+        }
 
         private void StartStint(float fuelLevel, int playerLap)
         {
@@ -52,7 +56,7 @@ namespace IRDCav.Services
 
             if (isLapCompleted)
             {
-                _calculator.CompleteLap(session.FuelLevel, session.TimeRemain);
+                _calculator.CompleteLap(session.FuelLevel, session.SessionTime);
             }
             else
             {

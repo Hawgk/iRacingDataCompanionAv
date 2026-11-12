@@ -8,9 +8,10 @@ namespace IRDCav.Services
     {
         private const float MinimumLapSeconds = 5;
         private const float SecondsPerMinute = 60;
+        private const double NoLapStart = -1;
 
         private float _lapConsumption;
-        private double _lapStartTimeRemain;
+        private double _lapStartTime = NoLapStart;
 
         public FuelDataModel Current { get; private set; } = new();
 
@@ -18,17 +19,21 @@ namespace IRDCav.Services
         {
             Current = new FuelDataModel();
             _lapConsumption = 0;
+            _lapStartTime = NoLapStart;
         }
 
         public void StartStint(float level)
         {
             Current = Current with { Level = level };
             _lapConsumption = 0;
+            // The out lap is incomplete and must not count as a measured lap.
+            _lapStartTime = NoLapStart;
         }
 
         public void AddSample(float level, double timeRemain)
         {
-            _lapConsumption += Current.Level - level;
+            // Refueling raises the level; that must not reduce the lap's consumption.
+            _lapConsumption += Math.Max(0, Current.Level - level);
             Current = Current with
             {
                 Level = level,
@@ -38,14 +43,16 @@ namespace IRDCav.Services
             };
         }
 
-        public void CompleteLap(float level, double timeRemain)
+        /// <param name="sessionTime">iRacing "SessionTime" (seconds since session start, counts up).</param>
+        public void CompleteLap(float level, double sessionTime)
         {
-            float lapSeconds = (float)(_lapStartTimeRemain - timeRemain);
-            Current = lapSeconds > MinimumLapSeconds
+            float lapSeconds = (float)(sessionTime - _lapStartTime);
+            bool isMeasuredLap = _lapStartTime != NoLapStart && lapSeconds > MinimumLapSeconds;
+            Current = isMeasuredLap
                 ? WithLapStatistics(level, lapSeconds)
                 : WithoutLapStatistics(level);
 
-            _lapStartTimeRemain = timeRemain;
+            _lapStartTime = sessionTime;
             _lapConsumption = 0;
         }
 
