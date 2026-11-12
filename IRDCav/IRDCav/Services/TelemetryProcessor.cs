@@ -124,8 +124,9 @@ namespace IRDCav.Services
 
         private static IEnumerable<PositionModel> CurrentResults(IRacingSdkSessionInfo sessionInfo, int sessionNum)
         {
-            int index = sessionNum > 0 ? sessionNum : 0;
-            return sessionInfo.SessionInfo.Sessions[index].ResultsPositions ?? new List<PositionModel>();
+            var sessions = sessionInfo.SessionInfo.Sessions;
+            bool isKnownSession = sessionNum >= 0 && sessionNum < sessions.Count;
+            return (isKnownSession ? sessions[sessionNum].ResultsPositions : null) ?? new List<PositionModel>();
         }
     }
 }

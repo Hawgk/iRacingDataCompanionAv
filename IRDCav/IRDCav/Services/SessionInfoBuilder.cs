@@ -1,4 +1,4 @@
-using IRDCav.Models;
+﻿using IRDCav.Models;
 using IRDCav.Telemetry;
 using IRSDKSharper;
 using System.Collections.Generic;
@@ -45,11 +45,12 @@ namespace IRDCav.Services
 
         private static string SessionType(IRacingSdkSessionInfo sessionInfo, int sessionNum)
         {
-            if (sessionNum <= 0)
+            var sessions = sessionInfo.SessionInfo.Sessions;
+            if (sessionNum < 0 || sessionNum >= sessions.Count)
             {
                 return string.Empty;
             }
-            string sessionName = sessionInfo.SessionInfo.Sessions[sessionNum].SessionName;
+            string sessionName = sessions[sessionNum].SessionName;
             return sessionName.Length > 0 ? sessionName[0].ToString() : string.Empty;
         }
     }
