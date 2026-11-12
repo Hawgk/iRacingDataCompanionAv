@@ -11,7 +11,7 @@ namespace IRDCav.Services
     /// Routes each telemetry frame through the calculation services and publishes the results.
     /// Runs entirely on the telemetry source's thread and never touches the UI.
     /// </summary>
-    internal sealed class TelemetryProcessor
+    internal sealed class TelemetryProcessor : IOverlayDataFeed
     {
         // Race data is processed on every n-th frame only; inputs on every frame.
         private const int RaceDataFrameInterval = 4;

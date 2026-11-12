@@ -22,7 +22,7 @@ namespace IRDCav
         // At 30 telemetry frames per second this is about 3.3 seconds of input history.
         private const int InputTraceSampleCount = 100;
 
-        private TelemetryProcessor? _processor;
+        private IOverlayDataFeed? _feed;
         private OverlayRefresher? _refresher;
         private ScreenWatcher? _screenWatcher;
 
@@ -49,12 +49,12 @@ namespace IRDCav
                 var store = new OverlayStateStore();
                 var inputs = new InputTraceBuffer(InputTraceSampleCount);
                 _refresher = new OverlayRefresher(store, inputs, viewModels);
-                _processor = CreateProcessor(store, inputs);
+                _feed = CreateProcessor(store, inputs);
 
                 desktop.Exit += (_, _) => OnExit();
                 _screenWatcher?.Start();
                 _refresher.Start();
-                _processor.Start();
+                _feed.Start();
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -76,7 +76,7 @@ namespace IRDCav
 
         private void OnExit()
         {
-            _processor?.Stop();
+            _feed?.Stop();
             _refresher?.Stop();
             _screenWatcher?.Stop();
         }
@@ -93,5 +93,6 @@ namespace IRDCav
 
             return new TelemetryProcessor(services, publisher, inputs);
         }
+
     }
 }
