@@ -11,9 +11,10 @@ namespace IRDCav.ViewModels
         /// <summary>"MIN", "AVG" or "MAX", shown after the value.</summary>
         public string Caption { get; init; } = string.Empty;
 
+        /// <summary>This estimate needs a stop to reach the finish; colors the value when it is selected.</summary>
         public bool NeedsRefuel { get; init; }
 
-        /// <summary>The estimate chosen in the configuration, shown large.</summary>
+        /// <summary>The estimate chosen in the configuration, shown large in both rows.</summary>
         public bool IsSelected { get; init; }
     }
 
@@ -45,9 +46,9 @@ namespace IRDCav.ViewModels
                 RefuelMinimum = estimates.Refuel(RefuelEstimate.Minimum, fuel.RefuelMin),
                 RefuelAverage = estimates.Refuel(RefuelEstimate.Average, fuel.RefuelAvg),
                 RefuelMaximum = estimates.Refuel(RefuelEstimate.Maximum, fuel.RefuelMax),
-                LapsMinimum = estimates.Laps(RefuelEstimate.Minimum, fuel.MinConsumption),
-                LapsAverage = estimates.Laps(RefuelEstimate.Average, fuel.AvgConsumption),
-                LapsMaximum = estimates.Laps(RefuelEstimate.Maximum, fuel.MaxConsumption),
+                LapsMinimum = estimates.Laps(RefuelEstimate.Minimum, fuel.MinConsumption, fuel.RefuelMin),
+                LapsAverage = estimates.Laps(RefuelEstimate.Average, fuel.AvgConsumption, fuel.RefuelAvg),
+                LapsMaximum = estimates.Laps(RefuelEstimate.Maximum, fuel.MaxConsumption, fuel.RefuelMax),
             };
         }
 
@@ -64,10 +65,13 @@ namespace IRDCav.ViewModels
                 IsSelected = estimate == Selected,
             };
 
-            public FuelEstimate Laps(RefuelEstimate estimate, float consumptionPerLap) => new()
+            /// <param name="leftAtFinish">Fuel left at the finish for this estimate; negative means a stop is needed.</param>
+            public FuelEstimate Laps(RefuelEstimate estimate, float consumptionPerLap, float leftAtFinish) => new()
             {
                 Value = HasEstimates && consumptionPerLap > 0 ? (Fuel.Level / consumptionPerLap).ToString("0.0") : Unknown,
                 Caption = CaptionOf(estimate),
+                NeedsRefuel = HasEstimates && leftAtFinish < 0,
+                IsSelected = estimate == Selected,
             };
 
             private static string CaptionOf(RefuelEstimate estimate) => estimate switch

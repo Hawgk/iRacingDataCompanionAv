@@ -37,7 +37,7 @@
 				<Border Classes="fuel">
 					<!--
 					All three estimates stay visible so the strategy can change mid-race; the configured one is
-					enlarged. Values and captions have their own columns, so values line up on the right and
+					enlarged in both rows. Values and captions have their own columns, so values line up on the right and
 					MIN, AVG and MAX start at the same position in every row.
 					-->
 					<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto">
@@ -54,13 +54,13 @@
 						<TextBlock Grid.Row="1" Grid.Column="5" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.RefuelMaximum.IsSelected}" Classes.short="{Binding Fuel.RefuelMaximum.NeedsRefuel}" Text="{Binding Fuel.RefuelMaximum.Value}"/>
 						<TextBlock Grid.Row="1" Grid.Column="6" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.RefuelMaximum.Caption}"/>
 
-						<TextBlock Grid.Row="2" Grid.Column="0" Classes="label fuelRowLabel factRow" Text="LAPS LEFT"/>
-						<TextBlock Grid.Row="2" Grid.Column="1" Classes="fuelValue factRow" Text="{Binding Fuel.LapsMinimum.Value}"/>
-						<TextBlock Grid.Row="2" Grid.Column="2" Classes="label fuelCaption factRow" Text="{Binding Fuel.LapsMinimum.Caption}"/>
-						<TextBlock Grid.Row="2" Grid.Column="3" Classes="fuelValue factRow" Text="{Binding Fuel.LapsAverage.Value}"/>
-						<TextBlock Grid.Row="2" Grid.Column="4" Classes="label fuelCaption factRow" Text="{Binding Fuel.LapsAverage.Caption}"/>
-						<TextBlock Grid.Row="2" Grid.Column="5" Classes="fuelValue factRow" Text="{Binding Fuel.LapsMaximum.Value}"/>
-						<TextBlock Grid.Row="2" Grid.Column="6" Classes="label fuelCaption factRow" Text="{Binding Fuel.LapsMaximum.Caption}"/>
+						<TextBlock Grid.Row="2" Grid.Column="0" Classes="label fuelRowLabel estimateRow" Text="LAPS LEFT"/>
+						<TextBlock Grid.Row="2" Grid.Column="1" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.LapsMinimum.IsSelected}" Classes.short="{Binding Fuel.LapsMinimum.NeedsRefuel}" Text="{Binding Fuel.LapsMinimum.Value}"/>
+						<TextBlock Grid.Row="2" Grid.Column="2" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.LapsMinimum.Caption}"/>
+						<TextBlock Grid.Row="2" Grid.Column="3" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.LapsAverage.IsSelected}" Classes.short="{Binding Fuel.LapsAverage.NeedsRefuel}" Text="{Binding Fuel.LapsAverage.Value}"/>
+						<TextBlock Grid.Row="2" Grid.Column="4" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.LapsAverage.Caption}"/>
+						<TextBlock Grid.Row="2" Grid.Column="5" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.LapsMaximum.IsSelected}" Classes.short="{Binding Fuel.LapsMaximum.NeedsRefuel}" Text="{Binding Fuel.LapsMaximum.Value}"/>
+						<TextBlock Grid.Row="2" Grid.Column="6" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.LapsMaximum.Caption}"/>
 					</Grid>
 				</Border>
 			</StackPanel>
