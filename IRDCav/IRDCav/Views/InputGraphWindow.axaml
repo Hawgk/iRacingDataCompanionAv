@@ -9,16 +9,11 @@
         x:DataType="vm:InputGraphViewModel"
         Icon="/Assets/icon.ico"
         Title="iRDCav Input Graph"
-        Deactivated="OnWindowDeactivated"
 		SizeToContent="Height"
-		Loaded="OnWindowLoaded"
-        KeyDown="OnKeyPressed"
-        PointerPressed="OnMouseDown"
         Background="White"
 		SystemDecorations="None"
 		Width="300"
 		MinHeight="120"
-		LayoutUpdated="OnResize"
 		IsVisible="{Binding IsVisible}">
 	<Grid>
 		<oxy:PlotView

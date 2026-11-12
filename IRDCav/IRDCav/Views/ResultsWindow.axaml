@@ -8,15 +8,10 @@
         x:DataType="vm:ResultsViewModel"
         Icon="/Assets/icon.ico"
         Title="iRDCav Results"
-        Deactivated="OnWindowDeactivated"
 		SizeToContent="Height"
-		Loaded="OnWindowLoaded"
-        KeyDown="OnKeyPressed"
-        PointerPressed="OnMouseDown"
         Background="White"
 		SystemDecorations="None"
 		Width="560"
-		LayoutUpdated="OnResize"
 		IsVisible="{Binding IsVisible}">
 	<Grid>
 		<Grid.RowDefinitions>

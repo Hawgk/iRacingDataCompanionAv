@@ -8,15 +8,10 @@
         x:DataType="vm:RelativesViewModel"
         Icon="/Assets/icon.ico"
         Title="iRDCav Relatives"
-        Deactivated="OnWindowDeactivated"
 		SizeToContent="Height"
-		Loaded="OnWindowLoaded"
-        KeyDown="OnKeyPressed"
-        PointerPressed="OnMouseDown"
         Background="White"
 		SystemDecorations="None"
 		Width="400"
-		LayoutUpdated="OnResize"
 		IsVisible="{Binding IsVisible}">
 	<Grid>
 		<Grid.RowDefinitions>

@@ -1,14 +1,9 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Platform;
-using Avalonia.VisualTree;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IRDCav
+namespace IRDCav.Views
 {
     public static class WindowTransparency
     {
@@ -30,12 +25,11 @@ namespace IRDCav
         public static void ToTransparentWindow(this Window window)
         {
             window.Initialized += delegate {
-                // Get this window's handle
                 IPlatformHandle? platformHandle = window.TryGetPlatformHandle();
                 if (platformHandle != null)
                 {
                     IntPtr hwnd = platformHandle.Handle;
-                    // Change the extended window style to include WS_EX_TRANSPARENT
+                    // Click-through, always on top.
                     int extendedStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
                     SetWindowLong(hwnd, GWL_EXSTYLE, extendedStyle | WS_EX_COMPOSITED | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOPMOST);
                     SetLayeredWindowAttributes(hwnd, 0, 255, 0x2);
