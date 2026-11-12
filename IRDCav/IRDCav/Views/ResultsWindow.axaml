@@ -17,20 +17,18 @@
 			<StackPanel>
 				<Border Classes="header">
 					<DockPanel>
-						<StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="12">
-							<StackPanel
-								Orientation="Horizontal"
-								Spacing="5"
-								IsVisible="{Binding SessionInfo.LapsString, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-								<TextBlock Classes="label" Text="LAP"/>
-								<TextBlock Text="{Binding SessionInfo.LapsString}"/>
-							</StackPanel>
-							<StackPanel Orientation="Horizontal" Spacing="5">
-								<TextBlock Classes="label" Text="INC"/>
-								<TextBlock Classes="incidents" Text="{Binding SessionInfo.IncidentCount}"/>
-							</StackPanel>
+						<StackPanel Classes="headerRow" DockPanel.Dock="Right">
+							<TextBlock
+								Classes="label"
+								Text="LAP"
+								IsVisible="{Binding SessionInfo.LapsString, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+							<TextBlock
+								Text="{Binding SessionInfo.LapsString}"
+								IsVisible="{Binding SessionInfo.LapsString, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+							<TextBlock Classes="label" Text="INC"/>
+							<TextBlock Classes="incidents" Text="{Binding SessionInfo.IncidentCount}"/>
 						</StackPanel>
-						<StackPanel Orientation="Horizontal" Spacing="12">
+						<StackPanel Classes="headerRow">
 							<Border
 								Classes="chip sessionChip"
 								IsVisible="{Binding SessionInfo.SessionType, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
@@ -39,10 +37,8 @@
 							<TextBlock
 								Classes="timeLeft"
 								Text="{Binding SessionInfo.TimeRemain, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Session}"/>
-							<StackPanel Orientation="Horizontal" Spacing="5">
-								<TextBlock Classes="label" Text="SOF"/>
-								<TextBlock Text="{Binding SessionInfo.SOF, StringFormat='{}{0:N0}'}"/>
-							</StackPanel>
+							<TextBlock Classes="label" Text="SOF"/>
+							<TextBlock Text="{Binding SessionInfo.SOF, StringFormat='{}{0:N0}'}"/>
 						</StackPanel>
 					</DockPanel>
 				</Border>

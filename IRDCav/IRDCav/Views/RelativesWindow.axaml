@@ -17,30 +17,21 @@
 			<StackPanel>
 				<Border Classes="header">
 					<DockPanel>
-						<StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="5" ToolTip.Tip="Wind relative to your car">
-							<Path
-								Classes="icon windArrow"
-								Data="{StaticResource Icon.WindArrow}"
-								RenderTransform="{Binding SessionInfo.WindAngle, Converter={StaticResource RotationConverter}}"/>
+						<StackPanel Classes="headerRow" DockPanel.Dock="Right" ToolTip.Tip="Wind relative to your car">
+							<Viewbox Classes="icon windArrow" RenderTransform="{Binding SessionInfo.WindAngle, Converter={StaticResource RotationConverter}}">
+								<Path Data="{StaticResource Icon.WindArrow}"/>
+							</Viewbox>
 							<TextBlock Text="{Binding SessionInfo.WindSpeed, StringFormat='{}{0:0} km/h'}"/>
 						</StackPanel>
-						<StackPanel Orientation="Horizontal" Spacing="12">
-							<StackPanel Orientation="Horizontal" Spacing="4">
-								<Path Classes="icon" Data="{StaticResource Icon.AirTemperature}"/>
-								<TextBlock Text="{Binding SessionInfo.AirTemp}"/>
-							</StackPanel>
-							<StackPanel Orientation="Horizontal" Spacing="4">
-								<Path Classes="icon" Data="{StaticResource Icon.TrackTemperature}"/>
-								<TextBlock Text="{Binding SessionInfo.SurfaceTemp}"/>
-							</StackPanel>
-							<StackPanel Orientation="Horizontal" Spacing="4">
-								<Path Classes="icon" Data="{StaticResource Icon.Humidity}"/>
-								<TextBlock Text="{Binding SessionInfo.Humidity}"/>
-							</StackPanel>
-							<StackPanel Orientation="Horizontal" Spacing="4">
-								<Path Classes="icon" Data="{StaticResource Icon.Precipitation}"/>
-								<TextBlock Text="{Binding SessionInfo.Precipitation}"/>
-							</StackPanel>
+						<StackPanel Classes="headerRow">
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.AirTemperature}"/></Viewbox>
+							<TextBlock Classes="weatherValue" Text="{Binding SessionInfo.AirTemp}"/>
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.TrackTemperature}"/></Viewbox>
+							<TextBlock Classes="weatherValue" Text="{Binding SessionInfo.SurfaceTemp}"/>
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.Humidity}"/></Viewbox>
+							<TextBlock Classes="weatherValue" Text="{Binding SessionInfo.Humidity}"/>
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.Precipitation}"/></Viewbox>
+							<TextBlock Text="{Binding SessionInfo.Precipitation}"/>
 						</StackPanel>
 					</DockPanel>
 				</Border>

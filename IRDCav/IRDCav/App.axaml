@@ -65,16 +65,37 @@
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.Warning}"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
-		<Style Selector="Path.icon">
-			<Setter Property="Width" Value="14"/>
-			<Setter Property="Height" Value="14"/>
-			<Setter Property="Stretch" Value="Uniform"/>
+		<!--
+		Texts of different sizes in one row share a line height, so each is centered on the
+		same line instead of in boxes of different heights that round to different pixels.
+		-->
+		<Style Selector="StackPanel.headerRow">
+			<Setter Property="Orientation" Value="Horizontal"/>
+			<Setter Property="Spacing" Value="5"/>
+		</Style>
+		<Style Selector="StackPanel.headerRow > TextBlock">
+			<Setter Property="LineHeight" Value="22"/>
+		</Style>
+		<Style Selector="StackPanel.headerRow > TextBlock.label, StackPanel.headerRow > TextBlock.timeLeft">
+			<Setter Property="Margin" Value="7,0,0,0"/>
+		</Style>
+		<Style Selector="StackPanel.headerRow > TextBlock.weatherValue">
+			<Setter Property="Margin" Value="0,0,7,0"/>
+		</Style>
+		<!-- Icons keep their 24 unit grid instead of being stretched to their outline, so their optical centers line up. -->
+		<Style Selector="Viewbox.icon">
+			<Setter Property="Width" Value="16"/>
+			<Setter Property="Height" Value="16"/>
+		</Style>
+		<Style Selector="Viewbox.icon > Path">
+			<Setter Property="Width" Value="24"/>
+			<Setter Property="Height" Value="24"/>
 			<Setter Property="Stroke" Value="{DynamicResource Overlay.TextMuted}"/>
-			<Setter Property="StrokeThickness" Value="1.6"/>
+			<Setter Property="StrokeThickness" Value="2"/>
 			<Setter Property="StrokeLineCap" Value="Round"/>
 			<Setter Property="StrokeJoin" Value="Round"/>
 		</Style>
-		<Style Selector="Path.windArrow">
+		<Style Selector="Viewbox.windArrow > Path">
 			<Setter Property="Stroke" Value="{DynamicResource Overlay.Text}"/>
 		</Style>
 
