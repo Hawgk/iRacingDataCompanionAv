@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-iRDCav (iRacing Data Companion) is a set of transparent, always-on-top overlay windows for the iRacing sim: a standings/results view, a relative view with a fuel calculator, and a throttle/brake/clutch input trace. It is built with C# / .NET 8, Avalonia 11, CommunityToolkit.Mvvm, OxyPlot (input graph), and IRSDKSharper (iRacing SDK wrapper). The relative-gap logic is adapted from [iRon](https://github.com/lespalt/iRon/).
+iRDCav (iRacing Data Companion) is a set of transparent, always-on-top overlay windows for the iRacing sim: a standings/results view, a relative view with a fuel calculator, and a throttle/brake/clutch input trace. It is built with C# / .NET 8, Avalonia 11, CommunityToolkit.Mvvm and IRSDKSharper (iRacing SDK wrapper). The relative-gap logic is adapted from [iRon](https://github.com/lespalt/iRon/).
 
-The app targets Windows only at runtime. `WindowTransparency.cs` P/Invokes `user32.dll` to make windows click-through and topmost, and the iRacing SDK reads shared memory that exists only while iRacing runs on Windows. The project still builds on Linux, but the overlays won't connect there.
+The app targets Windows only at runtime. `WindowTransparency.cs` P/Invokes `user32.dll` to make windows click-through and topmost, and the iRacing SDK reads shared memory that exists only while iRacing runs on Windows. The project still builds and runs on Linux, but there the windows aren't click-through and only the UI testing mode has data.
 
 ## Commands
 
@@ -15,7 +15,10 @@ The solution is at `IRDCav/IRDCav.sln` and has one project, `IRDCav/IRDCav/IRDCa
 ```bash
 dotnet build IRDCav/IRDCav.sln
 dotnet run --project IRDCav/IRDCav/IRDCav.csproj
+dotnet run --project IRDCav/IRDCav/IRDCav.csproj -- --ui-testing-mode
 ```
+
+`--ui-testing-mode` replaces iRacing with a simulated multi-class race, so you can check the overlays without the sim. See **UI testing mode** below.
 
 The repo has no test project and no linter configuration.
 
@@ -23,7 +26,7 @@ The repo has no test project and no linter configuration.
 
 Data flows one way: `Telemetry/` → `Services/` → `Presentation/` (state store) ← `ViewModels/` → `Views/`. The telemetry side never calls the UI; the UI pulls.
 
-**Composition root** (`App.axaml.cs`): this is the only place where objects get created and wired together: view models (`OverlayViewModels`), windows and their `OverlayWindowBehavior`, the state store, the input buffer, the refresher, and the `TelemetryProcessor` with its services. Everything is passed in through constructors. `ShutdownMode` is `OnExplicitShutdown`; the app exits through `ApplicationViewModel.ExitCommand` in the tray menu.
+**Composition root** (`App.axaml.cs`): this is the only place where objects get created and wired together: view models (`OverlayViewModels`), windows and their `OverlayWindowBehavior`, the state store, the input buffer, the refresher, and the data feed (`IOverlayDataFeed`): the `TelemetryProcessor` with its services, or the `UiTestFeed` when started with `--ui-testing-mode`. Everything is passed in through constructors. `ShutdownMode` is `OnExplicitShutdown`; the app exits through `ApplicationViewModel.ExitCommand` in the tray menu.
 
 **Telemetry** (`Telemetry/`): `ITelemetrySource` wraps IRSDKSharper (`IRacingTelemetrySource`, `UpdateInterval = 2`, i.e. 30 frames/s). For each tick it raises `FrameReceived` with an `ITelemetryFrame`, whose `Read*` methods read values only on request. `IRacingTelemetryFrame` looks up the datum handles once per connection and reuses its read buffers: the list from `ReadCars()` is overwritten on the next call. `SessionInfoVersion` changes whenever the session info YAML changes.
 
@@ -40,6 +43,8 @@ Data flows one way: `Telemetry/` → `Services/` → `Presentation/` (state stor
 - `InputTraceBuffer`: a fixed-size ring buffer that takes a short lock and has a version counter.
 
 `OverlayRefresher` runs a `DispatcherTimer` on the UI thread at background priority (~30 Hz). It pulls the latest values and does nothing when neither the state reference nor the input version changed. Keep it this way: never touch view models from the telemetry thread, and publish only immutable data.
+
+**UI testing mode** (`UiTesting/`): `UiTestFeed` stands in for iRacing. It runs its own background thread at 30 frames/s, pushes an `InputPattern` sample every frame, and publishes an `OverlayState` every 4th frame through the same store and buffer as live data. `SimulatedRace` moves a fictional field (`DemoRoster`: three classes, a long name, a three-digit number, a driver without a license color) by distance driven, and derives positions, intervals, lap times and pit stops from it. `UiTestScenario` shapes the rows with the real `RelativeListBuilder` and `StandingsListBuilder`. The interval calculation itself is not exercised.
 
 **View models** use CommunityToolkit `[ObservableProperty]`. The list views bind to a `RaceRowCollection` of reused `RaceRowViewModel`s that are updated in place, so only the cells that changed re-render. Don't replace the collections. Compiled bindings are on by default (`AvaloniaUseCompiledBindingsByDefault`), so XAML bindings and `DataTemplate`s need `x:DataType`. Value converters are in `Converters/` and derive from `OneWayConverter`. The input graph is drawn by `Views/InputTraceControl`, which renders polylines directly; there's no chart library.
 
