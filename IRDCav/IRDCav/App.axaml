@@ -36,7 +36,7 @@
 		<!-- Overlay windows and panels -->
 		<Style Selector="Window.overlay">
 			<Setter Property="FontFamily" Value="fonts:Inter#Inter"/>
-			<Setter Property="FontSize" Value="13"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Normal}"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.Text}"/>
 		</Style>
 		<Style Selector="Border.panel">
@@ -52,13 +52,13 @@
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 		<Style Selector="TextBlock.label">
-			<Setter Property="FontSize" Value="10"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 			<Setter Property="LetterSpacing" Value="0.9"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
 		</Style>
 		<Style Selector="TextBlock.timeLeft">
-			<Setter Property="FontSize" Value="18"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Large}"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
 		<Style Selector="TextBlock.incidents">
@@ -74,7 +74,7 @@
 			<Setter Property="Spacing" Value="5"/>
 		</Style>
 		<Style Selector="StackPanel.headerRow > TextBlock">
-			<Setter Property="LineHeight" Value="22"/>
+			<Setter Property="LineHeight" Value="{DynamicResource Overlay.MixedLineHeight}"/>
 		</Style>
 		<Style Selector="StackPanel.headerRow > TextBlock.label, StackPanel.headerRow > TextBlock.timeLeft">
 			<Setter Property="Margin" Value="7,0,0,0"/>
@@ -84,8 +84,8 @@
 		</Style>
 		<!-- Icons keep their 24 unit grid instead of being stretched to their outline, so their optical centers line up. -->
 		<Style Selector="Viewbox.icon">
-			<Setter Property="Width" Value="16"/>
-			<Setter Property="Height" Value="16"/>
+			<Setter Property="Width" Value="{DynamicResource Overlay.IconSize}"/>
+			<Setter Property="Height" Value="{DynamicResource Overlay.IconSize}"/>
 		</Style>
 		<Style Selector="Viewbox.icon > Path">
 			<Setter Property="Width" Value="24"/>
@@ -110,18 +110,18 @@
 			<Setter Property="Spacing" Value="14"/>
 		</Style>
 		<Style Selector="StackPanel.fuelEstimates TextBlock">
-			<Setter Property="LineHeight" Value="34"/>
+			<Setter Property="LineHeight" Value="{DynamicResource Overlay.MixedLineHeight}"/>
 		</Style>
 		<Style Selector="StackPanel.fuelEstimate">
 			<Setter Property="Orientation" Value="Horizontal"/>
 			<Setter Property="Spacing" Value="5"/>
 		</Style>
 		<Style Selector="TextBlock.fuelAmount">
-			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Normal}"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
 		<Style Selector="StackPanel.fuelEstimate.selected TextBlock.fuelAmount">
-			<Setter Property="FontSize" Value="26"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Large}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.PitRoad}"/>
 		</Style>
@@ -129,7 +129,7 @@
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.LapAhead}"/>
 		</Style>
 		<Style Selector="StackPanel.fuelFacts TextBlock">
-			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Normal}"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
 		</Style>
 		<Style Selector="StackPanel.fuelFacts TextBlock.value">
@@ -139,17 +139,17 @@
 
 		<!-- Race tables. Row states first, so the cell styles after them win. -->
 		<Style Selector="Panel.raceRow">
-			<Setter Property="Height" Value="26"/>
+			<Setter Property="Height" Value="{DynamicResource Overlay.RowHeight}"/>
 		</Style>
 		<Style Selector="Border.carRow">
 			<Setter Property="Padding" Value="6,0"/>
 		</Style>
 		<Style Selector="StackPanel.columnTitles">
 			<Setter Property="Margin" Value="6,0"/>
-			<Setter Property="Height" Value="20"/>
+			<Setter Property="Height" Value="{DynamicResource Overlay.TitleRowHeight}"/>
 		</Style>
 		<Style Selector="TextBlock.columnTitle">
-			<Setter Property="FontSize" Value="9.5"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 			<Setter Property="LetterSpacing" Value="1"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
@@ -160,7 +160,7 @@
 		</Style>
 		<Style Selector="TextBlock.classHeader">
 			<Setter Property="Margin" Value="11,0"/>
-			<Setter Property="FontSize" Value="10.5"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 			<Setter Property="LetterSpacing" Value="0.8"/>
 			<Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -186,16 +186,15 @@
 			<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
 		</Style>
 		<Style Selector="TextBlock.carNumber">
-			<Setter Property="FontSize" Value="12"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
 		<Style Selector="TextBlock.carClass">
-			<Setter Property="FontSize" Value="10.5"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 		</Style>
 		<Style Selector="Border.classStripe">
 			<Setter Property="Width" Value="3"/>
-			<Setter Property="Height" Value="14"/>
+			<Setter Property="Height" Value="{DynamicResource Overlay.StripeHeight}"/>
 			<Setter Property="CornerRadius" Value="1"/>
 		</Style>
 		<Style Selector="TextBlock.fastest">
@@ -208,7 +207,7 @@
 			<Setter Property="Padding" Value="5,1"/>
 		</Style>
 		<Style Selector="Border.chip > TextBlock">
-			<Setter Property="FontSize" Value="10.5"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 		</Style>
 		<Style Selector="Border.pitChip">
@@ -224,7 +223,7 @@
 		</Style>
 		<Style Selector="Border.sessionChip > TextBlock">
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.OnText}"/>
-			<Setter Property="FontSize" Value="11"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="HorizontalAlignment" Value="Center"/>
 		</Style>
 	</Application.Styles>

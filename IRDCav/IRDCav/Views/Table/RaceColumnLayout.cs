@@ -7,6 +7,8 @@ namespace IRDCav.Views.Table
     /// <summary>Title, fixed width (design pixels at 1440p) and alignment of each column.</summary>
     internal sealed record RaceColumnLayout(string Title, double Width, HorizontalAlignment Alignment)
     {
+        public RaceColumnLayout Scaled(double factor) => this with { Width = Math.Round(Width * factor) };
+
         public static RaceColumnLayout Of(RaceColumn column) => column switch
         {
             RaceColumn.Position => new("POS", 32, HorizontalAlignment.Right),

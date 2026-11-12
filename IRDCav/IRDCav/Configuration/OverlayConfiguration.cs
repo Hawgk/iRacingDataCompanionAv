@@ -30,13 +30,32 @@ namespace IRDCav.Configuration
     {
         public bool ShowColumnTitles { get; init; }
 
-        /// <summary>Columns in display order.</summary>
+        /// <summary>The columns to show, in display order. Columns not listed are hidden.</summary>
         public IReadOnlyList<RaceColumn> Columns { get; init; } = new List<RaceColumn>();
     }
 
     public sealed record FuelConfiguration
     {
         public RefuelEstimate RefuelEstimate { get; init; } = RefuelEstimate.Average;
+    }
+
+    /// <summary>
+    /// The only three font sizes the overlays use, in design pixels at 1440p. Row heights,
+    /// icon sizes and column widths follow from them.
+    /// </summary>
+    public sealed record FontSizesConfiguration
+    {
+        public const double Min = 6;
+        public const double Max = 60;
+
+        /// <summary>Labels, column titles, badges and class headers.</summary>
+        public double Small { get; init; } = 10;
+
+        /// <summary>All values and list rows.</summary>
+        public double Normal { get; init; } = 13;
+
+        /// <summary>Time remaining and the selected refuel amount.</summary>
+        public double Large { get; init; } = 22;
     }
 
     /// <summary>Digits after the decimal point.</summary>
@@ -52,6 +71,7 @@ namespace IRDCav.Configuration
     public sealed record OverlayConfiguration
     {
         public ColorScheme ColorScheme { get; init; } = new();
+        public FontSizesConfiguration FontSizes { get; init; } = new();
         public FuelConfiguration Fuel { get; init; } = new();
         public DecimalsConfiguration Decimals { get; init; } = new();
 

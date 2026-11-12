@@ -4,6 +4,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using IRDCav.Configuration;
 using IRDCav.ViewModels;
+using IRDCav.Views.Theme;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -73,13 +74,22 @@ namespace IRDCav.Views.Table
 
         private void BuildColumns()
         {
-            var columns = Columns.Select(column => (Layout: RaceColumnLayout.Of(column), Template: CellTemplate(column))).ToList();
+            double widthScale = ColumnWidthScale();
+            var columns = Columns
+                .Select(column => (Layout: RaceColumnLayout.Of(column).Scaled(widthScale), Template: CellTemplate(column)))
+                .ToList();
 
             _titles.Children.Clear();
             _titles.Children.AddRange(columns.Select(column => Cell(column.Layout, TitleText(column.Layout))));
             _items.ItemTemplate = new FuncDataTemplate<RaceRowViewModel>((_, _) =>
                 new RaceRowView(columns.Select(column => Cell(column.Layout, Build(column.Template)))));
         }
+
+        /// <summary>Columns grow with the configured font size; 1 when no theme was applied.</summary>
+        private static double ColumnWidthScale() =>
+            Application.Current?.TryGetResource(OverlayTheme.ColumnWidthScaleKey, null, out object? scale) == true && scale is double value
+                ? value
+                : 1;
 
         private static IDataTemplate CellTemplate(RaceColumn column)
         {

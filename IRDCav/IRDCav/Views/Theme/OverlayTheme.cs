@@ -6,12 +6,13 @@ using Avalonia.Media.Immutable;
 using Avalonia.Styling;
 using IRDCav.Configuration;
 using IRDCav.Converters;
+using System;
 
 namespace IRDCav.Views.Theme
 {
     /// <summary>
-    /// Publishes the user's colors and number formats as application resources. Must run before
-    /// the windows are created; the XAML refers to the brushes through DynamicResource.
+    /// Publishes the user's colors, font sizes and number formats as application resources. Must run
+    /// before the windows are created; the XAML refers to them through DynamicResource.
     /// </summary>
     internal static class OverlayTheme
     {
@@ -19,10 +20,22 @@ namespace IRDCav.Views.Theme
         private const byte ChipAlpha = 0x29;
         private const byte TrackAlpha = 0x17;
 
+        // The column widths in RaceColumnLayout are designed for this normal font size.
+        private const double DesignNormalFontSize = 13;
+        private const double RowHeightPerNormalSize = 2;
+        private const double TitleRowHeightPerSmallSize = 2;
+        private const double FactLineHeightPerNormalSize = 1.5;
+        private const double MixedLineHeightPerLargeSize = 1.2;
+        private const double IconSizePerNormalSize = 1.25;
+        private const double StripeHeightPerNormalSize = 1.1;
+
+        public const string ColumnWidthScaleKey = "Overlay.ColumnWidthScale";
+
         public static void Apply(Application application, OverlayConfiguration configuration)
         {
             AddBaseBrushes(application.Resources, configuration.ColorScheme);
             AddStateBrushes(application.Resources, configuration.ColorScheme);
+            AddFontSizes(application.Resources, configuration.FontSizes);
             application.Resources["GapConverter"] = new SignedTimeConverter(configuration.Decimals.Gap);
             application.Resources["IntervalConverter"] = new SignedTimeConverter(configuration.Decimals.Interval);
             application.Styles.Add(TabularDigits());
@@ -50,6 +63,20 @@ namespace IRDCav.Views.Theme
             resources["Overlay.PitRoad"] = Brush(colors.PitRoad);
             resources["Overlay.PitRoadChip"] = Brush(WithAlpha(colors.PitRoad, ChipAlpha));
             resources["Overlay.Warning"] = Brush(colors.Warning);
+        }
+
+        private static void AddFontSizes(IResourceDictionary resources, FontSizesConfiguration sizes)
+        {
+            resources["Overlay.FontSize.Small"] = sizes.Small;
+            resources["Overlay.FontSize.Normal"] = sizes.Normal;
+            resources["Overlay.FontSize.Large"] = sizes.Large;
+            resources["Overlay.RowHeight"] = Math.Ceiling(sizes.Normal * RowHeightPerNormalSize);
+            resources["Overlay.TitleRowHeight"] = Math.Ceiling(sizes.Small * TitleRowHeightPerSmallSize);
+            resources["Overlay.FactLineHeight"] = Math.Ceiling(sizes.Normal * FactLineHeightPerNormalSize);
+            resources["Overlay.MixedLineHeight"] = Math.Ceiling(sizes.Large * MixedLineHeightPerLargeSize);
+            resources["Overlay.IconSize"] = Math.Round(sizes.Normal * IconSizePerNormalSize);
+            resources["Overlay.StripeHeight"] = Math.Round(sizes.Normal * StripeHeightPerNormalSize);
+            resources[ColumnWidthScaleKey] = sizes.Normal / DesignNormalFontSize;
         }
 
         // Digits of equal width keep times and gaps from jittering as they change.

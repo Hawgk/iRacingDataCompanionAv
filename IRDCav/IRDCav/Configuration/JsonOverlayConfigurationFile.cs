@@ -65,17 +65,36 @@ namespace IRDCav.Configuration
         // Explicit nulls in the file bypass the defaults, so they are rejected here.
         private static OverlayConfiguration Validated(OverlayConfiguration? configuration)
         {
-            if (configuration?.ColorScheme == null || configuration.Fuel == null || configuration.Decimals == null
-                || configuration.Standings?.Columns == null || configuration.Relatives?.Columns == null)
+            if (configuration?.ColorScheme == null || configuration.FontSizes == null || configuration.Fuel == null
+                || configuration.Decimals == null || configuration.Standings?.Columns == null || configuration.Relatives?.Columns == null)
             {
                 throw new InvalidDataException("A section is empty or set to null.");
             }
-            int[] decimals = { configuration.Decimals.Gap, configuration.Decimals.Interval };
+            ValidateFontSizes(configuration.FontSizes);
+            ValidateDecimals(configuration.Decimals);
+            return configuration;
+        }
+
+        private static void ValidateFontSizes(FontSizesConfiguration sizes)
+        {
+            double[] all = { sizes.Small, sizes.Normal, sizes.Large };
+            if (all.Any(size => size < FontSizesConfiguration.Min || size > FontSizesConfiguration.Max))
+            {
+                throw new InvalidDataException($"Font sizes must be between {FontSizesConfiguration.Min} and {FontSizesConfiguration.Max}.");
+            }
+            if (sizes.Small > sizes.Normal || sizes.Normal > sizes.Large)
+            {
+                throw new InvalidDataException("Font sizes must grow from small to normal to large.");
+            }
+        }
+
+        private static void ValidateDecimals(DecimalsConfiguration settings)
+        {
+            int[] decimals = { settings.Gap, settings.Interval };
             if (decimals.Any(value => value < 0 || value > DecimalsConfiguration.Max))
             {
                 throw new InvalidDataException($"Decimals must be between 0 and {DecimalsConfiguration.Max}.");
             }
-            return configuration;
         }
     }
 }
