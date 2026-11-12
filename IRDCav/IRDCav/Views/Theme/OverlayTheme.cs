@@ -36,7 +36,7 @@ namespace IRDCav.Views.Theme
             AddBaseBrushes(application.Resources, configuration.ColorScheme);
             AddStateBrushes(application.Resources, configuration.ColorScheme);
             AddFontSizes(application.Resources, configuration.FontSizes);
-            application.Resources["Overlay.FontFamily"] = OverlayFonts.Resolve(configuration.Font);
+            AddFont(application.Resources, OverlayFonts.Resolve(configuration.Font), configuration.FontSizes);
             application.Resources["GapConverter"] = new SignedTimeConverter(configuration.Decimals.Gap);
             application.Resources["IntervalConverter"] = new SignedTimeConverter(configuration.Decimals.Interval);
             application.Styles.Add(TabularDigits());
@@ -78,6 +78,15 @@ namespace IRDCav.Views.Theme
             resources["Overlay.IconSize"] = Math.Round(sizes.Normal * IconSizePerNormalSize);
             resources["Overlay.StripeHeight"] = Math.Round(sizes.Normal * StripeHeightPerNormalSize);
             resources[ColumnWidthScaleKey] = sizes.Normal / DesignNormalFontSize;
+        }
+
+        private static void AddFont(IResourceDictionary resources, FontFamily family, FontSizesConfiguration sizes)
+        {
+            resources["Overlay.FontFamily"] = family;
+            double offset = CapitalCentering.OffsetOf(family);
+            resources["Overlay.TextShift.Small"] = new TranslateTransform(0, -offset * sizes.Small);
+            resources["Overlay.TextShift.Normal"] = new TranslateTransform(0, -offset * sizes.Normal);
+            resources["Overlay.TextShift.Large"] = new TranslateTransform(0, -offset * sizes.Large);
         }
 
         // Digits of equal width keep times and gaps from jittering as they change.

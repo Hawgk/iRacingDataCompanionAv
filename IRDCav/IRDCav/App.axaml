@@ -48,16 +48,20 @@
 			<Setter Property="Background" Value="{DynamicResource Overlay.Surface}"/>
 			<Setter Property="Padding" Value="10,7"/>
 		</Style>
+		<!-- Every text is shifted by its font size's share of the font's capital offset, see CapitalCentering. -->
 		<Style Selector="TextBlock">
+			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Normal}"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 		<Style Selector="TextBlock.label">
+			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Small}"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 			<Setter Property="LetterSpacing" Value="0.9"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
 		</Style>
 		<Style Selector="TextBlock.timeLeft">
+			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Large}"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Large}"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
@@ -127,6 +131,7 @@
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
 		<Style Selector="StackPanel.estimate.selected > TextBlock.fuelValue">
+			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Large}"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Large}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.PitRoad}"/>
@@ -147,6 +152,7 @@
 			<Setter Property="Height" Value="{DynamicResource Overlay.TitleRowHeight}"/>
 		</Style>
 		<Style Selector="TextBlock.columnTitle">
+			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Small}"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 			<Setter Property="LetterSpacing" Value="1"/>
@@ -157,6 +163,7 @@
 			<Setter Property="ClipToBounds" Value="True"/>
 		</Style>
 		<Style Selector="TextBlock.classHeader">
+			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Small}"/>
 			<Setter Property="Margin" Value="11,0"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
@@ -187,6 +194,7 @@
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
 		<Style Selector="TextBlock.carClass">
+			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Small}"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 		</Style>
@@ -205,6 +213,7 @@
 			<Setter Property="Padding" Value="5,1"/>
 		</Style>
 		<Style Selector="Border.chip > TextBlock">
+			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Small}"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 		</Style>
