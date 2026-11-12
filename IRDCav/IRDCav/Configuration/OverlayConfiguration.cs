@@ -70,8 +70,8 @@ namespace IRDCav.Configuration
     /// <summary>User settings from config.json. Every value has a default, so the file may leave any of them out.</summary>
     public sealed record OverlayConfiguration
     {
-        /// <summary>"Lekton" and "Inter" ship with the app; any other name must be an installed font.</summary>
-        public string Font { get; init; } = "Lekton";
+        /// <summary>"RobotoMono", "Lekton" and "Inter" ship with the app; any other name must be an installed font.</summary>
+        public string Font { get; init; } = "RobotoMono";
 
         public ColorScheme ColorScheme { get; init; } = new();
         public FontSizesConfiguration FontSizes { get; init; } = new();

@@ -14,7 +14,7 @@ You can leave out any key; whatever is missing keeps its default. If the file ca
 
 ## Settings
 
-**`font`**: the font of all overlays. `Lekton` (the default, monospace) and `Inter` ship with iRDCav. Any other name must be a font installed on your system, for example `"Consolas"`. A name that isn't installed silently falls back to a system font.
+**`font`**: the font of all overlays. `RobotoMono` (the default) and `Lekton`, both monospace, and `Inter` ship with iRDCav. Any other name must be a font installed on your system, for example `"Consolas"`. A name that isn't installed silently falls back to a system font.
 
 **`colorScheme`**: colors as `#RRGGBB` or `#AARRGGBB` (`AA` is the opacity, `00` transparent to `FF` opaque).
 
