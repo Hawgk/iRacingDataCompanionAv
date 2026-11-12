@@ -1,70 +1,22 @@
-﻿using IRDCav.Models;
-using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using IRDCav.Models;
+using System;
+using System.Collections.Generic;
 
 namespace IRDCav.ViewModels
 {
-    public class RelativesViewModel : ViewModelBase
+    public partial class RelativesViewModel : ViewModelBase
     {
-        private bool _isVisible = false;
-        private bool _isConnected = false;
-        private SessionInfoModel _sessionInfo = new SessionInfoModel();
-        private FuelDataModel _fuelData = new FuelDataModel();
-        private ObservableCollection<RaceDataModel> _raceDataList = new ObservableCollection<RaceDataModel>();
+        [ObservableProperty]
+        private bool _isVisible;
 
-        public bool IsVisible
-        {
-            get => _isVisible;
-            set
-            {
-                _isVisible = value;
-                OnPropertyChanged(nameof(IsVisible));
-            }
-        }
+        [ObservableProperty]
+        private SessionInfoModel _sessionInfo = new();
 
-        public bool IsConnected
-        {
-            get => _isConnected;
-            set
-            {
-                if (_isConnected != value)
-                {
-                    _isConnected = value;
-                    OnPropertyChanged(nameof(IsConnected));
-                }
-            }
-        }
+        [ObservableProperty]
+        private FuelDataModel _fuelData = new();
 
-        public SessionInfoModel SessionInfo
-        {
-            get => _sessionInfo;
-            set
-            {
-                if (_sessionInfo != value)
-                {
-                    _sessionInfo = value;
-                    OnPropertyChanged(nameof(SessionInfo));
-                }
-            }
-        }
-
-        public FuelDataModel FuelData
-        {
-            get => _fuelData;
-            set
-            {
-                _fuelData = value;
-                OnPropertyChanged(nameof(FuelData));
-            }
-        }
-
-        public ObservableCollection<RaceDataModel> RaceDataList
-        {
-            get => _raceDataList;
-            set
-            {
-                _raceDataList = value;
-                OnPropertyChanged(nameof(RaceDataList));
-            }
-        }
+        [ObservableProperty]
+        private IReadOnlyList<RaceDataModel> _raceDataList = Array.Empty<RaceDataModel>();
     }
 }

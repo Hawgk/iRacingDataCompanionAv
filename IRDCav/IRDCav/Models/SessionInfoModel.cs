@@ -1,26 +1,24 @@
 ﻿namespace IRDCav.Models
 {
-    public class SessionInfoModel
+    /// <summary>Session summary shown in the overlay headers.</summary>
+    public sealed record SessionInfoModel
     {
-        public string TrackName { get; set; } = string.Empty;
-        public string AirTemp { get; set; } = string.Empty;
-        public string SurfaceTemp { get; set; } = string.Empty;
-        public string Precipitation { get; set; } = string.Empty;
-        public string Humidity { get; set; } = string.Empty;
-        public string LapsString { get; set; } = string.Empty;
-        public string TimeString { get; set; } = string.Empty;
-        public string DriverClassName { get; set; } = string.Empty;
-        public string IncidentCount { get; set; } = string.Empty;
-        public string SessionType { get; set; } = string.Empty;
+        public string AirTemp { get; init; } = string.Empty;
+        public string SurfaceTemp { get; init; } = string.Empty;
+        public string Precipitation { get; init; } = string.Empty;
+        public string Humidity { get; init; } = string.Empty;
 
-        public int ClassCount { get; set; }
-        public int LapsRemain { get; set; }
-        public int LapsTotal { get; set; }
-        public int SOF { get; set; }
-        public int DriverCount { get; set; }
-        public int NumCarClasses { get; set; }
+        // TODO: Laps remaining is not reported reliably by iRacing and must be calculated internally.
+        public string LapsString { get; init; } = string.Empty;
 
-        public double TimeRemain { get; set; }
-        public double TimeTotal { get; set; }
+        public string DriverClassName { get; init; } = string.Empty;
+        public string IncidentCount { get; init; } = string.Empty;
+
+        /// <summary>First letter of the session name, e.g. "P", "Q" or "R".</summary>
+        public string SessionType { get; init; } = string.Empty;
+
+        public int SOF { get; init; }
+        public int DriverCount { get; init; }
+        public double TimeRemain { get; init; }
     }
 }

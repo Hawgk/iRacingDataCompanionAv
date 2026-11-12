@@ -6,9 +6,6 @@
              x:DataType="vm:ApplicationViewModel"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
 	<Application.Resources>
 		<local:SecToTimeConverter x:Key="SecToTimeConverter"/>
 		<local:IntToLapConverter x:Key="IntToLapConverter"/>
