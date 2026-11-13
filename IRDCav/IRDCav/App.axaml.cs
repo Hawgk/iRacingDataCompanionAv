@@ -83,7 +83,8 @@ namespace IRDCav
             new ResultsViewModel(),
             new RelativesViewModel(),
             new FuelViewModel(),
-            new InputGraphViewModel(InputTraceSampleCount));
+            new InputGraphViewModel(InputTraceSampleCount),
+            new LapSectorsViewModel());
 
         // Windows show and hide themselves through their IsVisible binding.
         private void CreateWindows(OverlayViewModels viewModels, Action openSettings)
@@ -92,6 +93,7 @@ namespace IRDCav
             var relatives = new RelativesWindow { DataContext = viewModels.Relatives };
             var fuel = new FuelWindow { DataContext = viewModels.Fuel };
             var inputGraph = new InputGraphWindow { DataContext = viewModels.InputGraph };
+            var lapSectors = new LapSectorsWindow { DataContext = viewModels.LapSectors };
 
             _screenWatcher = new ScreenWatcher(results.Screens);
             var layout = new OverlayLayoutContext(new JsonOverlayLayoutStore(JsonOverlayLayoutStore.DefaultFilePath), _screenWatcher);
@@ -99,7 +101,8 @@ namespace IRDCav
             OverlayWindowBehavior.Attach(relatives, DefaultLayouts.Relatives, layout);
             OverlayWindowBehavior.Attach(fuel, DefaultLayouts.Fuel, layout);
             OverlayWindowBehavior.Attach(inputGraph, DefaultLayouts.InputGraph, layout);
-            foreach (Window window in new Window[] { results, relatives, fuel, inputGraph })
+            OverlayWindowBehavior.Attach(lapSectors, DefaultLayouts.LapSectors, layout);
+            foreach (Window window in new Window[] { results, relatives, fuel, inputGraph, lapSectors })
             {
                 SettingsHotkey.Attach(window, openSettings);
             }
@@ -121,7 +124,8 @@ namespace IRDCav
                 Fuel: new FuelMonitor(new FuelCalculator()),
                 SessionInfoBuilder: new SessionInfoBuilder(),
                 RelativeBuilder: CreateRelativeBuilder(),
-                StandingsBuilder: CreateStandingsBuilder());
+                StandingsBuilder: CreateStandingsBuilder(),
+                LapSectors: new LapSectorTracker());
 
             return new TelemetryProcessor(services, publisher, inputs);
         }

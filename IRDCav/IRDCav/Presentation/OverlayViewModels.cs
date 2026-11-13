@@ -6,5 +6,6 @@ namespace IRDCav.Presentation
         ResultsViewModel Results,
         RelativesViewModel Relatives,
         FuelViewModel Fuel,
-        InputGraphViewModel InputGraph);
+        InputGraphViewModel InputGraph,
+        LapSectorsViewModel LapSectors);
 }

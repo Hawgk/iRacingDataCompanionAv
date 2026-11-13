@@ -29,6 +29,7 @@ You can leave out any key; whatever is missing keeps its default. If the file ca
 | `pitRoad` | Pit badge, and the refuel amount when you have enough fuel |
 | `warning` | Incident count |
 | `iRatingGain`, `iRatingLoss` | Estimated iRating change in the iRating badge |
+| `timeGain`, `timeLoss` | Sector deltas faster or slower than the best lap |
 | `throttle`, `brake` | Input trace |
 
 **`fontSizes`**: the three font sizes the overlays use, in pixels on a 1440p screen. They must grow from `small` to `normal` to `large` and lie between 6 and 60. Row heights, icons and column widths follow them.

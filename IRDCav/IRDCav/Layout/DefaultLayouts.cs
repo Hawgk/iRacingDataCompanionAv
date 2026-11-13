@@ -24,6 +24,14 @@ namespace IRDCav.Layout
             OffsetY = -(9 * 26 + 8 + 12) / 1440.0,
         });
 
+        /// <summary>Right above the fuel window, which is about 134 pixels high, with another 12 pixel gap.</summary>
+        public static readonly OverlayDefinition LapSectors = new("lapSectors", new OverlayPlacement
+        {
+            Horizontal = Anchor.End,
+            Vertical = Anchor.End,
+            OffsetY = -(9 * 26 + 8 + 12 + 134 + 12) / 1440.0,
+        });
+
         public static readonly OverlayDefinition InputGraph = new("inputGraph", new OverlayPlacement
         {
             Horizontal = Anchor.Center,

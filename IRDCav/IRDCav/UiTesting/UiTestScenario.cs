@@ -36,6 +36,7 @@ namespace IRDCav.UiTesting
                 Fuel = SimulatedSession.Fuel(_race),
                 Relatives = _relativeBuilder.Build(_race.Cars),
                 Standings = _standingsBuilder.Build(_race.Cars, session.SessionType),
+                LapSectors = SimulatedLapSectors.From(_race),
             };
         }
     }

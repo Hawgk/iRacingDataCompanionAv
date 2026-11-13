@@ -24,6 +24,7 @@ namespace IRDCav.Services
         private readonly SessionInfoBuilder _sessionInfoBuilder;
         private readonly RelativeListBuilder _relativeBuilder;
         private readonly StandingsListBuilder _standingsBuilder;
+        private readonly LapSectorTracker _lapSectors;
         private readonly IOverlayStatePublisher _publisher;
         private readonly IInputSink _inputs;
 
@@ -42,6 +43,7 @@ namespace IRDCav.Services
             _sessionInfoBuilder = services.SessionInfoBuilder;
             _relativeBuilder = services.RelativeBuilder;
             _standingsBuilder = services.StandingsBuilder;
+            _lapSectors = services.LapSectors;
             _publisher = publisher;
             _inputs = inputs;
 
@@ -61,6 +63,7 @@ namespace IRDCav.Services
         {
             _raceData.Clear();
             _fuel.Reset();
+            _lapSectors.Reset();
             _sessionInfoVersion = NoSessionInfo;
             _inputs.Clear();
             Publish(OverlayState.Disconnected);
@@ -94,6 +97,10 @@ namespace IRDCav.Services
             SessionTelemetry session = frame.ReadSession();
             IReadOnlyList<CarTelemetry> cars = frame.ReadCars();
 
+            if (session.SessionNum != _sessionNum)
+            {
+                _lapSectors.Reset();
+            }
             ApplySessionInfoIfChanged(frame.SessionInfoVersion, sessionInfo, session);
             MergeRaceData(sessionInfo, session, cars);
             _iRatingEstimator.Update(_raceData.Cars, _sessionSummary.IsRace);
@@ -103,6 +110,7 @@ namespace IRDCav.Services
                 IsConnected = true,
                 IsPlayerOnTrack = session.IsOnTrack,
                 Session = LiveSessionSummary(session),
+                LapSectors = _lapSectors.Update(_raceData.Player.MicroSectors, session),
             };
             state = WithRaceRows(state);
             state = UpdateFuel(state, session, cars[sessionInfo.DriverInfo.DriverCarIdx].Lap);

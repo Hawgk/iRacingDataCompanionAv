@@ -62,6 +62,7 @@ namespace IRDCav.Presentation
             _viewModels.Relatives.RaceDataList.Update(state.Relatives);
             _viewModels.Fuel.SessionInfo = state.Session;
             _viewModels.Fuel.FuelData = state.Fuel;
+            _viewModels.LapSectors.Apply(state.LapSectors);
         }
 
         private void RefreshInputs()
@@ -81,6 +82,7 @@ namespace IRDCav.Presentation
             _viewModels.Relatives.IsVisible = isVisible;
             _viewModels.Fuel.IsVisible = isVisible;
             _viewModels.InputGraph.IsVisible = isVisible;
+            _viewModels.LapSectors.IsVisible = isVisible;
         }
     }
 }

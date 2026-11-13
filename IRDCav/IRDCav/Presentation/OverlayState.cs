@@ -16,9 +16,11 @@ namespace IRDCav.Presentation
 
         /// <summary>The overlays are shown only while the player drives.</summary>
         public bool ShowsOverlays => IsConnected && IsPlayerOnTrack;
+
         public SessionInfoModel Session { get; init; } = new();
         public FuelDataModel Fuel { get; init; } = new();
         public IReadOnlyList<RaceRow> Relatives { get; init; } = Array.Empty<RaceRow>();
         public IReadOnlyList<RaceRow> Standings { get; init; } = Array.Empty<RaceRow>();
+        public LapSectorsModel LapSectors { get; init; } = LapSectorsModel.Empty;
     }
 }

@@ -19,6 +19,7 @@
 			<conv:DriverNameConverter x:Key="DriverNameConverter"/>
 			<conv:PositiveNumberConverter x:Key="PositiveNumberConverter"/>
 			<conv:SignedNumberConverter x:Key="SignedNumberConverter"/>
+			<conv:SectorDeltaConverter x:Key="SectorDeltaConverter"/>
 			<conv:TintConverter x:Key="TintConverter"/>
 			<conv:RotationConverter x:Key="RotationConverter"/>
 
@@ -137,6 +138,41 @@
 		</Style>
 		<Style Selector="TextBlock.fuelValue.selected.short">
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.LapAhead}"/>
+		</Style>
+
+		<!-- Sectors: every row has the same fixed-width columns and one line height for its small and normal texts. -->
+		<Style Selector="Border.sectorHeader">
+			<Setter Property="Padding" Value="10,2"/>
+		</Style>
+		<Style Selector="ItemsControl.sectors">
+			<Setter Property="Margin" Value="10,2,10,4"/>
+		</Style>
+		<Style Selector="StackPanel.sectorRow">
+			<Setter Property="Orientation" Value="Horizontal"/>
+			<Setter Property="Height" Value="{DynamicResource Overlay.RowHeight}"/>
+		</Style>
+		<Style Selector="StackPanel.sectorRow > TextBlock">
+			<Setter Property="LineHeight" Value="{DynamicResource Overlay.RowHeight}"/>
+			<Setter Property="TextAlignment" Value="Right"/>
+		</Style>
+		<Style Selector="StackPanel.sectorRow > TextBlock.sectorLabel">
+			<Setter Property="Width" Value="{DynamicResource Overlay.SectorLabelWidth}"/>
+			<Setter Property="TextAlignment" Value="Left"/>
+		</Style>
+		<Style Selector="TextBlock.sectorTime">
+			<Setter Property="Width" Value="{DynamicResource Overlay.SectorTimeWidth}"/>
+		</Style>
+		<Style Selector="TextBlock.bestLapTime">
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+		<Style Selector="TextBlock.sectorDelta">
+			<Setter Property="Width" Value="{DynamicResource Overlay.SectorDeltaWidth}"/>
+		</Style>
+		<Style Selector="TextBlock.sectorDelta.gain">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.TimeGain}"/>
+		</Style>
+		<Style Selector="TextBlock.sectorDelta.loss">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.TimeLoss}"/>
 		</Style>
 
 		<!-- Race tables. Row states first, so the cell styles after them win. -->

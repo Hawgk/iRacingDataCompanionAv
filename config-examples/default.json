@@ -13,6 +13,8 @@
     "warning": "#FFF2D49B",
     "iRatingGain": "#FF9ED6A5",
     "iRatingLoss": "#FFF0A3A0",
+    "timeGain": "#FF9ED6A5",
+    "timeLoss": "#FFF0A3A0",
     "throttle": "#FF9ED6A5",
     "brake": "#FFF0A3A0"
   },

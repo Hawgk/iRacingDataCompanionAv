@@ -1,0 +1,50 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:IRDCav.ViewModels"
+        x:Class="IRDCav.Views.LapSectorsWindow"
+        x:DataType="vm:LapSectorsViewModel"
+        Classes="overlay"
+        Icon="/Assets/icon.ico"
+        Title="iRDCav Sectors"
+        SizeToContent="WidthAndHeight"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        SystemDecorations="None"
+        IsVisible="{Binding IsVisible}">
+	<!--
+	The header row and the sector rows share the same three fixed-width columns, so every
+	label, time and delta lines up, and the panel keeps its width when deltas come and go.
+	-->
+	<LayoutTransformControl HorizontalAlignment="Left" VerticalAlignment="Top">
+		<Border Classes="panel">
+			<StackPanel>
+				<Border Classes="header sectorHeader">
+					<StackPanel Classes="sectorRow">
+						<TextBlock Classes="label sectorLabel" Text="BEST"/>
+						<TextBlock
+							Classes="sectorTime bestLapTime"
+							Text="{Binding BestLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
+						<TextBlock Classes="sectorDelta"/>
+					</StackPanel>
+				</Border>
+				<ItemsControl Classes="sectors" ItemsSource="{Binding Sectors}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate x:DataType="vm:SectorRowViewModel">
+							<StackPanel Classes="sectorRow">
+								<TextBlock Classes="label sectorLabel" Text="{Binding Number}"/>
+								<TextBlock
+									Classes="sectorTime"
+									Text="{Binding BestTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Sector}"/>
+								<TextBlock
+									Classes="sectorDelta"
+									Classes.gain="{Binding IsGain}"
+									Classes.loss="{Binding IsLoss}"
+									Text="{Binding Delta, Converter={StaticResource SectorDeltaConverter}}"/>
+							</StackPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</StackPanel>
+		</Border>
+	</LayoutTransformControl>
+</Window>

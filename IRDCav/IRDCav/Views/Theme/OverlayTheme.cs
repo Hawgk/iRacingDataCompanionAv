@@ -30,6 +30,11 @@ namespace IRDCav.Views.Theme
         private const double BadgeHeightPerSmallSize = 1.6;
         private const double LetterBadgeWidthPerSmallSize = 2;
 
+        private const double SectorLabelCharacters = 4;
+        private const double SectorTimeDigits = 8;
+        private const double SectorDeltaDigits = 7;
+        private const double SectorColumnRoom = 10;
+
         public const string DigitWidthKey = "Overlay.DigitWidth";
         public const string TitleCharacterWidthKey = "Overlay.TitleCharacterWidth";
 
@@ -75,6 +80,8 @@ namespace IRDCav.Views.Theme
             resources["Overlay.Warning"] = Brush(colors.Warning);
             resources["Overlay.IRatingGain"] = Brush(colors.IRatingGain);
             resources["Overlay.IRatingLoss"] = Brush(colors.IRatingLoss);
+            resources["Overlay.TimeGain"] = Brush(colors.TimeGain);
+            resources["Overlay.TimeLoss"] = Brush(colors.TimeLoss);
         }
 
         /// <summary>
@@ -117,10 +124,22 @@ namespace IRDCav.Views.Theme
             double digitAdvance = FontMeasurement.DigitAdvance(family);
             resources[DigitWidthKey] = digitAdvance * sizes.Normal;
             resources[TitleCharacterWidthKey] = digitAdvance * sizes.Small + ColumnTitleLetterSpacing;
+            AddSectorColumnWidths(resources, digitAdvance * sizes.Normal, digitAdvance * sizes.Small + ColumnTitleLetterSpacing);
             double offset = FontMeasurement.CapitalOffset(family);
             resources["Overlay.TextShift.Small"] = new TranslateTransform(0, -offset * sizes.Small);
             resources["Overlay.TextShift.Normal"] = new TranslateTransform(0, -offset * sizes.Normal);
             resources["Overlay.TextShift.Large"] = new TranslateTransform(0, -offset * sizes.Large);
+        }
+
+        /// <summary>
+        /// Fixed column widths of the sector view, so its rows line up and the panel keeps its width
+        /// whether deltas are shown or not: a short label ("BEST"), a lap time ("1:44.212") and a delta ("+12.345").
+        /// </summary>
+        private static void AddSectorColumnWidths(IResourceDictionary resources, double digitWidth, double labelCharacterWidth)
+        {
+            resources["Overlay.SectorLabelWidth"] = Math.Ceiling(SectorLabelCharacters * labelCharacterWidth + SectorColumnRoom);
+            resources["Overlay.SectorTimeWidth"] = Math.Ceiling(SectorTimeDigits * digitWidth + SectorColumnRoom);
+            resources["Overlay.SectorDeltaWidth"] = Math.Ceiling(SectorDeltaDigits * digitWidth + SectorColumnRoom);
         }
 
         private static Style TabularDigits() => new(selector => selector.OfType<Window>())

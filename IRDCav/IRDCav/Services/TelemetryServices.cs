@@ -9,5 +9,6 @@ namespace IRDCav.Services
         FuelMonitor Fuel,
         SessionInfoBuilder SessionInfoBuilder,
         RelativeListBuilder RelativeBuilder,
-        StandingsListBuilder StandingsBuilder);
+        StandingsListBuilder StandingsBuilder,
+        LapSectorTracker LapSectors);
 }
