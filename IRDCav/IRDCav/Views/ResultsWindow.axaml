@@ -42,8 +42,9 @@
 						</StackPanel>
 					</DockPanel>
 				</Border>
+				<!-- No bottom margin: the player's highlighted row may be the last one and must reach the panel edge. -->
 				<table:RaceTable
-					Margin="0,4"
+					Margin="0,4,0,0"
 					Columns="{Binding Columns}"
 					ShowColumnTitles="{Binding ShowColumnTitles}"
 					Rows="{Binding RaceDataList}"/>
