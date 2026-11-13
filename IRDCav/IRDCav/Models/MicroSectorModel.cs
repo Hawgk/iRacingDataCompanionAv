@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace IRDCav.Models
 {
@@ -20,8 +21,19 @@ namespace IRDCav.Models
         private int _currentSector = NO_SECTOR;
         private double _currentTime = 0;
         private bool _isCurrentSectorValid = false;
+        private readonly float[] _currentLap = new float[MICROSECTOR_COUNT];
+        private float[] _lastLap = new float[MICROSECTOR_COUNT];
 
         public int RecordedSectors { get; private set; }
+
+        /// <summary>Microsector times of the lap in progress; 0 for a microsector not (yet) driven without interruption.</summary>
+        public IReadOnlyList<float> CurrentLap => _currentLap;
+
+        /// <summary>Microsector times of the lap that last crossed the start/finish line; never changed afterwards.</summary>
+        public IReadOnlyList<float> LastLap => _lastLap;
+
+        /// <summary>Increases each time the car crosses the start/finish line.</summary>
+        public int CompletedLaps { get; private set; }
 
         /// <summary>Sum of all best microsector times. Only meaningful when <see cref="IsComplete"/>.</summary>
         public float OptimalLapTime { get; private set; }
@@ -148,9 +160,21 @@ namespace IRDCav.Models
             if (_isCurrentSectorValid)
             {
                 CommitSector(_currentSector, (float)_currentTime);
+                _currentLap[_currentSector] = (float)_currentTime;
+            }
+            if (nextSector == 0)
+            {
+                CompleteLap();
             }
 
             StartSector(nextSector, elapsedTime * (1.0 - fractionBefore), isValid: true);
+        }
+
+        private void CompleteLap()
+        {
+            _lastLap = (float[])_currentLap.Clone();
+            Array.Clear(_currentLap);
+            CompletedLaps++;
         }
 
         private void StartSector(int sectorId, double initialTime, bool isValid)
@@ -160,8 +184,10 @@ namespace IRDCav.Models
             _isCurrentSectorValid = isValid;
         }
 
+        /// <summary>Also discards the lap in progress: after a teleport its microsectors no longer belong to one lap.</summary>
         private void Invalidate(float lapDistPct)
         {
+            Array.Clear(_currentLap);
             StartSector(lapDistPct >= 0 ? GetSectorId(lapDistPct) : NO_SECTOR, 0, isValid: false);
         }
 

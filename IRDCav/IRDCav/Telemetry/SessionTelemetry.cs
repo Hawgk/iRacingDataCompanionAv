@@ -10,6 +10,9 @@ namespace IRDCav.Telemetry
 
         public double TimeRemain { get; init; }
         public float FuelLevel { get; init; }
+
+        /// <summary>The player's best lap time of the session in seconds, as iRacing counts it; 0 or less when there is none.</summary>
+        public float BestLapTime { get; init; }
         public bool IsOnTrack { get; init; }
 
         /// <summary>Compass direction the wind comes from, in radians.</summary>
