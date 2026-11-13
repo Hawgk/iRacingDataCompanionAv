@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace IRDCav.ViewModels
 {
-    /// <summary>The sector view: the best lap times of the car and its class, and one reusable row per sector.</summary>
+    /// <summary>The sector view: the best lap times of the car and its class, the recent average, and one reusable row per sector.</summary>
     public partial class LapSectorsViewModel : ViewModelBase
     {
         [ObservableProperty]
@@ -16,6 +16,9 @@ namespace IRDCav.ViewModels
         [ObservableProperty]
         private float _classBestLapTime;
 
+        [ObservableProperty]
+        private float _averageLapTime;
+
         /// <summary>One row per sector of the track; rows are reused and only added or removed at the end.</summary>
         public ObservableCollection<SectorRowViewModel> Sectors { get; } = new();
 
@@ -23,6 +26,7 @@ namespace IRDCav.ViewModels
         {
             BestLapTime = lapSectors.BestLapTime;
             ClassBestLapTime = lapSectors.ClassBestLapTime;
+            AverageLapTime = lapSectors.AverageLapTime;
             Resize(lapSectors.Sectors.Count);
             for (int i = 0; i < Sectors.Count; i++)
             {

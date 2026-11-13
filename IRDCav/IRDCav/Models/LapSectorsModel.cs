@@ -23,6 +23,9 @@ namespace IRDCav.Models
         /// <summary>The player's all-time best lap at this track with any car of the current class in seconds; 0 when there is none.</summary>
         public float ClassBestLapTime { get; init; }
 
+        /// <summary>The average of the player's last five lap times in seconds, every lap included; 0 before the first lap.</summary>
+        public float AverageLapTime { get; init; }
+
         /// <summary>iRacing's sectors of the track in track order; their number differs from track to track.</summary>
         public IReadOnlyList<SectorModel> Sectors { get; init; } = Array.Empty<SectorModel>();
     }

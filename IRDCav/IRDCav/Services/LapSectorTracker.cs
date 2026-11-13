@@ -22,16 +22,18 @@ namespace IRDCav.Services
 
         private readonly ReferenceLap _reference;
         private readonly SectorClock _clock;
+        private readonly RecentLapAverage _lapAverage;
         private readonly List<DrivenLap> _recentLaps = new();
         private LapSectorsSetup _setup = LapSectorsSetup.Unknown;
         private float[] _shownDeltas = Array.Empty<float>();
         private float[] _lapSectorTimes = Array.Empty<float>();
         private PendingLap _pending = PendingLap.None;
 
-        public LapSectorTracker(ReferenceLap reference, SectorClock clock)
+        public LapSectorTracker(ReferenceLap reference, SectorClock clock, RecentLapAverage lapAverage)
         {
             _reference = reference;
             _clock = clock;
+            _lapAverage = lapAverage;
         }
 
         /// <summary>Loads iRacing's best lap when the car, the track or its sectors change.</summary>
@@ -44,13 +46,15 @@ namespace IRDCav.Services
             _setup = setup;
             _reference.Load(setup.Key, setup.SessionCarClassId, setup.SectorStarts.Count);
             _clock.Configure(setup.SectorStarts);
+            _lapAverage.Reset();
             ForgetLaps();
         }
 
-        /// <summary>Forgets the driven laps, e.g. for a new session or connection; keeps the reference.</summary>
+        /// <summary>Forgets the driven laps and their average, e.g. for a new session or connection; keeps the reference.</summary>
         public void Reset()
         {
             _clock.Reset();
+            _lapAverage.Reset();
             ForgetLaps();
         }
 
@@ -61,6 +65,7 @@ namespace IRDCav.Services
                 Record(result, lap);
             }
             ClearDrivenSectorDelta();
+            _lapAverage.Observe(lap.LastLapTime);
             ResolvePendingLap(lap);
             return BuildModel();
         }
@@ -163,6 +168,7 @@ namespace IRDCav.Services
         {
             BestLapTime = _reference.LapTime,
             ClassBestLapTime = _reference.ClassBest,
+            AverageLapTime = _lapAverage.Average,
             Sectors = Enumerable.Range(0, _shownDeltas.Length)
                 .Select(sector => new SectorModel(sector + 1, _reference.SectorTimes[sector], _shownDeltas[sector]))
                 .ToArray(),

@@ -18,7 +18,7 @@
 	<LayoutTransformControl HorizontalAlignment="Left" VerticalAlignment="Top">
 		<Border Classes="panel">
 			<StackPanel>
-				<!-- BEST: your best with this car at this track, which the sectors below belong to. CLASS: your best with any car of the class. -->
+				<!-- BEST: your best with this car at this track, which the sectors below belong to. CLASS: your best with any car of the class. AVG: your last five laps. -->
 				<Border Classes="header sectorHeader">
 					<StackPanel>
 						<StackPanel Classes="sectorRow">
@@ -33,6 +33,13 @@
 							<TextBlock
 								Classes="sectorTime"
 								Text="{Binding ClassBestLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
+							<TextBlock Classes="sectorDelta"/>
+						</StackPanel>
+						<StackPanel Classes="sectorRow">
+							<TextBlock Classes="label sectorLabel" Text="AVG"/>
+							<TextBlock
+								Classes="sectorTime"
+								Text="{Binding AverageLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
 							<TextBlock Classes="sectorDelta"/>
 						</StackPanel>
 					</StackPanel>

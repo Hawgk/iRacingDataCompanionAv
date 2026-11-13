@@ -141,7 +141,7 @@ namespace IRDCav
 
         /// <summary>The best laps and their sectors come from the lap files iRacing keeps.</summary>
         private static LapSectorTracker CreateLapSectorTracker() =>
-            new(new ReferenceLap(new IRacingLapFileLibrary(IRacingLapFileLibrary.DefaultDirectory)), new SectorClock());
+            new(new ReferenceLap(new IRacingLapFileLibrary(IRacingLapFileLibrary.DefaultDirectory)), new SectorClock(), new RecentLapAverage());
 
         private static RelativeListBuilder CreateRelativeBuilder() => new(RelativeRowCount);
 
