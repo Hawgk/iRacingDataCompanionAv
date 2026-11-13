@@ -74,6 +74,15 @@ namespace IRDCav.UiTesting
 
         private double NextLapTime() => _baseLapTime * (1 + (_random.NextDouble() - 0.5) * LapTimeVariation);
 
+        // Mostly dry tires with a few cars on other compounds, so every badge color shows up.
+        private static string DemoTireCompound(int id) => (id % 9) switch
+        {
+            0 => "Wet",
+            4 => "Soft",
+            7 => "Medium",
+            _ => "Hard",
+        };
+
         private static RaceDataModel CreateModel(DemoDriver driver, int id) => new()
         {
             Id = id,
@@ -84,6 +93,7 @@ namespace IRDCav.UiTesting
             ClassStr = driver.CarClass.Name,
             ClassColor = driver.CarClass.Color,
             IRating = driver.IRating,
+            TireCompound = DemoTireCompound(id),
             License = ((float)driver.IRating / 1000).ToString("0.0") + "k",
             LicenseColor = driver.LicenseColor,
             EstLapTime = driver.CarClass.LapTime,

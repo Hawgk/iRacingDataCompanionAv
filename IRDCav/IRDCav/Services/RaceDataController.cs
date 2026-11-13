@@ -16,6 +16,7 @@ namespace IRDCav.Services
         private readonly IntervalCalculator _intervalCalculator;
         private readonly RaceDataModel[] _cars = new RaceDataModel[IRacingSdkConst.MaxNumCars];
         private RaceDataModel _player = new();
+        private IReadOnlyDictionary<int, string> _tireCompoundNames = new Dictionary<int, string>();
         private double _lastSessionTime = NoSessionTime;
 
         public RaceDataController(IntervalCalculator intervalCalculator)
@@ -47,8 +48,26 @@ namespace IRDCav.Services
             {
                 CarTelemetry car = cars[i];
                 _cars[car.Id].ApplyTelemetry(car);
+                _cars[car.Id].TireCompound = TireCompoundName(car.TireCompound);
             }
         }
+
+        /// <summary>
+        /// iRacing lists the compounds of the player's car only; other classes may number
+        /// their compounds differently.
+        /// </summary>
+        public void ApplyTireCompounds(IEnumerable<DriverTireModel> tires) =>
+            _tireCompoundNames = tires
+                .Where(tire => !string.IsNullOrEmpty(tire.TireCompoundType))
+                .GroupBy(tire => tire.TireIndex)
+                .ToDictionary(group => group.Key, group => group.First().TireCompoundType);
+
+        /// <summary>The compound's name, its index when the name is unknown, or empty when the car reports none.</summary>
+        private string TireCompoundName(int index) => index switch
+        {
+            < 0 => string.Empty,
+            _ => _tireCompoundNames.TryGetValue(index, out string? name) ? name : index.ToString(),
+        };
 
         public void ApplyPositions(IEnumerable<PositionModel> positions)
         {

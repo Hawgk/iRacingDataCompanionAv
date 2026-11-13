@@ -11,6 +11,7 @@ namespace IRDCav.Configuration
         Driver,
         Pit,
         IRating,
+        Tyres,
         Laps,
         FastestLap,
         LastLap,

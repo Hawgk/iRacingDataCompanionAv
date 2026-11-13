@@ -236,6 +236,9 @@
 			<Setter Property="LetterSpacing" Value="0.6"/>
 			<Setter Property="HorizontalAlignment" Value="Center"/>
 		</Style>
+		<Style Selector="Border.tireChip > TextBlock">
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+		</Style>
 		<Style Selector="Border.sessionChip">
 			<Setter Property="Background" Value="{DynamicResource Overlay.Text}"/>
 			<Setter Property="Width" Value="{DynamicResource Overlay.LetterBadgeWidth}"/>

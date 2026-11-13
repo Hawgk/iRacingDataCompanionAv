@@ -24,6 +24,7 @@ namespace IRDCav.Models
         public string CarNumber { get; init; } = string.Empty;
         public string ClassName { get; init; } = string.Empty;
         public string License { get; init; } = string.Empty;
+        public string TireCompound { get; init; } = string.Empty;
 
         /// <summary>"#RRGGBB", or empty when unknown.</summary>
         public string ClassColor { get; init; } = string.Empty;
@@ -60,6 +61,7 @@ namespace IRDCav.Models
             CarNumber = car.CarNumber,
             ClassName = car.ClassStr,
             License = car.License,
+            TireCompound = car.TireCompound,
             ClassColor = car.ClassColor,
             LicenseColor = car.LicenseColor,
             IRatingChange = car.IRatingChange,

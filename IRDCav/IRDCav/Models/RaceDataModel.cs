@@ -46,6 +46,9 @@ namespace IRDCav.Models
         public bool IsLapAhead => LapDelta > 0;
         public bool IsLapBehind => LapDelta < 0;
 
+        /// <summary>Name of the tire compound, its index when the name is unknown, or empty.</summary>
+        public string TireCompound { get; set; } = string.Empty;
+
         public float LapDistPct { get; set; }
         public float LastLapDistPct { get; set; }
         public float LastLapTime { get; set; }

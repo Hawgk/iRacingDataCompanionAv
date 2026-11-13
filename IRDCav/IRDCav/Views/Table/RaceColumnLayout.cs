@@ -35,6 +35,7 @@ namespace IRDCav.Views.Table
             RaceColumn.Driver => new("DRIVER", 16, 0, HorizontalAlignment.Left),
             RaceColumn.Pit => new("PIT", 3, BadgeRoom, HorizontalAlignment.Stretch),
             RaceColumn.IRating => new("IR", 8, BadgeRoom, HorizontalAlignment.Stretch),
+            RaceColumn.Tyres => new("TYRE", 1, BadgeRoom, HorizontalAlignment.Stretch),
             RaceColumn.Laps => new("LAPS", 3, 0, HorizontalAlignment.Right),
             RaceColumn.FastestLap => new("BEST", 8, 0, HorizontalAlignment.Right),
             RaceColumn.LastLap => new("LAST", 8, 0, HorizontalAlignment.Right),

@@ -35,6 +35,9 @@ namespace IRDCav.Telemetry
         private readonly IRacingSdkDatum _carTrackSurface;
         private readonly IRacingSdkDatum _carSessionFlags;
 
+        // Older iRacing builds and some replays don't report tire compounds.
+        private readonly IRacingSdkDatum? _carTireCompound;
+
         // Reused on every read to avoid allocations on the telemetry thread.
         private readonly int[] _laps = new int[CarCount];
         private readonly float[] _lapDistPcts = new float[CarCount];
@@ -45,6 +48,7 @@ namespace IRDCav.Telemetry
         private readonly int[] _trackLocations = new int[CarCount];
         private readonly int[] _trackSurfaces = new int[CarCount];
         private readonly uint[] _sessionFlags = new uint[CarCount];
+        private readonly int[] _tireCompounds = new int[CarCount];
         private readonly CarTelemetry[] _cars = new CarTelemetry[CarCount];
 
         public IRacingTelemetryFrame(IRacingSdkData data)
@@ -72,6 +76,7 @@ namespace IRDCav.Telemetry
             _carTrackLocation = Resolve("CarIdxTrackSurface");
             _carTrackSurface = Resolve("CarIdxTrackSurfaceMaterial");
             _carSessionFlags = Resolve("CarIdxSessionFlags");
+            _carTireCompound = data.TelemetryDataProperties.GetValueOrDefault("CarIdxTireCompound");
         }
 
         public InputSample ReadInputs() => new(_data.GetFloat(_throttle), _data.GetFloat(_brake));
@@ -105,6 +110,7 @@ namespace IRDCav.Telemetry
                     TrackLocation = (TrkLoc)_trackLocations[i],
                     TrackSurface = (TrkSurf)_trackSurfaces[i],
                     SessionFlags = (Flags)_sessionFlags[i],
+                    TireCompound = _tireCompounds[i],
                 };
             }
             return _cars;
@@ -138,6 +144,17 @@ namespace IRDCav.Telemetry
             _data.GetIntArray(_carTrackLocation, _trackLocations, 0, CarCount);
             _data.GetIntArray(_carTrackSurface, _trackSurfaces, 0, CarCount);
             _data.GetBitFieldArray(_carSessionFlags, _sessionFlags, 0, CarCount);
+            ReadTireCompounds();
+        }
+
+        private void ReadTireCompounds()
+        {
+            if (_carTireCompound == null)
+            {
+                Array.Fill(_tireCompounds, -1);
+                return;
+            }
+            _data.GetIntArray(_carTireCompound, _tireCompounds, 0, CarCount);
         }
     }
 }

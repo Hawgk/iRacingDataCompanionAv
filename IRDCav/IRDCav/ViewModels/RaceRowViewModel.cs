@@ -22,6 +22,10 @@ namespace IRDCav.ViewModels
         [ObservableProperty] private string _carNumber = string.Empty;
         [ObservableProperty] private string _className = string.Empty;
         [ObservableProperty] private string _license = string.Empty;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(TireLetter), nameof(TireColor))]
+        private string _tireCompound = string.Empty;
         [ObservableProperty] private string _classColor = string.Empty;
         [ObservableProperty] private string _licenseColor = string.Empty;
 
@@ -40,6 +44,9 @@ namespace IRDCav.ViewModels
         [ObservableProperty] private float _gap;
         [ObservableProperty] private float _lastLapTime;
         [ObservableProperty] private float _fastestLapTime;
+
+        public string TireLetter => TireCompoundStyle.LetterOf(TireCompound);
+        public string TireColor => TireCompoundStyle.ColorOf(TireCompound);
 
         public bool IsIRatingGain => HasIRatingChange && IRatingChange > 0;
         public bool IsIRatingLoss => HasIRatingChange && IRatingChange < 0;
@@ -68,6 +75,7 @@ namespace IRDCav.ViewModels
             CarNumber = row.CarNumber;
             ClassName = row.ClassName;
             License = row.License;
+            TireCompound = row.TireCompound;
             ClassColor = row.ClassColor;
             LicenseColor = row.LicenseColor;
         }

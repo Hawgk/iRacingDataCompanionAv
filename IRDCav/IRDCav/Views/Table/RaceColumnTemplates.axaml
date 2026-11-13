@@ -56,6 +56,17 @@
 		</Border>
 	</DataTemplate>
 
+	<DataTemplate x:Key="RaceColumn.Tyres" x:DataType="vm:RaceRowViewModel">
+		<Border
+			Classes="chip tireChip"
+			IsVisible="{Binding TireCompound, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+			Background="{Binding TireColor, Converter={StaticResource TintConverter}, ConverterParameter=Chip}">
+			<TextBlock
+				Text="{Binding TireLetter}"
+				Foreground="{Binding TireColor, Converter={StaticResource TintConverter}, ConverterParameter=Text}"/>
+		</Border>
+	</DataTemplate>
+
 	<DataTemplate x:Key="RaceColumn.Laps" x:DataType="vm:RaceRowViewModel">
 		<TextBlock Text="{Binding LapsCompleted, Converter={StaticResource PositiveNumberConverter}}"/>
 	</DataTemplate>

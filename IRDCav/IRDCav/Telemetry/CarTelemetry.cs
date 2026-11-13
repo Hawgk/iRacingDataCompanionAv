@@ -15,5 +15,8 @@ namespace IRDCav.Telemetry
         public TrkLoc TrackLocation { get; init; }
         public TrkSurf TrackSurface { get; init; }
         public Flags SessionFlags { get; init; }
+
+        /// <summary>Index of the tire compound the car runs; -1 when unknown.</summary>
+        public int TireCompound { get; init; }
     }
 }

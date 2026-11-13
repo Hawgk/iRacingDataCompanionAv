@@ -115,6 +115,7 @@ namespace IRDCav.Services
             _sessionNum = session.SessionNum;
 
             _raceData.ApplyDrivers(sessionInfo.DriverInfo.Drivers ?? new());
+            _raceData.ApplyTireCompounds(sessionInfo.DriverInfo.DriverTires ?? new());
             if (sessionInfo.WeekendInfo != null)
             {
                 _sessionSummary = _sessionInfoBuilder.Build(sessionInfo, session);
