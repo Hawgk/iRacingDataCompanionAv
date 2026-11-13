@@ -11,8 +11,8 @@ using System;
 namespace IRDCav.Views.Theme
 {
     /// <summary>
-    /// Publishes the user's colors, font sizes and number formats as application resources. Must run
-    /// before the windows are created; the XAML refers to them through DynamicResource.
+    /// Publishes the user's colors, font sizes and number formats as application resources. The XAML
+    /// refers to them through DynamicResource, so applying a new configuration updates open windows.
     /// </summary>
     internal static class OverlayTheme
     {
@@ -43,8 +43,10 @@ namespace IRDCav.Views.Theme
             AddFont(application.Resources, OverlayFonts.Resolve(configuration.Font), configuration.FontSizes);
             application.Resources["GapConverter"] = new SignedTimeConverter(configuration.Decimals.Gap);
             application.Resources["IntervalConverter"] = new SignedTimeConverter(configuration.Decimals.Interval);
-            application.Styles.Add(TabularDigits());
         }
+
+        /// <summary>Digits of equal width keep times and gaps from jittering as they change. Call once.</summary>
+        public static void AddTabularDigits(Application application) => application.Styles.Add(TabularDigits());
 
         private static void AddBaseBrushes(IResourceDictionary resources, ColorScheme colors)
         {
@@ -99,7 +101,6 @@ namespace IRDCav.Views.Theme
             resources["Overlay.TextShift.Large"] = new TranslateTransform(0, -offset * sizes.Large);
         }
 
-        // Digits of equal width keep times and gaps from jittering as they change.
         private static Style TabularDigits() => new(selector => selector.OfType<Window>())
         {
             Setters = { new Setter(TextElement.FontFeaturesProperty, new FontFeatureCollection { FontFeature.Parse("tnum") }) },

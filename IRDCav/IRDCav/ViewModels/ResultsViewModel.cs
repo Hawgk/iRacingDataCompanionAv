@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRDCav.Configuration;
 using IRDCav.Models;
+using System;
 using System.Collections.Generic;
 
 namespace IRDCav.ViewModels
@@ -13,16 +14,19 @@ namespace IRDCav.ViewModels
         [ObservableProperty]
         private SessionInfoModel _sessionInfo = new();
 
-        public ResultsViewModel(ListOverlayConfiguration table)
-        {
-            Columns = table.Columns;
-            ShowColumnTitles = table.ShowColumnTitles;
-        }
+        [ObservableProperty]
+        private IReadOnlyList<RaceColumn> _columns = Array.Empty<RaceColumn>();
 
-        public IReadOnlyList<RaceColumn> Columns { get; }
-
-        public bool ShowColumnTitles { get; }
+        [ObservableProperty]
+        private bool _showColumnTitles;
 
         public RaceRowCollection RaceDataList { get; } = new();
+
+        /// <summary>Always replaces the column list, so the table rebuilds its rows, e.g. for a new font.</summary>
+        public void ApplyTable(ListOverlayConfiguration table)
+        {
+            Columns = new List<RaceColumn>(table.Columns);
+            ShowColumnTitles = table.ShowColumnTitles;
+        }
     }
 }

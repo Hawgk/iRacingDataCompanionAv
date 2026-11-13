@@ -7,8 +7,6 @@ namespace IRDCav.ViewModels
     /// <summary>The fuel window: weather and the fuel table.</summary>
     public partial class FuelViewModel : ViewModelBase
     {
-        private readonly RefuelEstimate _refuelEstimate;
-
         [ObservableProperty]
         private bool _isVisible;
 
@@ -19,11 +17,11 @@ namespace IRDCav.ViewModels
         [NotifyPropertyChangedFor(nameof(Fuel))]
         private FuelDataModel _fuelData = new();
 
-        public FuelViewModel(RefuelEstimate refuelEstimate)
-        {
-            _refuelEstimate = refuelEstimate;
-        }
+        /// <summary>The estimate that is enlarged in the fuel table.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Fuel))]
+        private RefuelEstimate _refuelEstimate = RefuelEstimate.Average;
 
-        public FuelSummary Fuel => FuelSummary.From(FuelData, _refuelEstimate);
+        public FuelSummary Fuel => FuelSummary.From(FuelData, RefuelEstimate);
     }
 }

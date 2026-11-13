@@ -44,11 +44,9 @@ namespace IRDCav
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit.
                 BindingPlugins.DataValidators.RemoveAt(0);
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                OverlayViewModels viewModels = CreateViewModels();
+                LiveOverlayConfiguration configuration = LoadConfiguration(viewModels);
                 DataContext = new ApplicationViewModel();
-
-                OverlayConfiguration configuration = LoadConfiguration();
-                OverlayTheme.Apply(this, configuration);
-                OverlayViewModels viewModels = CreateViewModels(configuration);
                 CreateWindows(viewModels);
 
                 var store = new OverlayStateStore();
@@ -67,17 +65,21 @@ namespace IRDCav
             base.OnFrameworkInitializationCompleted();
         }
 
-        private static OverlayConfiguration LoadConfiguration()
+        /// <summary>Applies config.json to the theme and view models; must run before the windows are created.</summary>
+        private LiveOverlayConfiguration LoadConfiguration(OverlayViewModels viewModels)
         {
             var file = new JsonOverlayConfigurationFile(JsonOverlayConfigurationFile.DefaultFilePath);
             file.CreateIfMissing();
-            return file.Read();
+            OverlayTheme.AddTabularDigits(this);
+            var configuration = new LiveOverlayConfiguration(file, new OverlayConfigurationApplier(this, viewModels));
+            configuration.Load(file.Read());
+            return configuration;
         }
 
-        private static OverlayViewModels CreateViewModels(OverlayConfiguration configuration) => new(
-            new ResultsViewModel(configuration.Standings),
-            new RelativesViewModel(configuration.Relatives),
-            new FuelViewModel(configuration.Fuel.RefuelEstimate),
+        private static OverlayViewModels CreateViewModels() => new(
+            new ResultsViewModel(),
+            new RelativesViewModel(),
+            new FuelViewModel(),
             new InputGraphViewModel(InputTraceSampleCount));
 
         // Windows show and hide themselves through their IsVisible binding.
