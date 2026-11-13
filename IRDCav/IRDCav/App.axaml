@@ -43,7 +43,6 @@
 		</Style>
 		<Style Selector="Border.panel">
 			<Setter Property="Background" Value="{DynamicResource Overlay.Background}"/>
-			<Setter Property="CornerRadius" Value="6"/>
 			<Setter Property="ClipToBounds" Value="True"/>
 		</Style>
 		<Style Selector="Border.header">
