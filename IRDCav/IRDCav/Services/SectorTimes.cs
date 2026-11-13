@@ -15,6 +15,10 @@ namespace IRDCav.Services
 
         public static float[] NoDeltas() => Enumerable.Repeat(float.NaN, SectorCount).ToArray();
 
+        /// <summary>Saved sector times; all unknown when their number doesn't match, e.g. from another version.</summary>
+        public static float[] FromSaved(IReadOnlyList<float> sectors) =>
+            sectors.Count == SectorCount ? sectors.Select(time => Math.Max(time, 0)).ToArray() : Unknown();
+
         /// <summary>Sums the microsectors of each sector; 0 for a sector with a microsector that was not driven.</summary>
         public static float[] Of(IReadOnlyList<float> microSectors)
         {
