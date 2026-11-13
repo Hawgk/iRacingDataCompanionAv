@@ -8,8 +8,8 @@ namespace IRDCav.Configuration
     /// </summary>
     public sealed record ColorScheme
     {
-        public Color Background { get; init; } = Color.Parse("#DB141518");
-        public Color Surface { get; init; } = Color.Parse("#E61E1F23");
+        public Color Background { get; init; } = Color.Parse("#80141518");
+        public Color Surface { get; init; } = Color.Parse("#801E1F23");
         public Color Text { get; init; } = Color.Parse("#E6E7EA");
         public Color TextMuted { get; init; } = Color.Parse("#8B8E96");
         public Color PlayerHighlight { get; init; } = Color.Parse("#F2D49B");

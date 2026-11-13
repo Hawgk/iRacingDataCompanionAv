@@ -1,8 +1,8 @@
 {
   "font": "RobotoMono",
   "colorScheme": {
-    "background": "#DB141518",
-    "surface": "#E61E1F23",
+    "background": "#80141518",
+    "surface": "#801E1F23",
     "text": "#FFE6E7EA",
     "textMuted": "#FF8B8E96",
     "playerHighlight": "#FFF2D49B",

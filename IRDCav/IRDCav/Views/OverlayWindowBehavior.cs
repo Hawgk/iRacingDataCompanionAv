@@ -24,7 +24,8 @@ namespace IRDCav.Views
         private const double ScaleStep = 0.05;
 
         private static readonly IBrush MovingBackground = new SolidColorBrush(Color.FromArgb(0x40, 0xD3, 0xD0, 0xCB));
-        private static readonly IBrush FixedBackground = new SolidColorBrush(Color.FromArgb(0xA0, 0x1E, 0x20, 0x19));
+        // The panel inside draws the configured background; a second layer here would make it more opaque.
+        private static readonly IBrush FixedBackground = Brushes.Transparent;
 
         private readonly Window _window;
         private readonly LayoutTransformControl _scaleHost;
