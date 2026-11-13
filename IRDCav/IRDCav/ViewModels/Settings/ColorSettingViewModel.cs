@@ -25,7 +25,7 @@ namespace IRDCav.ViewModels.Settings
         {
             _property = property;
             _hex = $"#{color.ToUInt32():X8}";
-            Label = DisplayName.Of(property.Name);
+            Label = DisplayName.Of(property.Name).ToUpperInvariant();
         }
 
         public string Label { get; }

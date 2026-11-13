@@ -19,6 +19,7 @@ namespace IRDCav.Views.Theme
         private const byte PlayerRowAlpha = 0x24;
         private const byte ChipAlpha = 0x29;
         private const byte TrackAlpha = 0x17;
+        private const double AccentStep = 0.15;
 
         private const double RowHeightPerNormalSize = 2;
         private const double TitleRowHeightPerSmallSize = 2;
@@ -40,6 +41,7 @@ namespace IRDCav.Views.Theme
             AddBaseBrushes(application.Resources, configuration.ColorScheme);
             AddStateBrushes(application.Resources, configuration.ColorScheme);
             AddFontSizes(application.Resources, configuration.FontSizes);
+            AddControlAccent(application.Resources, configuration.ColorScheme.PlayerHighlight);
             AddFont(application.Resources, OverlayFonts.Resolve(configuration.Font), configuration.FontSizes);
             application.Resources["GapConverter"] = new SignedTimeConverter(configuration.Decimals.Gap);
             application.Resources["IntervalConverter"] = new SignedTimeConverter(configuration.Decimals.Interval);
@@ -55,6 +57,7 @@ namespace IRDCav.Views.Theme
             resources["Overlay.Text"] = Brush(colors.Text);
             resources["Overlay.TextMuted"] = Brush(colors.TextMuted);
             resources["Overlay.OnText"] = Brush(WithAlpha(colors.Background, 0xFF));
+            resources["Overlay.SolidBackground"] = Brush(WithAlpha(colors.Background, 0xFF));
             resources["Overlay.Track"] = Brush(WithAlpha(colors.Text, TrackAlpha));
             resources["Overlay.Throttle"] = Brush(colors.Throttle);
             resources["Overlay.Brake"] = Brush(colors.Brake);
@@ -73,6 +76,25 @@ namespace IRDCav.Views.Theme
             resources["Overlay.IRatingGain"] = Brush(colors.IRatingGain);
             resources["Overlay.IRatingLoss"] = Brush(colors.IRatingLoss);
         }
+
+        /// <summary>
+        /// The Fluent controls of the settings window take the player highlight as their accent color,
+        /// so checked boxes, selections and the main button match the overlays.
+        /// </summary>
+        private static void AddControlAccent(IResourceDictionary resources, Color accent)
+        {
+            resources["SystemAccentColor"] = accent;
+            for (int step = 1; step <= 3; step++)
+            {
+                resources[$"SystemAccentColorLight{step}"] = Mix(accent, Colors.White, step * AccentStep);
+                resources[$"SystemAccentColorDark{step}"] = Mix(accent, Colors.Black, step * AccentStep);
+            }
+        }
+
+        private static Color Mix(Color color, Color other, double share) => Color.FromRgb(
+            (byte)Math.Round(color.R + (other.R - color.R) * share),
+            (byte)Math.Round(color.G + (other.G - color.G) * share),
+            (byte)Math.Round(color.B + (other.B - color.B) * share));
 
         private static void AddFontSizes(IResourceDictionary resources, FontSizesConfiguration sizes)
         {
