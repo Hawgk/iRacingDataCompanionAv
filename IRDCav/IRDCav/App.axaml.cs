@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using IRDCav.BestLaps;
 using IRDCav.Configuration;
 using IRDCav.Layout;
 using IRDCav.Presentation;
@@ -125,7 +126,7 @@ namespace IRDCav
                 SessionInfoBuilder: new SessionInfoBuilder(),
                 RelativeBuilder: CreateRelativeBuilder(),
                 StandingsBuilder: CreateStandingsBuilder(),
-                LapSectors: new LapSectorTracker());
+                LapSectors: CreateLapSectorTracker());
 
             return new TelemetryProcessor(services, publisher, inputs);
         }
@@ -137,6 +138,10 @@ namespace IRDCav
             var scenario = new UiTestScenario(race, CreateRelativeBuilder(), CreateStandingsBuilder());
             return new UiTestFeed(scenario, publisher, inputs);
         }
+
+        /// <summary>Best laps are kept per track and car next to config.json.</summary>
+        private static LapSectorTracker CreateLapSectorTracker() =>
+            new(new PersonalBest(new JsonBestLapStore(JsonBestLapStore.DefaultDirectory)));
 
         private static RelativeListBuilder CreateRelativeBuilder() => new(RelativeRowCount);
 

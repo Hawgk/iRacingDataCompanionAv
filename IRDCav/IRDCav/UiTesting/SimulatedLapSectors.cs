@@ -13,6 +13,7 @@ namespace IRDCav.UiTesting
         private static readonly float[] SectorShares = { 0.22f, 0.18f, 0.21f, 0.19f, 0.20f };
         private const float MaxDelta = 0.4f;
         private const int TiedSector = 2;
+        private const float ClassAdvantage = 0.613f;
 
         public static LapSectorsModel From(SimulatedRace race)
         {
@@ -22,6 +23,7 @@ namespace IRDCav.UiTesting
             return new LapSectorsModel
             {
                 BestLapTime = best.Sum(),
+                ClassBestLapTime = best.Sum() - ClassAdvantage,
                 Sectors = Enumerable.Range(0, LapSectorsModel.SectorCount)
                     .Select(sector => new SectorModel(sector + 1, best[sector], ShownDelta(player.Lap, sector, drivenSector)))
                     .ToArray(),

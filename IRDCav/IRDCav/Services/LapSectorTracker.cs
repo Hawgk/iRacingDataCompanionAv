@@ -1,3 +1,4 @@
+using IRDCav.BestLaps;
 using IRDCav.Models;
 using IRDCav.Telemetry;
 using System;
@@ -6,9 +7,10 @@ using System.Linq;
 namespace IRDCav.Services
 {
     /// <summary>
-    /// Follows the player's laps in equal sectors built from the microsectors. The best lap is
-    /// iRacing's: when its best lap time changes, the lap that just crossed the line is taken over,
-    /// so laps iRacing does not count are ignored. Each finished sector gets a delta to the best lap,
+    /// Follows the player's laps in equal sectors built from the microsectors and compares them with
+    /// the personal best of the car at this track. A lap counts once iRacing reports it as a new
+    /// session best, so laps iRacing does not count are ignored; the lap that crossed the line
+    /// close to that report is offered to the personal best. Each finished sector gets a delta,
     /// which stays until the car enters that sector again. Runs on the telemetry thread.
     /// </summary>
     internal sealed class LapSectorTracker
@@ -17,23 +19,40 @@ namespace IRDCav.Services
         private const double LapMatchSeconds = 5;
         private const double Never = double.NegativeInfinity;
 
+        private readonly PersonalBest _personalBest;
+        private CarAtTrack _car = CarAtTrack.Unknown;
         private MicroSectorModel? _source;
         private int _completedLaps;
         private float _reportedBest = float.NaN;
         private double _lapEndedAt = Never;
         private double _bestChangedAt = Never;
         private float[] _lastLapSectors = SectorTimes.Unknown();
-        private float[] _bestSectors = SectorTimes.Unknown();
         private readonly float[] _shownDeltas = SectorTimes.NoDeltas();
 
-        /// <summary>Forgets the best lap and the deltas, e.g. for a new session or connection.</summary>
+        public LapSectorTracker(PersonalBest personalBest)
+        {
+            _personalBest = personalBest;
+        }
+
+        /// <summary>Loads the personal best when the car or the track changes.</summary>
+        public void UseCar(CarAtTrack car)
+        {
+            if (car == _car)
+            {
+                return;
+            }
+            _car = car;
+            _personalBest.UseCar(car);
+            Array.Fill(_shownDeltas, float.NaN);
+        }
+
+        /// <summary>Forgets the session's laps and the deltas, e.g. for a new session or connection; keeps the personal best.</summary>
         public void Reset()
         {
             _source = null;
             _reportedBest = float.NaN;
             _lapEndedAt = Never;
             _bestChangedAt = Never;
-            _bestSectors = SectorTimes.Unknown();
             Array.Fill(_shownDeltas, float.NaN);
         }
 
@@ -41,8 +60,8 @@ namespace IRDCav.Services
         {
             Follow(playerSectors);
             ObserveLapEnd(playerSectors, session.SessionTime);
-            ObserveBestLap(session.BestLapTime, session.SessionTime);
-            AdoptBestLap(session.SessionTime);
+            ObserveSessionBest(session.BestLapTime, session.SessionTime);
+            OfferSessionBest(session.SessionTime);
             UpdateShownDeltas(playerSectors);
             return BuildModel();
         }
@@ -66,29 +85,24 @@ namespace IRDCav.Services
             }
             _completedLaps = playerSectors.CompletedLaps;
             _lastLapSectors = SectorTimes.Of(playerSectors.LastLap);
-            ShowKnownDeltas(SectorTimes.Deltas(_lastLapSectors, _bestSectors));
+            ShowKnownDeltas(SectorTimes.Deltas(_lastLapSectors, _personalBest.Sectors));
             _lapEndedAt = now;
         }
 
-        /// <summary>The first value after a reset is only noted; a best lap set before that has no recorded sectors.</summary>
-        private void ObserveBestLap(float bestLapTime, double now)
+        /// <summary>A session best already set when the app connects counts too, though without its sectors.</summary>
+        private void ObserveSessionBest(float bestLapTime, double now)
         {
             float reported = Math.Max(bestLapTime, 0);
-            if (float.IsNaN(_reportedBest) || reported == _reportedBest)
+            if (reported == _reportedBest)
             {
-                _reportedBest = reported;
                 return;
             }
             _reportedBest = reported;
             _bestChangedAt = reported > 0 ? now : Never;
-            if (reported == 0)
-            {
-                _bestSectors = SectorTimes.Unknown();
-            }
         }
 
-        /// <summary>Takes over the lap that ended close to the change of the best time, or forgets the old sectors if none did.</summary>
-        private void AdoptBestLap(double now)
+        /// <summary>Offers the lap that ended close to the new session best, or only its time if no lap did.</summary>
+        private void OfferSessionBest(double now)
         {
             if (_bestChangedAt == Never)
             {
@@ -96,13 +110,13 @@ namespace IRDCav.Services
             }
             if (Math.Abs(_lapEndedAt - _bestChangedAt) <= LapMatchSeconds)
             {
-                _bestSectors = _lastLapSectors;
+                _personalBest.Offer(_reportedBest, _lastLapSectors);
                 _lapEndedAt = Never;
                 _bestChangedAt = Never;
             }
             else if (now - _bestChangedAt > LapMatchSeconds)
             {
-                _bestSectors = SectorTimes.Unknown();
+                _personalBest.Offer(_reportedBest, SectorTimes.Unknown());
                 _bestChangedAt = Never;
             }
         }
@@ -110,7 +124,7 @@ namespace IRDCav.Services
         /// <summary>Finished sectors of the lap in progress replace their old deltas; the sector being driven has none.</summary>
         private void UpdateShownDeltas(MicroSectorModel playerSectors)
         {
-            ShowKnownDeltas(SectorTimes.Deltas(SectorTimes.Of(playerSectors.CurrentLap), _bestSectors));
+            ShowKnownDeltas(SectorTimes.Deltas(SectorTimes.Of(playerSectors.CurrentLap), _personalBest.Sectors));
             if (SectorTimes.TrySectorOf(playerSectors.DrivenMicroSector, out int drivenSector))
             {
                 _shownDeltas[drivenSector] = float.NaN;
@@ -130,9 +144,10 @@ namespace IRDCav.Services
 
         private LapSectorsModel BuildModel() => new()
         {
-            BestLapTime = _reportedBest > 0 ? _reportedBest : 0,
+            BestLapTime = _personalBest.LapTime,
+            ClassBestLapTime = _personalBest.ClassBest,
             Sectors = Enumerable.Range(0, LapSectorsModel.SectorCount)
-                .Select(sector => new SectorModel(sector + 1, _bestSectors[sector], _shownDeltas[sector]))
+                .Select(sector => new SectorModel(sector + 1, _personalBest.Sectors[sector], _shownDeltas[sector]))
                 .ToArray(),
         };
     }

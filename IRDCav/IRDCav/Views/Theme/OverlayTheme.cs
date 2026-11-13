@@ -30,7 +30,7 @@ namespace IRDCav.Views.Theme
         private const double BadgeHeightPerSmallSize = 1.6;
         private const double LetterBadgeWidthPerSmallSize = 2;
 
-        private const double SectorLabelCharacters = 4;
+        private const double SectorLabelCharacters = 5;
         private const double SectorTimeDigits = 8;
         private const double SectorDeltaDigits = 7;
         private const double SectorColumnRoom = 10;
@@ -133,7 +133,7 @@ namespace IRDCav.Views.Theme
 
         /// <summary>
         /// Fixed column widths of the sector view, so its rows line up and the panel keeps its width
-        /// whether deltas are shown or not: a short label ("BEST"), a lap time ("1:44.212") and a delta ("+12.345").
+        /// whether deltas are shown or not: a short label ("CLASS"), a lap time ("1:44.212") and a delta ("+12.345").
         /// </summary>
         private static void AddSectorColumnWidths(IResourceDictionary resources, double digitWidth, double labelCharacterWidth)
         {

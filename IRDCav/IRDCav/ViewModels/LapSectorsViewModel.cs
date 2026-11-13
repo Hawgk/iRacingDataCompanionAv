@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace IRDCav.ViewModels
 {
-    /// <summary>The sector view: the best lap time and one reusable row per sector.</summary>
+    /// <summary>The sector view: the best lap times of the car and its class, and one reusable row per sector.</summary>
     public partial class LapSectorsViewModel : ViewModelBase
     {
         [ObservableProperty]
@@ -15,6 +15,9 @@ namespace IRDCav.ViewModels
         [ObservableProperty]
         private float _bestLapTime;
 
+        [ObservableProperty]
+        private float _classBestLapTime;
+
         public IReadOnlyList<SectorRowViewModel> Sectors { get; } = Enumerable.Range(1, LapSectorsModel.SectorCount)
             .Select(number => new SectorRowViewModel(number))
             .ToArray();
@@ -22,6 +25,7 @@ namespace IRDCav.ViewModels
         public void Apply(LapSectorsModel lapSectors)
         {
             BestLapTime = lapSectors.BestLapTime;
+            ClassBestLapTime = lapSectors.ClassBestLapTime;
             int count = Math.Min(Sectors.Count, lapSectors.Sectors.Count);
             for (int i = 0; i < count; i++)
             {
