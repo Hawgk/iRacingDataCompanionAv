@@ -10,12 +10,13 @@ namespace IRDCav.UiTesting
     /// </summary>
     internal sealed class UiTestScenario
     {
-        private readonly SimulatedRace _race = new();
+        private readonly SimulatedRace _race;
         private readonly RelativeListBuilder _relativeBuilder;
         private readonly StandingsListBuilder _standingsBuilder;
 
-        public UiTestScenario(RelativeListBuilder relativeBuilder, StandingsListBuilder standingsBuilder)
+        public UiTestScenario(SimulatedRace race, RelativeListBuilder relativeBuilder, StandingsListBuilder standingsBuilder)
         {
+            _race = race;
             _relativeBuilder = relativeBuilder;
             _standingsBuilder = standingsBuilder;
         }

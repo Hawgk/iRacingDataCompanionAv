@@ -17,6 +17,8 @@
         /// <summary>"P" for practice, "Q" for qualifying, "R" for race.</summary>
         public string SessionType { get; init; } = string.Empty;
 
+        public bool IsRace => SessionType == "R";
+
         /// <summary>Where the wind comes from relative to the player's car, clockwise in degrees. 0 is a headwind.</summary>
         public double WindAngle { get; init; }
 

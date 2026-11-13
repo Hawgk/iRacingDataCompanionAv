@@ -83,6 +83,7 @@ namespace IRDCav.UiTesting
             CarNumber = driver.CarNumber,
             ClassStr = driver.CarClass.Name,
             ClassColor = driver.CarClass.Color,
+            IRating = driver.IRating,
             License = ((float)driver.IRating / 1000).ToString("0.0") + "k",
             LicenseColor = driver.LicenseColor,
             EstLapTime = driver.CarClass.LapTime,

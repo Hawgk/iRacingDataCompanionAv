@@ -29,6 +29,12 @@ namespace IRDCav.Models
         /// <summary>"#RRGGBB", or empty when unknown.</summary>
         public string LicenseColor { get; set; } = string.Empty;
 
+        public int IRating { get; set; }
+
+        /// <summary>Estimated iRating change if the race ended now; only valid with <see cref="HasIRatingChange"/>.</summary>
+        public int IRatingChange { get; set; }
+        public bool HasIRatingChange { get; set; }
+
         public int Position { get; set; }
         public int ClassPosition { get; set; }
         public int Lap { get; set; }
@@ -75,6 +81,7 @@ namespace IRDCav.Models
             ClassStr = driver.CarClassShortName;
             CarNumber = driver.CarNumber;
             EstLapTime = driver.CarClassEstLapTime;
+            IRating = driver.IRating;
             License = ((float)driver.IRating / 1000).ToString("0.0") + "k";
             IsPaceCar = driver.CarIsPaceCar > 0;
             ClassColor = ToColor(driver.CarClassColor);

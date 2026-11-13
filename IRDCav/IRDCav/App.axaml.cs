@@ -108,6 +108,7 @@ namespace IRDCav
             var services = new TelemetryServices(
                 Source: new IRacingTelemetrySource(),
                 RaceData: new RaceDataController(new IntervalCalculator()),
+                IRatingEstimator: new IRatingEstimator(),
                 Fuel: new FuelMonitor(new FuelCalculator()),
                 SessionInfoBuilder: new SessionInfoBuilder(),
                 RelativeBuilder: CreateRelativeBuilder(),
@@ -119,7 +120,8 @@ namespace IRDCav
         /// <summary>Simulated race instead of iRacing, to check the overlays without the sim running.</summary>
         private static UiTestFeed CreateUiTestFeed(IOverlayStatePublisher publisher, IInputSink inputs)
         {
-            var scenario = new UiTestScenario(CreateRelativeBuilder(), CreateStandingsBuilder());
+            var race = new SimulatedRace(new IRatingEstimator());
+            var scenario = new UiTestScenario(race, CreateRelativeBuilder(), CreateStandingsBuilder());
             return new UiTestFeed(scenario, publisher, inputs);
         }
 

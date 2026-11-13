@@ -31,6 +31,9 @@ namespace IRDCav.Models
         /// <summary>"#RRGGBB", or empty when unknown.</summary>
         public string LicenseColor { get; init; } = string.Empty;
 
+        public int IRatingChange { get; init; }
+        public bool HasIRatingChange { get; init; }
+
         public int ClassPosition { get; init; }
         public int LapsCompleted { get; init; }
 
@@ -59,6 +62,8 @@ namespace IRDCav.Models
             License = car.License,
             ClassColor = car.ClassColor,
             LicenseColor = car.LicenseColor,
+            IRatingChange = car.IRatingChange,
+            HasIRatingChange = car.HasIRatingChange,
             ClassPosition = car.ClassPosition,
             LapsCompleted = car.LapsCompleted,
             Interval = car.Interval,

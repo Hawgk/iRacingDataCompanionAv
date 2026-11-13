@@ -19,6 +19,7 @@ namespace IRDCav.Services
 
         private readonly ITelemetrySource _source;
         private readonly RaceDataController _raceData;
+        private readonly IRatingEstimator _iRatingEstimator;
         private readonly FuelMonitor _fuel;
         private readonly SessionInfoBuilder _sessionInfoBuilder;
         private readonly RelativeListBuilder _relativeBuilder;
@@ -36,6 +37,7 @@ namespace IRDCav.Services
         {
             _source = services.Source;
             _raceData = services.RaceData;
+            _iRatingEstimator = services.IRatingEstimator;
             _fuel = services.Fuel;
             _sessionInfoBuilder = services.SessionInfoBuilder;
             _relativeBuilder = services.RelativeBuilder;
@@ -94,6 +96,7 @@ namespace IRDCav.Services
 
             ApplySessionInfoIfChanged(frame.SessionInfoVersion, sessionInfo, session);
             MergeRaceData(sessionInfo, session, cars);
+            _iRatingEstimator.Update(_raceData.Cars, _sessionSummary.IsRace);
 
             OverlayState state = _state with { IsConnected = true, Session = LiveSessionSummary(session) };
             state = WithRaceRows(state);

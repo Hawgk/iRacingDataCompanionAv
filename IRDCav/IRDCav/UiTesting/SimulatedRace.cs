@@ -1,4 +1,5 @@
 using IRDCav.Models;
+using IRDCav.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,11 @@ namespace IRDCav.UiTesting
 
         private readonly List<SimulatedCar> _cars;
         private readonly SimulatedCar _player;
+        private readonly IRatingEstimator _iRatingEstimator;
 
-        public SimulatedRace()
+        public SimulatedRace(IRatingEstimator iRatingEstimator)
         {
+            _iRatingEstimator = iRatingEstimator;
             _cars = DemoRoster.Drivers.Select((driver, id) => new SimulatedCar(driver, id, StartSeconds)).ToList();
             _player = _cars.First(car => car.Model.IsMe);
             Cars = _cars.Select(car => car.Model).ToList();
@@ -45,6 +48,7 @@ namespace IRDCav.UiTesting
             UpdatePositions();
             UpdateIntervals();
             MarkClassFastestLaps();
+            _iRatingEstimator.Update(Cars, isRace: true);
         }
 
         private void UpdatePositions()
