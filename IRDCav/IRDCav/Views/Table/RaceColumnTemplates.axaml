@@ -31,26 +31,27 @@
 		</Border>
 	</DataTemplate>
 
-	<!-- The license color stands for the safety class, so the badge only needs the iRating. -->
+	<!--
+	The license color stands for the safety class, so the badge only needs the iRating. In races the
+	standings add the estimated iRating change behind it; relative rows carry no change.
+	-->
 	<DataTemplate x:Key="RaceColumn.IRating" x:DataType="vm:RaceRowViewModel">
 		<Border
 			Classes="chip"
 			IsVisible="{Binding License, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 			Background="{Binding LicenseColor, Converter={StaticResource TintConverter}, ConverterParameter=Chip}">
-			<TextBlock
-				Text="{Binding License}"
-				Foreground="{Binding LicenseColor, Converter={StaticResource TintConverter}, ConverterParameter=Text}"/>
+			<StackPanel Orientation="Horizontal" Spacing="4">
+				<TextBlock
+					Text="{Binding License}"
+					Foreground="{Binding LicenseColor, Converter={StaticResource TintConverter}, ConverterParameter=Text}"/>
+				<TextBlock
+					Classes="iRatingChange"
+					Classes.gain="{Binding IsIRatingGain}"
+					Classes.loss="{Binding IsIRatingLoss}"
+					IsVisible="{Binding HasIRatingChange}"
+					Text="{Binding IRatingChange, Converter={StaticResource SignedNumberConverter}}"/>
+			</StackPanel>
 		</Border>
-	</DataTemplate>
-
-	<!-- Shown in races only; the relative leaves the value out. -->
-	<DataTemplate x:Key="RaceColumn.IRatingChange" x:DataType="vm:RaceRowViewModel">
-		<TextBlock
-			Classes="iRatingChange"
-			Classes.gain="{Binding IsIRatingGain}"
-			Classes.loss="{Binding IsIRatingLoss}"
-			IsVisible="{Binding HasIRatingChange}"
-			Text="{Binding IRatingChange, Converter={StaticResource SignedNumberConverter}}"/>
 	</DataTemplate>
 
 	<DataTemplate x:Key="RaceColumn.Laps" x:DataType="vm:RaceRowViewModel">

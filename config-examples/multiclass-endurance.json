@@ -8,7 +8,7 @@
   },
   "standings": {
     "showColumnTitles": true,
-    "columns": ["Position", "CarClass", "CarNumber", "Driver", "Pit", "IRatingChange", "Laps", "FastestLap", "LastLap", "Gap"]
+    "columns": ["Position", "CarClass", "CarNumber", "Driver", "Pit", "IRating", "Laps", "FastestLap", "LastLap", "Gap"]
   },
   "relatives": {
     "showColumnTitles": true,

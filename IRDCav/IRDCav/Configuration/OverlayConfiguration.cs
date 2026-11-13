@@ -11,7 +11,6 @@ namespace IRDCav.Configuration
         Driver,
         Pit,
         IRating,
-        IRatingChange,
         Laps,
         FastestLap,
         LastLap,
@@ -85,7 +84,7 @@ namespace IRDCav.Configuration
             Columns = new List<RaceColumn>
             {
                 RaceColumn.Position, RaceColumn.CarNumber, RaceColumn.Driver, RaceColumn.IRating,
-                RaceColumn.IRatingChange, RaceColumn.Laps, RaceColumn.FastestLap, RaceColumn.LastLap, RaceColumn.Gap,
+                RaceColumn.Laps, RaceColumn.FastestLap, RaceColumn.LastLap, RaceColumn.Gap,
             },
         };
 

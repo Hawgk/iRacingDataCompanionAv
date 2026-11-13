@@ -206,6 +206,9 @@
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.FastestLap}"/>
 		</Style>
 
+		<Style Selector="TextBlock.iRatingChange">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
+		</Style>
 		<Style Selector="TextBlock.iRatingChange.gain">
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.IRatingGain}"/>
 		</Style>
@@ -218,7 +221,7 @@
 			<Setter Property="CornerRadius" Value="3"/>
 			<Setter Property="Padding" Value="5,1"/>
 		</Style>
-		<Style Selector="Border.chip > TextBlock">
+		<Style Selector="Border.chip TextBlock">
 			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Small}"/>
 			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
 			<Setter Property="FontWeight" Value="Bold"/>
