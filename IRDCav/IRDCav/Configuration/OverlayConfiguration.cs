@@ -94,7 +94,7 @@ namespace IRDCav.Configuration
             ShowColumnTitles = true,
             Columns = new List<RaceColumn>
             {
-                RaceColumn.Position, RaceColumn.CarNumber, RaceColumn.Driver,
+                RaceColumn.Position, RaceColumn.CarNumber, RaceColumn.Driver, RaceColumn.IRating,
                 RaceColumn.Pit, RaceColumn.Interval, RaceColumn.LastLap,
             },
         };

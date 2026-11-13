@@ -47,6 +47,7 @@
       "Position",
       "CarNumber",
       "Driver",
+      "IRating",
       "Pit",
       "Interval",
       "LastLap"

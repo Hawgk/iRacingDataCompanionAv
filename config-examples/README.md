@@ -52,7 +52,7 @@ You can leave out any key; whatever is missing keeps its default. If the file ca
 | `CarClass` | Class name in the class color |
 | `Driver` | Driver name |
 | `Pit` | Badge while the car is on pit road |
-| `IRating` | iRating in a badge colored by the safety class; in races the standings add the estimated iRating change if the race ended in the current positions |
+| `IRating` | iRating in a badge colored by the safety class; in races it adds the estimated iRating change if the race ended in the current positions |
 | `Tyres` | Badge with the first letter of the tire compound (soft, medium, hard, intermediate, wet). Compound names come from your own car; other classes may number their compounds differently |
 | `Laps` | Laps completed |
 | `FastestLap` | Fastest lap, highlighted when it's the class's fastest |
