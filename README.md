@@ -12,19 +12,22 @@ All those pixels combined resemble a standings view, relative view and fuel calc
 ~Don't look into the code please.~ I don't care now. Claude was used starting from 12.11.2026.
 
 ## Setup
-1. Install the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) on Windows. It's only needed to build the app.
-2. Clone this repository and run the install script in its folder:
+1. Download [install.ps1](install.ps1) and run it in PowerShell on Windows:
    ```
    powershell -ExecutionPolicy Bypass -File install.ps1
    ```
-   It builds iRDCav, installs it to `%LOCALAPPDATA%\Programs\iRDCav` and adds an `iRDCav` entry to the Start menu. Run it again to update, or with `-Uninstall` to remove the app.
-3. Start iRDCav from the Start menu, then start iRacing. The overlays appear once you're in a session.
-4. Arrange the overlays: with an overlay focused, press F6, drag it into place (also to another monitor), and scroll the mouse wheel to resize it. Press F6 again to save the layout.
-5. Optional: change the colors, font, font sizes and columns in `%APPDATA%\iRDCav\config.json`, then restart. The app creates the file on its first start. The `config-examples` folder (in this repository and next to the installed app) explains every setting and has ready-made examples.
+   Or do both in one go:
+   ```
+   powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/Hawgk/iRacingDataCompanionAv/main/install.ps1 | iex"
+   ```
+   The script downloads iRDCav, installs a .NET 8 SDK just for building it if none is installed, builds the app and installs it to `%LOCALAPPDATA%\Programs\iRDCav` with an `iRDCav` entry in the Start menu. Run it again to update, or with `-Uninstall` to remove the app.
+2. Start iRDCav from the Start menu, then start iRacing. The overlays appear once you're in a session.
+3. Arrange the overlays: with an overlay focused, press F6, drag it into place (also to another monitor), and scroll the mouse wheel to resize it. Press F6 again to save the layout.
+4. Optional: change the colors, font, font sizes and columns in `%APPDATA%\iRDCav\config.json`, then restart. The app creates the file on its first start. The `config-examples` folder (in this repository and next to the installed app) explains every setting and has ready-made examples.
 
 Quit through the tray icon.
 
-To build without installing, run `dotnet run -c Release --project IRDCav/IRDCav/IRDCav.csproj`. Add `-- --ui-testing-mode` to check the overlays without iRacing.
+For development, run the app straight from a clone with `dotnet run -c Release --project IRDCav/IRDCav/IRDCav.csproj`. Add `-- --ui-testing-mode` to check the overlays without iRacing.
 
 ## Special Thanks
 [iRon](https://github.com/lespalt/iRon/) - Thanks for those relatives mate.
