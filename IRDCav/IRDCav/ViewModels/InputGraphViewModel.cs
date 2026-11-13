@@ -2,6 +2,7 @@
 using IRDCav.Telemetry;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IRDCav.ViewModels
 {
@@ -21,6 +22,13 @@ namespace IRDCav.ViewModels
         /// <summary>Number of samples that fill the whole trace width.</summary>
         public int SampleCount { get; }
 
-        public void SetSamples(IReadOnlyList<InputSample> samples) => Samples = samples;
+        /// <summary>Ignores samples that would draw the same trace, e.g. while the car stands with no pedal pressed.</summary>
+        public void SetSamples(IReadOnlyList<InputSample> samples)
+        {
+            if (!samples.SequenceEqual(Samples))
+            {
+                Samples = samples;
+            }
+        }
     }
 }

@@ -11,10 +11,12 @@ namespace IRDCav.Presentation
     /// </summary>
     internal sealed class OverlayRefresher
     {
-        private static readonly TimeSpan RefreshInterval = TimeSpan.FromMilliseconds(33);
+        // Every redraw of a window costs CPU, which iRacing needs more. The input trace still gets
+        // every telemetry sample, only drawn in steps of two: 15 frames a second still read as motion.
+        private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(1.0 / 15);
 
         // Lists and numbers are easier to read at a glance when they change calmly; the data behind
-        // them is still computed at full rate. Only the input trace follows every frame.
+        // them is still computed at full rate.
         private const double DataUpdatesPerSecond = 4;
 
         private readonly OverlayStateStore _store;
