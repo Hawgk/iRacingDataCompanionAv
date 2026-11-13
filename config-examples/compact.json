@@ -1,0 +1,15 @@
+{
+  "fontSizes": {
+    "small": 9,
+    "normal": 12,
+    "large": 18
+  },
+  "standings": {
+    "showColumnTitles": false,
+    "columns": ["Position", "CarNumber", "Driver", "LastLap", "Gap"]
+  },
+  "relatives": {
+    "showColumnTitles": false,
+    "columns": ["Position", "Driver", "Interval"]
+  }
+}

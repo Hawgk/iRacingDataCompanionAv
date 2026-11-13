@@ -1,0 +1,69 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:IRDCav.ViewModels"
+        x:Class="IRDCav.Views.FuelWindow"
+        x:DataType="vm:FuelViewModel"
+        Classes="overlay"
+        Icon="/Assets/icon.ico"
+        Title="iRDCav Fuel"
+        SizeToContent="WidthAndHeight"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        SystemDecorations="None"
+        IsVisible="{Binding IsVisible}">
+	<LayoutTransformControl HorizontalAlignment="Left" VerticalAlignment="Top">
+		<Border Classes="panel">
+			<StackPanel>
+				<Border Classes="header">
+					<DockPanel>
+						<StackPanel Classes="headerRow" DockPanel.Dock="Right" ToolTip.Tip="Wind relative to your car">
+							<Viewbox Classes="icon windArrow" RenderTransform="{Binding SessionInfo.WindAngle, Converter={StaticResource RotationConverter}}">
+								<Path Data="{StaticResource Icon.WindArrow}"/>
+							</Viewbox>
+							<TextBlock Text="{Binding SessionInfo.WindSpeed, StringFormat='{}{0:0} km/h'}"/>
+						</StackPanel>
+						<StackPanel Classes="headerRow">
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.AirTemperature}"/></Viewbox>
+							<TextBlock Classes="weatherValue" Text="{Binding SessionInfo.AirTemp}"/>
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.TrackTemperature}"/></Viewbox>
+							<TextBlock Classes="weatherValue" Text="{Binding SessionInfo.SurfaceTemp}"/>
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.Humidity}"/></Viewbox>
+							<TextBlock Classes="weatherValue" Text="{Binding SessionInfo.Humidity}"/>
+							<Viewbox Classes="icon"><Path Data="{StaticResource Icon.Precipitation}"/></Viewbox>
+							<TextBlock Text="{Binding SessionInfo.Precipitation}"/>
+						</StackPanel>
+					</DockPanel>
+				</Border>
+				<Border Classes="fuel">
+					<!--
+					All three estimates stay visible so the strategy can change mid-race; the configured one is
+					enlarged in both rows. Values and captions have their own columns, so values line up on the right and
+					MIN, AVG and MAX start at the same position in every row.
+					-->
+					<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto">
+						<StackPanel Grid.Row="0" Grid.ColumnSpan="7" Classes="fuelCell" Margin="0,0,0,2">
+							<TextBlock Classes="fuelValue factRow" Text="{Binding Fuel.Tank}"/>
+							<TextBlock Classes="label factRow" Text="L LEFT"/>
+						</StackPanel>
+
+						<TextBlock Grid.Row="1" Grid.Column="0" Classes="label fuelRowLabel estimateRow" Text="REFUEL L"/>
+						<TextBlock Grid.Row="1" Grid.Column="1" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.RefuelMinimum.IsSelected}" Classes.short="{Binding Fuel.RefuelMinimum.NeedsRefuel}" Text="{Binding Fuel.RefuelMinimum.Value}"/>
+						<TextBlock Grid.Row="1" Grid.Column="2" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.RefuelMinimum.Caption}"/>
+						<TextBlock Grid.Row="1" Grid.Column="3" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.RefuelAverage.IsSelected}" Classes.short="{Binding Fuel.RefuelAverage.NeedsRefuel}" Text="{Binding Fuel.RefuelAverage.Value}"/>
+						<TextBlock Grid.Row="1" Grid.Column="4" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.RefuelAverage.Caption}"/>
+						<TextBlock Grid.Row="1" Grid.Column="5" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.RefuelMaximum.IsSelected}" Classes.short="{Binding Fuel.RefuelMaximum.NeedsRefuel}" Text="{Binding Fuel.RefuelMaximum.Value}"/>
+						<TextBlock Grid.Row="1" Grid.Column="6" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.RefuelMaximum.Caption}"/>
+
+						<TextBlock Grid.Row="2" Grid.Column="0" Classes="label fuelRowLabel estimateRow" Text="LAPS LEFT"/>
+						<TextBlock Grid.Row="2" Grid.Column="1" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.LapsMinimum.IsSelected}" Classes.short="{Binding Fuel.LapsMinimum.NeedsRefuel}" Text="{Binding Fuel.LapsMinimum.Value}"/>
+						<TextBlock Grid.Row="2" Grid.Column="2" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.LapsMinimum.Caption}"/>
+						<TextBlock Grid.Row="2" Grid.Column="3" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.LapsAverage.IsSelected}" Classes.short="{Binding Fuel.LapsAverage.NeedsRefuel}" Text="{Binding Fuel.LapsAverage.Value}"/>
+						<TextBlock Grid.Row="2" Grid.Column="4" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.LapsAverage.Caption}"/>
+						<TextBlock Grid.Row="2" Grid.Column="5" Classes="fuelValue estimateRow" Classes.selected="{Binding Fuel.LapsMaximum.IsSelected}" Classes.short="{Binding Fuel.LapsMaximum.NeedsRefuel}" Text="{Binding Fuel.LapsMaximum.Value}"/>
+						<TextBlock Grid.Row="2" Grid.Column="6" Classes="label fuelCaption estimateRow" Text="{Binding Fuel.LapsMaximum.Caption}"/>
+					</Grid>
+				</Border>
+			</StackPanel>
+		</Border>
+	</LayoutTransformControl>
+</Window>

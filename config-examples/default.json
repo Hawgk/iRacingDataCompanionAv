@@ -1,0 +1,58 @@
+{
+  "font": "RobotoMono",
+  "colorScheme": {
+    "background": "#80141518",
+    "surface": "#801E1F23",
+    "text": "#FFE6E7EA",
+    "textMuted": "#FF8B8E96",
+    "playerHighlight": "#FFF2D49B",
+    "lapAhead": "#FFF2A7A3",
+    "lapBehind": "#FFA7C4F2",
+    "fastestLap": "#FFC8B3F0",
+    "pitRoad": "#FFA8DCC4",
+    "warning": "#FFF2D49B",
+    "iRatingGain": "#FF9ED6A5",
+    "iRatingLoss": "#FFF0A3A0",
+    "timeGain": "#FF9ED6A5",
+    "timeLoss": "#FFF0A3A0",
+    "throttle": "#FF9ED6A5",
+    "brake": "#FFF0A3A0"
+  },
+  "fontSizes": {
+    "small": 11,
+    "normal": 13,
+    "large": 22
+  },
+  "fuel": {
+    "refuelEstimate": "Average"
+  },
+  "decimals": {
+    "gap": 1,
+    "interval": 1
+  },
+  "standings": {
+    "showColumnTitles": true,
+    "columns": [
+      "Position",
+      "CarNumber",
+      "Driver",
+      "IRating",
+      "Laps",
+      "FastestLap",
+      "LastLap",
+      "Gap"
+    ]
+  },
+  "relatives": {
+    "showColumnTitles": true,
+    "columns": [
+      "Position",
+      "CarNumber",
+      "Driver",
+      "IRating",
+      "Pit",
+      "Interval",
+      "LastLap"
+    ]
+  }
+}

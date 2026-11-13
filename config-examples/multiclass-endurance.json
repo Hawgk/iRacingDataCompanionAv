@@ -1,0 +1,17 @@
+{
+  "fuel": {
+    "refuelEstimate": "Maximum"
+  },
+  "decimals": {
+    "gap": 3,
+    "interval": 1
+  },
+  "standings": {
+    "showColumnTitles": true,
+    "columns": ["Position", "CarClass", "CarNumber", "Driver", "Pit", "Tyres", "IRating", "Laps", "FastestLap", "LastLap", "Gap"]
+  },
+  "relatives": {
+    "showColumnTitles": true,
+    "columns": ["Position", "CarClass", "CarNumber", "Driver", "Pit", "Tyres", "Interval", "LastLap"]
+  }
+}

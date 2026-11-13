@@ -1,20 +1,21 @@
 ﻿namespace IRDCav.Models
 {
-    public class FuelDataModel
+    public sealed record FuelDataModel
     {
-        public float Level { get; set; }
+        public float Level { get; init; }
 
-        public float MinConsumption { get; set; }
-        public float AvgConsumption { get; set; }
-        public float MaxConsumption { get; set; }
-        public float LastConsumption { get; set; }
+        public float MinConsumption { get; init; }
+        public float AvgConsumption { get; init; }
+        public float MaxConsumption { get; init; }
+        public float LastConsumption { get; init; }
 
-        public float FuelPerMinuteMin { get; set; }
-        public float FuelPerMinuteAvg { get; set; }
-        public float FuelPerMinuteMax { get; set; }
+        public float FuelPerMinuteMin { get; init; }
+        public float FuelPerMinuteAvg { get; init; }
+        public float FuelPerMinuteMax { get; init; }
 
-        public float RefuelMin { get; set; }
-        public float RefuelAvg { get; set; }
-        public float RefuelMax { get; set; }
+        /// <summary>Fuel left at session end; negative values are the amount to refuel.</summary>
+        public float RefuelMin { get; init; }
+        public float RefuelAvg { get; init; }
+        public float RefuelMax { get; init; }
     }
 }

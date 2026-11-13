@@ -1,0 +1,196 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:settings="using:IRDCav.ViewModels.Settings"
+        x:Class="IRDCav.Views.Settings.SettingsWindow"
+        x:DataType="settings:SettingsViewModel"
+        Classes="settings"
+        Icon="/Assets/icon.ico"
+        Title="iRDCav Settings"
+        Width="540"
+        Height="640"
+        MinWidth="460"
+        MinHeight="500"
+        Topmost="True"
+        WindowStartupLocation="CenterScreen">
+	<!--
+	Follows the overlay design: the configured font and color scheme, small capital labels in the
+	muted color, header bars on the surface color, and the player highlight as accent.
+	-->
+	<Window.Resources>
+		<CornerRadius x:Key="ControlCornerRadius">3</CornerRadius>
+		<!-- Dark text on the pastel accent, like the session badge on the overlays. -->
+		<StaticResource x:Key="AccentButtonForeground" ResourceKey="Overlay.OnText"/>
+		<StaticResource x:Key="AccentButtonForegroundPointerOver" ResourceKey="Overlay.OnText"/>
+		<StaticResource x:Key="AccentButtonForegroundPressed" ResourceKey="Overlay.OnText"/>
+		<StaticResource x:Key="CheckBoxCheckGlyphForegroundChecked" ResourceKey="Overlay.OnText"/>
+		<StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" ResourceKey="Overlay.OnText"/>
+		<StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" ResourceKey="Overlay.OnText"/>
+
+		<DataTemplate x:Key="ColumnListTemplate" x:DataType="settings:ColumnListViewModel">
+			<DockPanel>
+				<StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,10">
+					<CheckBox Content="Show column titles" IsChecked="{Binding ShowColumnTitles}"/>
+					<TextBlock Classes="hint" Text="Checked columns are shown, from left to right in this order. Select a column and move it up or down."/>
+				</StackPanel>
+				<StackPanel DockPanel.Dock="Right" Spacing="6" Margin="10,0,0,0">
+					<Button Content="Up" Command="{Binding MoveUpCommand}" HorizontalAlignment="Stretch"/>
+					<Button Content="Down" Command="{Binding MoveDownCommand}" HorizontalAlignment="Stretch"/>
+				</StackPanel>
+				<ListBox ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn}">
+					<ListBox.ItemTemplate>
+						<DataTemplate x:DataType="settings:ColumnChoiceViewModel">
+							<CheckBox Content="{Binding Label}" IsChecked="{Binding IsShown}"/>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</DockPanel>
+		</DataTemplate>
+	</Window.Resources>
+
+	<Window.Styles>
+		<Style Selector="Window.settings">
+			<Setter Property="Background" Value="{DynamicResource Overlay.SolidBackground}"/>
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.Text}"/>
+			<Setter Property="FontFamily" Value="{DynamicResource Overlay.FontFamily}"/>
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Normal}"/>
+		</Style>
+		<Style Selector="Border.bar">
+			<Setter Property="Background" Value="{DynamicResource Overlay.Surface}"/>
+			<Setter Property="Padding" Value="16,10"/>
+		</Style>
+		<Style Selector="TextBlock.title">
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Large}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+		<Style Selector="TextBlock.fieldLabel">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0,0,16,0"/>
+		</Style>
+		<Style Selector="TextBlock.hint">
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
+			<Setter Property="TextWrapping" Value="Wrap"/>
+		</Style>
+		<Style Selector="TextBlock.status">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.PitRoad}"/>
+		</Style>
+		<Style Selector="TextBlock.status.error">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.LapAhead}"/>
+		</Style>
+		<!-- Tab headers in the overlays' label style; the selected one in the normal text color. -->
+		<Style Selector="TabItem">
+			<Setter Property="FontSize" Value="{DynamicResource Overlay.FontSize.Small}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.TextMuted}"/>
+			<Setter Property="MinHeight" Value="32"/>
+			<Setter Property="Padding" Value="0,0,20,0"/>
+		</Style>
+		<Style Selector="ListBox">
+			<Setter Property="Background" Value="{DynamicResource Overlay.Surface}"/>
+		</Style>
+		<Style Selector="ListBoxItem">
+			<Setter Property="Padding" Value="10,2"/>
+			<Setter Property="MinHeight" Value="0"/>
+		</Style>
+		<!-- A selected column is tinted like the player's row on the overlays. -->
+		<Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter, ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter, ListBoxItem:selected:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource Overlay.PlayerRow}"/>
+		</Style>
+		<Style Selector="TabItem:selected">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.Text}"/>
+		</Style>
+		<Style Selector="Border.swatch">
+			<Setter Property="Width" Value="20"/>
+			<Setter Property="Height" Value="20"/>
+			<Setter Property="CornerRadius" Value="3"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource Overlay.Track}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+		</Style>
+	</Window.Styles>
+
+	<DockPanel>
+		<Border DockPanel.Dock="Top" Classes="bar">
+			<TextBlock Classes="title" Text="Settings"/>
+		</Border>
+
+		<Border DockPanel.Dock="Bottom" Classes="bar">
+			<DockPanel>
+				<StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
+					<Button Content="Reset to defaults" Command="{Binding ResetToDefaultsCommand}"/>
+					<Button Content="Save" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True"/>
+				</StackPanel>
+				<TextBlock
+					Classes="status"
+					Classes.error="{Binding HasError}"
+					Text="{Binding StatusMessage}"
+					TextWrapping="Wrap"
+					VerticalAlignment="Center"
+					Margin="0,0,12,0"/>
+			</DockPanel>
+		</Border>
+
+		<TabControl Padding="0,12,0,0" Margin="16,8,16,12">
+			<TabItem Header="GENERAL">
+				<ScrollViewer>
+					<Grid Classes="fields" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+						<Grid.Styles>
+							<!-- Only the fields of this grid; a plain "Grid >" would also reach the grids inside the controls' templates. -->
+							<Style Selector="Grid.fields > :is(Control)">
+								<Setter Property="Margin" Value="0,0,0,10"/>
+							</Style>
+							<Style Selector="Grid.fields > TextBlock.fieldLabel">
+								<Setter Property="Margin" Value="0,0,16,10"/>
+							</Style>
+						</Grid.Styles>
+						<TextBlock Grid.Row="0" Classes="label fieldLabel" Text="FONT"/>
+						<ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" ItemsSource="{Binding FontNames}" SelectedItem="{Binding Font}"/>
+
+						<TextBlock Grid.Row="1" Classes="label fieldLabel" Text="SMALL FONT SIZE"/>
+						<NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SmallFontSize}" Minimum="6" Maximum="60" Increment="1" FormatString="0"/>
+						<TextBlock Grid.Row="2" Classes="label fieldLabel" Text="NORMAL FONT SIZE"/>
+						<NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding NormalFontSize}" Minimum="6" Maximum="60" Increment="1" FormatString="0"/>
+						<TextBlock Grid.Row="3" Classes="label fieldLabel" Text="LARGE FONT SIZE"/>
+						<NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding LargeFontSize}" Minimum="6" Maximum="60" Increment="1" FormatString="0"/>
+
+						<TextBlock Grid.Row="4" Classes="label fieldLabel" Text="ENLARGED REFUEL ESTIMATE"/>
+						<ComboBox Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" ItemsSource="{Binding RefuelEstimates}" SelectedItem="{Binding RefuelEstimate}"/>
+
+						<TextBlock Grid.Row="5" Classes="label fieldLabel" Text="GAP DECIMALS"/>
+						<NumericUpDown Grid.Row="5" Grid.Column="1" Value="{Binding GapDecimals}" Minimum="0" Maximum="3" Increment="1" FormatString="0"/>
+						<TextBlock Grid.Row="6" Classes="label fieldLabel" Text="INTERVAL DECIMALS"/>
+						<NumericUpDown Grid.Row="6" Grid.Column="1" Value="{Binding IntervalDecimals}" Minimum="0" Maximum="3" Increment="1" FormatString="0"/>
+
+						<TextBlock Grid.Row="7" Grid.ColumnSpan="2" Classes="hint" Text="Font sizes are in pixels on a 1440p screen and must grow from small to large. Overlay positions and scales are set with F6 on the overlays."/>
+					</Grid>
+				</ScrollViewer>
+			</TabItem>
+
+			<TabItem Header="COLORS">
+				<DockPanel>
+					<TextBlock DockPanel.Dock="Top" Classes="hint" Margin="0,0,0,10" Text="Colors as #RRGGBB or #AARRGGBB, where AA is the opacity from 00 (transparent) to FF (opaque)."/>
+					<ScrollViewer>
+						<ItemsControl ItemsSource="{Binding Colors}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="settings:ColorSettingViewModel">
+									<Grid ColumnDefinitions="*,30,150" Margin="0,0,8,6">
+										<TextBlock Classes="label" Text="{Binding Label}" VerticalAlignment="Center"/>
+										<Border Grid.Column="1" Classes="swatch" Background="{Binding Preview}"/>
+										<TextBox Grid.Column="2" Text="{Binding Hex}"/>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+				</DockPanel>
+			</TabItem>
+
+			<TabItem Header="STANDINGS">
+				<ContentControl Content="{Binding Standings}" ContentTemplate="{StaticResource ColumnListTemplate}"/>
+			</TabItem>
+
+			<TabItem Header="RELATIVES">
+				<ContentControl Content="{Binding Relatives}" ContentTemplate="{StaticResource ColumnListTemplate}"/>
+			</TabItem>
+		</TabControl>
+	</DockPanel>
+</Window>

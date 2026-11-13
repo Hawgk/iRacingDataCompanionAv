@@ -1,0 +1,16 @@
+{
+  "colorScheme": {
+    "background": "#C0242423",
+    "surface": "#99B04F33",
+    "text": "#E8EDDF",
+    "textMuted": "#CFDBD5",
+    "playerHighlight": "#E8EDDF",
+    "lapAhead": "#FF7247",
+    "lapBehind": "#60C7DB",
+    "fastestLap": "#F5CB5C",
+    "pitRoad": "#8E8E8C",
+    "warning": "#F5CB5C",
+    "throttle": "#2EA043",
+    "brake": "#FF3B30"
+  }
+}

@@ -1,0 +1,91 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="using:IRDCav.ViewModels">
+	<!-- One cell template per RaceColumn. RaceTable sets width and alignment. -->
+
+	<DataTemplate x:Key="RaceColumn.Position" x:DataType="vm:RaceRowViewModel">
+		<TextBlock Text="{Binding ClassPosition, Converter={StaticResource PositiveNumberConverter}}"/>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.CarNumber" x:DataType="vm:RaceRowViewModel">
+		<StackPanel Orientation="Horizontal" Spacing="5">
+			<Border Classes="classStripe" Background="{Binding ClassColor, Converter={StaticResource TintConverter}, ConverterParameter=Text}"/>
+			<TextBlock Classes="carNumber" Text="{Binding CarNumber}"/>
+		</StackPanel>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.CarClass" x:DataType="vm:RaceRowViewModel">
+		<TextBlock
+			Classes="carClass"
+			Text="{Binding ClassName}"
+			Foreground="{Binding ClassColor, Converter={StaticResource TintConverter}, ConverterParameter=Text}"/>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.Driver" x:DataType="vm:RaceRowViewModel">
+		<TextBlock Classes="driver" Text="{Binding Name, Converter={StaticResource DriverNameConverter}}"/>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.Pit" x:DataType="vm:RaceRowViewModel">
+		<Border Classes="chip pitChip" IsVisible="{Binding OnPitRoad}">
+			<TextBlock Text="PIT"/>
+		</Border>
+	</DataTemplate>
+
+	<!--
+	The license color stands for the safety class, so the badge only needs the iRating. In races the
+	standings add the estimated iRating change behind it; relative rows carry no change.
+	-->
+	<DataTemplate x:Key="RaceColumn.IRating" x:DataType="vm:RaceRowViewModel">
+		<Border
+			Classes="chip"
+			IsVisible="{Binding License, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+			Background="{Binding LicenseColor, Converter={StaticResource TintConverter}, ConverterParameter=Chip}">
+			<Grid ColumnDefinitions="Auto,*">
+				<TextBlock
+					Text="{Binding License}"
+					Foreground="{Binding LicenseColor, Converter={StaticResource TintConverter}, ConverterParameter=Text}"/>
+				<TextBlock
+					Grid.Column="1"
+					HorizontalAlignment="Right"
+					Classes="iRatingChange"
+					Classes.gain="{Binding IsIRatingGain}"
+					Classes.loss="{Binding IsIRatingLoss}"
+					IsVisible="{Binding HasIRatingChange}"
+					Text="{Binding IRatingChange, Converter={StaticResource SignedNumberConverter}}"/>
+			</Grid>
+		</Border>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.Tyres" x:DataType="vm:RaceRowViewModel">
+		<Border
+			Classes="chip tireChip"
+			IsVisible="{Binding TireCompound, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+			Background="{Binding TireColor, Converter={StaticResource TintConverter}, ConverterParameter=Chip}">
+			<TextBlock
+				Text="{Binding TireLetter}"
+				Foreground="{Binding TireColor, Converter={StaticResource TintConverter}, ConverterParameter=Text}"/>
+		</Border>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.Laps" x:DataType="vm:RaceRowViewModel">
+		<TextBlock Text="{Binding LapsCompleted, Converter={StaticResource PositiveNumberConverter}}"/>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.FastestLap" x:DataType="vm:RaceRowViewModel">
+		<TextBlock
+			Classes.fastest="{Binding IsFastest}"
+			Text="{Binding FastestLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.LastLap" x:DataType="vm:RaceRowViewModel">
+		<TextBlock Text="{Binding LastLapTime, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Laptime}"/>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.Gap" x:DataType="vm:RaceRowViewModel">
+		<TextBlock Text="{Binding Gap, Converter={StaticResource GapConverter}}"/>
+	</DataTemplate>
+
+	<DataTemplate x:Key="RaceColumn.Interval" x:DataType="vm:RaceRowViewModel">
+		<TextBlock Text="{Binding Interval, Converter={StaticResource IntervalConverter}}"/>
+	</DataTemplate>
+</ResourceDictionary>
