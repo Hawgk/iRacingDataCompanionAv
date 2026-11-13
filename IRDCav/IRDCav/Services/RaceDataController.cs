@@ -18,6 +18,7 @@ namespace IRDCav.Services
         private RaceDataModel _player = new();
         private IReadOnlyDictionary<int, string> _tireCompoundNames = new Dictionary<int, string>();
         private double _lastSessionTime = NoSessionTime;
+        private int _microSectorCount = MicroSectorModel.MinCount;
 
         public RaceDataController(IntervalCalculator intervalCalculator)
         {
@@ -30,9 +31,27 @@ namespace IRDCav.Services
             _lastSessionTime = NoSessionTime;
             for (int i = 0; i < _cars.Length; i++)
             {
-                _cars[i] = new RaceDataModel();
+                _cars[i] = new RaceDataModel { MicroSectors = new MicroSectorModel(_microSectorCount) };
             }
             _player = _cars[0];
+        }
+
+        /// <summary>
+        /// Splits the lap into microsectors of about equal length on every track. A new count starts
+        /// all cars' microsectors afresh; the same track keeps them, also across sessions.
+        /// </summary>
+        public void UseTrackLength(double trackLengthMeters)
+        {
+            int count = MicroSectorModel.CountFor(trackLengthMeters);
+            if (count == _microSectorCount)
+            {
+                return;
+            }
+            _microSectorCount = count;
+            foreach (RaceDataModel car in _cars)
+            {
+                car.MicroSectors = new MicroSectorModel(count);
+            }
         }
 
         public void SetPlayer(int carIdx)

@@ -8,18 +8,45 @@ namespace IRDCav.Models
     /// </summary>
     public class MicroSectorModel
     {
-        public const int MICROSECTOR_COUNT = 20;
-        public const float MICROSECTOR_LENGTH = 1.0f / MICROSECTOR_COUNT;
+        /// <summary>
+        /// Microsectors are about this long. Long enough that no car crosses two of them between two
+        /// race data ticks, which would discard the sector (7.5 ticks per second: about 12 m at
+        /// 330 km/h, 25 m if a tick is missed); short enough that the speed changes little within one.
+        /// Replaying a Suzuka lap, 35 m kept half of all interval errors under 4 ms and 95 % under
+        /// 35 ms, where 290 m (20 per lap) had 105 ms and 1.3 s. Lime Rock gets about 69 microsectors,
+        /// the Nordschleife about 595.
+        /// </summary>
+        public const double TargetLengthMeters = 35;
 
-        // Moving further than one sector per tick means a teleport (tow, reset, pit exit, lapDistPct glitch).
-        private const float MAX_DISTANCE_PER_TICK = MICROSECTOR_LENGTH;
+        /// <summary>Also the count when the track length is unknown.</summary>
+        public const int MinCount = 20;
+
         // Larger time steps indicate a pause, session change or reconnect.
         private const double MAX_ELAPSED_PER_TICK = 1.0;
         private const int NO_SECTOR = -1;
 
+        private readonly int _count;
+        private readonly float _length;
         private int _currentSector = NO_SECTOR;
         private double _currentTime = 0;
         private bool _isCurrentSectorValid = false;
+
+        public MicroSectorModel() : this(MinCount)
+        {
+        }
+
+        public MicroSectorModel(int count)
+        {
+            _count = Math.Max(count, MinCount);
+            _length = 1.0f / _count;
+            BestMicroSectors = new float[_count];
+        }
+
+        /// <summary>The number of microsectors for a track; <see cref="MinCount"/> when its length is unknown.</summary>
+        public static int CountFor(double trackLengthMeters) =>
+            Math.Max(MinCount, (int)Math.Round(trackLengthMeters / TargetLengthMeters));
+
+        public int Count => _count;
 
         public int RecordedSectors { get; private set; }
 
@@ -27,14 +54,14 @@ namespace IRDCav.Models
         public float OptimalLapTime { get; private set; }
 
         /// <summary>Best time of each microsector (0 if never completed).</summary>
-        public float[] BestMicroSectors { get; } = new float[MICROSECTOR_COUNT];
+        public float[] BestMicroSectors { get; }
 
-        public bool IsComplete => RecordedSectors == MICROSECTOR_COUNT;
+        public bool IsComplete => RecordedSectors == _count;
 
-        public static int GetSectorId(float lapDistPct)
+        private int GetSectorId(float lapDistPct)
         {
-            int id = (int)(lapDistPct * MICROSECTOR_COUNT);
-            return Math.Clamp(id, 0, MICROSECTOR_COUNT - 1);
+            int id = (int)(lapDistPct * _count);
+            return Math.Clamp(id, 0, _count - 1);
         }
 
         /// <summary>
@@ -108,7 +135,7 @@ namespace IRDCav.Models
                 time += BestMicroSectors[i];
             }
 
-            float fraction = (lapDistPct - sectorId * MICROSECTOR_LENGTH) / MICROSECTOR_LENGTH;
+            float fraction = (lapDistPct - sectorId * _length) / _length;
             return time + BestMicroSectors[sectorId] * Math.Clamp(fraction, 0.0f, 1.0f);
         }
 
@@ -125,10 +152,11 @@ namespace IRDCav.Models
         private static bool IsRegularTick(double elapsedTime) =>
             elapsedTime >= 0 && elapsedTime <= MAX_ELAPSED_PER_TICK;
 
-        private static bool IsForwardStep(float distance) =>
-            distance >= 0 && distance <= MAX_DISTANCE_PER_TICK;
+        // Moving further than one microsector per tick means a teleport (tow, reset, pit exit, lapDistPct glitch).
+        private bool IsForwardStep(float distance) =>
+            distance >= 0 && distance <= _length;
 
-        private static int NextSector(int sectorId) => (sectorId + 1) % MICROSECTOR_COUNT;
+        private int NextSector(int sectorId) => (sectorId + 1) % _count;
 
         private void EnsureTracking(int lastSectorId)
         {
@@ -141,7 +169,7 @@ namespace IRDCav.Models
         private void CrossBoundary(double elapsedTime, float lastLapDistPct, float distance)
         {
             int nextSector = NextSector(_currentSector);
-            float boundary = (_currentSector + 1) * MICROSECTOR_LENGTH;
+            float boundary = (_currentSector + 1) * _length;
             double fractionBefore = Math.Clamp((boundary - lastLapDistPct) / distance, 0.0f, 1.0f);
 
             _currentTime += elapsedTime * fractionBefore;

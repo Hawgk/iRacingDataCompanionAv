@@ -129,6 +129,7 @@ namespace IRDCav.Services
 
             _raceData.ApplyDrivers(sessionInfo.DriverInfo.Drivers ?? new());
             _raceData.ApplyTireCompounds(sessionInfo.DriverInfo.DriverTires ?? new());
+            _raceData.UseTrackLength(TrackLengthReader.Meters(sessionInfo.WeekendInfo?.TrackLength));
             _lapSectors.UseCar(LapSectorsSetupReader.Read(sessionInfo));
             if (sessionInfo.WeekendInfo != null)
             {
