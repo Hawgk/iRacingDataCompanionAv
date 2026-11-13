@@ -98,7 +98,12 @@ namespace IRDCav.Services
             MergeRaceData(sessionInfo, session, cars);
             _iRatingEstimator.Update(_raceData.Cars, _sessionSummary.IsRace);
 
-            OverlayState state = _state with { IsConnected = true, Session = LiveSessionSummary(session) };
+            OverlayState state = _state with
+            {
+                IsConnected = true,
+                IsPlayerOnTrack = session.IsOnTrack,
+                Session = LiveSessionSummary(session),
+            };
             state = WithRaceRows(state);
             state = UpdateFuel(state, session, cars[sessionInfo.DriverInfo.DriverCarIdx].Lap);
             Publish(state);

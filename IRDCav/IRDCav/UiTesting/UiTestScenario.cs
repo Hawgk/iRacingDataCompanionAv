@@ -31,6 +31,7 @@ namespace IRDCav.UiTesting
             return new OverlayState
             {
                 IsConnected = true,
+                IsPlayerOnTrack = true,
                 Session = session,
                 Fuel = SimulatedSession.Fuel(_race),
                 Relatives = _relativeBuilder.Build(_race.Cars),

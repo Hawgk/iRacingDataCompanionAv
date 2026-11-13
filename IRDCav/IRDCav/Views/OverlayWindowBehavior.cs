@@ -51,6 +51,8 @@ namespace IRDCav.Views
         {
             var behavior = new OverlayWindowBehavior(window, overlay, context.Store);
             window.Background = FixedBackground;
+            // Overlays reappear whenever the player gets into the car; they must not take the focus from the sim.
+            window.ShowActivated = false;
             window.Opened += (_, _) => behavior.ApplyPlacement();
             window.ScalingChanged += (_, _) => behavior.ApplyPlacement();
             context.Screens.Changed += behavior.ApplyPlacement;

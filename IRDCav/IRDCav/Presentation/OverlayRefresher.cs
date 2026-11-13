@@ -47,7 +47,7 @@ namespace IRDCav.Presentation
             }
 
             _appliedState = state;
-            ApplyVisibility(state.IsConnected);
+            ApplyVisibility(state.ShowsOverlays);
             _viewModels.Results.SessionInfo = state.Session;
             _viewModels.Results.RaceDataList.Update(state.Standings);
             _viewModels.Relatives.RaceDataList.Update(state.Relatives);
