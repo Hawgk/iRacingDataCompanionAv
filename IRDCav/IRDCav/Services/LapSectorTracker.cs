@@ -8,9 +8,8 @@ namespace IRDCav.Services
     /// <summary>
     /// Follows the player's laps in equal sectors built from the microsectors. The best lap is
     /// iRacing's: when its best lap time changes, the lap that just crossed the line is taken over,
-    /// so laps iRacing does not count are ignored. Deltas compare each finished sector of the lap in
-    /// progress with the best lap; until the first sector of a lap is done, those of the previous
-    /// lap stay visible. Runs on the telemetry thread.
+    /// so laps iRacing does not count are ignored. Each finished sector gets a delta to the best lap,
+    /// which stays until the car enters that sector again. Runs on the telemetry thread.
     /// </summary>
     internal sealed class LapSectorTracker
     {
@@ -25,9 +24,9 @@ namespace IRDCav.Services
         private double _bestChangedAt = Never;
         private float[] _lastLapSectors = SectorTimes.Unknown();
         private float[] _bestSectors = SectorTimes.Unknown();
-        private float[] _finishedLapDeltas = SectorTimes.NoDeltas();
+        private readonly float[] _shownDeltas = SectorTimes.NoDeltas();
 
-        /// <summary>Forgets the best lap, e.g. for a new session or connection.</summary>
+        /// <summary>Forgets the best lap and the deltas, e.g. for a new session or connection.</summary>
         public void Reset()
         {
             _source = null;
@@ -35,7 +34,7 @@ namespace IRDCav.Services
             _lapEndedAt = Never;
             _bestChangedAt = Never;
             _bestSectors = SectorTimes.Unknown();
-            _finishedLapDeltas = SectorTimes.NoDeltas();
+            Array.Fill(_shownDeltas, float.NaN);
         }
 
         public LapSectorsModel Update(MicroSectorModel playerSectors, SessionTelemetry session)
@@ -44,7 +43,8 @@ namespace IRDCav.Services
             ObserveLapEnd(playerSectors, session.SessionTime);
             ObserveBestLap(session.BestLapTime, session.SessionTime);
             AdoptBestLap(session.SessionTime);
-            return BuildModel(playerSectors);
+            UpdateShownDeltas(playerSectors);
+            return BuildModel();
         }
 
         /// <summary>A different car or a fresh model starts counting laps anew.</summary>
@@ -57,6 +57,7 @@ namespace IRDCav.Services
             }
         }
 
+        /// <summary>The last sector ends with the lap, so its delta comes from the lap just finished.</summary>
         private void ObserveLapEnd(MicroSectorModel playerSectors, double now)
         {
             if (playerSectors.CompletedLaps == _completedLaps)
@@ -65,7 +66,7 @@ namespace IRDCav.Services
             }
             _completedLaps = playerSectors.CompletedLaps;
             _lastLapSectors = SectorTimes.Of(playerSectors.LastLap);
-            _finishedLapDeltas = SectorTimes.Deltas(_lastLapSectors, _bestSectors);
+            ShowKnownDeltas(SectorTimes.Deltas(_lastLapSectors, _bestSectors));
             _lapEndedAt = now;
         }
 
@@ -106,17 +107,33 @@ namespace IRDCav.Services
             }
         }
 
-        private LapSectorsModel BuildModel(MicroSectorModel playerSectors)
+        /// <summary>Finished sectors of the lap in progress replace their old deltas; the sector being driven has none.</summary>
+        private void UpdateShownDeltas(MicroSectorModel playerSectors)
         {
-            float[] current = SectorTimes.Of(playerSectors.CurrentLap);
-            float[] deltas = SectorTimes.AnyKnown(current) ? SectorTimes.Deltas(current, _bestSectors) : _finishedLapDeltas;
-            return new LapSectorsModel
+            ShowKnownDeltas(SectorTimes.Deltas(SectorTimes.Of(playerSectors.CurrentLap), _bestSectors));
+            if (SectorTimes.TrySectorOf(playerSectors.DrivenMicroSector, out int drivenSector))
             {
-                BestLapTime = _reportedBest > 0 ? _reportedBest : 0,
-                Sectors = Enumerable.Range(0, LapSectorsModel.SectorCount)
-                    .Select(sector => new SectorModel(sector + 1, _bestSectors[sector], deltas[sector]))
-                    .ToArray(),
-            };
+                _shownDeltas[drivenSector] = float.NaN;
+            }
         }
+
+        private void ShowKnownDeltas(float[] deltas)
+        {
+            for (int sector = 0; sector < deltas.Length; sector++)
+            {
+                if (!float.IsNaN(deltas[sector]))
+                {
+                    _shownDeltas[sector] = deltas[sector];
+                }
+            }
+        }
+
+        private LapSectorsModel BuildModel() => new()
+        {
+            BestLapTime = _reportedBest > 0 ? _reportedBest : 0,
+            Sectors = Enumerable.Range(0, LapSectorsModel.SectorCount)
+                .Select(sector => new SectorModel(sector + 1, _bestSectors[sector], _shownDeltas[sector]))
+                .ToArray(),
+        };
     }
 }

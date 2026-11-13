@@ -35,6 +35,9 @@ namespace IRDCav.Models
         /// <summary>Increases each time the car crosses the start/finish line.</summary>
         public int CompletedLaps { get; private set; }
 
+        /// <summary>The microsector the car is in; -1 while it is not on track.</summary>
+        public int DrivenMicroSector => _currentSector;
+
         /// <summary>Sum of all best microsector times. Only meaningful when <see cref="IsComplete"/>.</summary>
         public float OptimalLapTime { get; private set; }
 

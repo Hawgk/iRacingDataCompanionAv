@@ -35,6 +35,11 @@ namespace IRDCav.Services
                     : float.NaN)
                 .ToArray();
 
-        public static bool AnyKnown(float[] times) => times.Any(time => time > 0);
+        /// <summary>The sector a microsector belongs to; false for -1, which stands for "not on track".</summary>
+        public static bool TrySectorOf(int microSector, out int sector)
+        {
+            sector = microSector / MicroSectorsPerSector;
+            return microSector >= 0 && sector < SectorCount;
+        }
     }
 }

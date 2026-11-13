@@ -6,7 +6,7 @@ namespace IRDCav.UiTesting
 {
     /// <summary>
     /// Sector view data of the simulated player: a fixed best lap and deltas that differ per lap and
-    /// sector, with gains, losses and an exact tie, for every sector already driven in the current lap.
+    /// sector, with gains, losses and an exact tie. Like live, a delta stays until its sector is driven again.
     /// </summary>
     internal static class SimulatedLapSectors
     {
@@ -17,16 +17,21 @@ namespace IRDCav.UiTesting
         public static LapSectorsModel From(SimulatedRace race)
         {
             RaceDataModel player = race.Player;
-            int sectorsDriven = (int)(player.LapDistPct * LapSectorsModel.SectorCount);
+            int drivenSector = (int)(player.LapDistPct * LapSectorsModel.SectorCount);
             float[] best = SectorShares.Select(share => player.EstLapTime * share).ToArray();
             return new LapSectorsModel
             {
                 BestLapTime = best.Sum(),
                 Sectors = Enumerable.Range(0, LapSectorsModel.SectorCount)
-                    .Select(sector => new SectorModel(sector + 1, best[sector], sector < sectorsDriven ? Delta(player.Lap, sector) : float.NaN))
+                    .Select(sector => new SectorModel(sector + 1, best[sector], ShownDelta(player.Lap, sector, drivenSector)))
                     .ToArray(),
             };
         }
+
+        /// <summary>Sectors already driven in this lap show its delta, those still ahead the previous lap's.</summary>
+        private static float ShownDelta(int lap, int sector, int drivenSector) => sector == drivenSector
+            ? float.NaN
+            : Delta(sector < drivenSector ? lap : lap - 1, sector);
 
         private static float Delta(int lap, int sector) =>
             sector == TiedSector && lap % 2 == 0 ? 0 : MathF.Round(MaxDelta * MathF.Sin(lap * 7 + sector * 3), 3);
