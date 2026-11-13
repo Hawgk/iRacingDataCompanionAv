@@ -38,7 +38,7 @@
 								Classes="timeLeft"
 								Text="{Binding SessionInfo.TimeRemain, Converter={StaticResource SecToTimeConverter}, ConverterParameter=Session}"/>
 							<TextBlock Classes="label" Text="SOF"/>
-							<TextBlock Text="{Binding SessionInfo.SOF, StringFormat='{}{0:N0}'}"/>
+							<TextBlock Text="{Binding SessionInfo.SOF, StringFormat='{}{0:0}'}"/>
 						</StackPanel>
 					</DockPanel>
 				</Border>
