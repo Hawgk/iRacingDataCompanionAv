@@ -43,6 +43,16 @@
 		</Border>
 	</DataTemplate>
 
+	<!-- Shown in races only; the relative leaves the value out. -->
+	<DataTemplate x:Key="RaceColumn.IRatingChange" x:DataType="vm:RaceRowViewModel">
+		<TextBlock
+			Classes="iRatingChange"
+			Classes.gain="{Binding IsIRatingGain}"
+			Classes.loss="{Binding IsIRatingLoss}"
+			IsVisible="{Binding HasIRatingChange}"
+			Text="{Binding IRatingChange, Converter={StaticResource SignedNumberConverter}}"/>
+	</DataTemplate>
+
 	<DataTemplate x:Key="RaceColumn.Laps" x:DataType="vm:RaceRowViewModel">
 		<TextBlock Text="{Binding LapsCompleted, Converter={StaticResource PositiveNumberConverter}}"/>
 	</DataTemplate>

@@ -28,6 +28,7 @@ You can leave out any key; whatever is missing keeps its default. If the file ca
 | `fastestLap` | Fastest lap of each class |
 | `pitRoad` | Pit badge, and the refuel amount when you have enough fuel |
 | `warning` | Incident count |
+| `iRatingGain`, `iRatingLoss` | Estimated iRating change |
 | `throttle`, `brake` | Input trace |
 
 **`fontSizes`**: the three font sizes the overlays use, in pixels on a 1440p screen. They must grow from `small` to `normal` to `large` and lie between 6 and 60. Row heights, icons and column widths follow them.
@@ -52,6 +53,7 @@ You can leave out any key; whatever is missing keeps its default. If the file ca
 | `Driver` | Driver name |
 | `Pit` | Badge while the car is on pit road |
 | `IRating` | iRating in a badge colored by the safety class |
+| `IRatingChange` | Estimated iRating change if the race ended in the current positions (races only, standings only) |
 | `Laps` | Laps completed |
 | `FastestLap` | Fastest lap, highlighted when it's the class's fastest |
 | `LastLap` | Last lap |

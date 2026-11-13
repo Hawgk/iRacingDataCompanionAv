@@ -25,6 +25,14 @@ namespace IRDCav.ViewModels
         [ObservableProperty] private string _classColor = string.Empty;
         [ObservableProperty] private string _licenseColor = string.Empty;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsIRatingGain), nameof(IsIRatingLoss))]
+        private int _iRatingChange;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsIRatingGain), nameof(IsIRatingLoss))]
+        private bool _hasIRatingChange;
+
         [ObservableProperty] private int _classPosition;
         [ObservableProperty] private int _lapsCompleted;
 
@@ -32,6 +40,9 @@ namespace IRDCav.ViewModels
         [ObservableProperty] private float _gap;
         [ObservableProperty] private float _lastLapTime;
         [ObservableProperty] private float _fastestLapTime;
+
+        public bool IsIRatingGain => HasIRatingChange && IRatingChange > 0;
+        public bool IsIRatingLoss => HasIRatingChange && IRatingChange < 0;
 
         public void Apply(RaceRow row)
         {
@@ -63,6 +74,8 @@ namespace IRDCav.ViewModels
 
         private void ApplyTiming(RaceRow row)
         {
+            IRatingChange = row.IRatingChange;
+            HasIRatingChange = row.HasIRatingChange;
             ClassPosition = row.ClassPosition;
             LapsCompleted = row.LapsCompleted;
             Interval = row.Interval;

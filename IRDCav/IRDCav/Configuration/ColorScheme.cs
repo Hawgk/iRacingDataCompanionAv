@@ -18,6 +18,8 @@ namespace IRDCav.Configuration
         public Color FastestLap { get; init; } = Color.Parse("#C8B3F0");
         public Color PitRoad { get; init; } = Color.Parse("#A8DCC4");
         public Color Warning { get; init; } = Color.Parse("#F2D49B");
+        public Color IRatingGain { get; init; } = Color.Parse("#9ED6A5");
+        public Color IRatingLoss { get; init; } = Color.Parse("#F0A3A0");
         public Color Throttle { get; init; } = Color.Parse("#9ED6A5");
         public Color Brake { get; init; } = Color.Parse("#F0A3A0");
     }

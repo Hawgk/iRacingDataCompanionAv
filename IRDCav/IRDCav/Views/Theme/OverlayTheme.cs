@@ -66,6 +66,8 @@ namespace IRDCav.Views.Theme
             resources["Overlay.PitRoad"] = Brush(colors.PitRoad);
             resources["Overlay.PitRoadChip"] = Brush(WithAlpha(colors.PitRoad, ChipAlpha));
             resources["Overlay.Warning"] = Brush(colors.Warning);
+            resources["Overlay.IRatingGain"] = Brush(colors.IRatingGain);
+            resources["Overlay.IRatingLoss"] = Brush(colors.IRatingLoss);
         }
 
         private static void AddFontSizes(IResourceDictionary resources, FontSizesConfiguration sizes)

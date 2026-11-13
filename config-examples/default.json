@@ -11,6 +11,8 @@
     "fastestLap": "#FFC8B3F0",
     "pitRoad": "#FFA8DCC4",
     "warning": "#FFF2D49B",
+    "iRatingGain": "#FF9ED6A5",
+    "iRatingLoss": "#FFF0A3A0",
     "throttle": "#FF9ED6A5",
     "brake": "#FFF0A3A0"
   },
@@ -33,6 +35,7 @@
       "CarNumber",
       "Driver",
       "IRating",
+      "IRatingChange",
       "Laps",
       "FastestLap",
       "LastLap",

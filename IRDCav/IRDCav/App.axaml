@@ -18,6 +18,7 @@
 			<conv:SecToTimeConverter x:Key="SecToTimeConverter"/>
 			<conv:DriverNameConverter x:Key="DriverNameConverter"/>
 			<conv:PositiveNumberConverter x:Key="PositiveNumberConverter"/>
+			<conv:SignedNumberConverter x:Key="SignedNumberConverter"/>
 			<conv:TintConverter x:Key="TintConverter"/>
 			<conv:RotationConverter x:Key="RotationConverter"/>
 
@@ -203,6 +204,13 @@
 		</Style>
 		<Style Selector="TextBlock.fastest">
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.FastestLap}"/>
+		</Style>
+
+		<Style Selector="TextBlock.iRatingChange.gain">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.IRatingGain}"/>
+		</Style>
+		<Style Selector="TextBlock.iRatingChange.loss">
+			<Setter Property="Foreground" Value="{DynamicResource Overlay.IRatingLoss}"/>
 		</Style>
 
 		<!-- Chips -->
