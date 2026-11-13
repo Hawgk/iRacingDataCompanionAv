@@ -2,6 +2,7 @@
 using IRDCav.Telemetry;
 using IRSDKSharper;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using static IRSDKSharper.IRacingSdkSessionInfo.DriverInfoModel;
 
@@ -21,8 +22,8 @@ namespace IRDCav.Services
 
             return new SessionInfoModel
             {
-                AirTemp = FirstWord(weekend.TrackAirTemp) + "°",
-                SurfaceTemp = FirstWord(weekend.TrackSurfaceTemp) + "°",
+                AirTemp = OneDecimal(FirstWord(weekend.TrackAirTemp)) + "°",
+                SurfaceTemp = OneDecimal(FirstWord(weekend.TrackSurfaceTemp)) + "°",
                 Precipitation = FirstWord(weekend.TrackPrecipitation) + "%",
                 Humidity = FirstWord(weekend.TrackRelativeHumidity) + "%",
                 DriverClassName = player?.CarClassShortName ?? string.Empty,
@@ -36,6 +37,12 @@ namespace IRDCav.Services
 
         // iRacing reports values with units, e.g. "24.3 C".
         private static string FirstWord(string value) => value.Split(" ")[0];
+
+        /// <summary>"21.64" becomes "21.6"; a value that is not a number is kept as it is.</summary>
+        private static string OneDecimal(string number) =>
+            double.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out double value)
+                ? value.ToString("0.0", CultureInfo.InvariantCulture)
+                : number;
 
         private static string FormatIncidents(DriverModel? player, string incidentLimit)
         {
