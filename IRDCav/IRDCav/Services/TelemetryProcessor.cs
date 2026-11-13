@@ -110,7 +110,7 @@ namespace IRDCav.Services
                 IsConnected = true,
                 IsPlayerOnTrack = session.IsOnTrack,
                 Session = LiveSessionSummary(session),
-                LapSectors = _lapSectors.Update(_raceData.Player.MicroSectors, session),
+                LapSectors = _lapSectors.Update(frame.ReadPlayerLap()),
             };
             state = WithRaceRows(state);
             state = UpdateFuel(state, session, cars[sessionInfo.DriverInfo.DriverCarIdx].Lap);
@@ -129,7 +129,7 @@ namespace IRDCav.Services
 
             _raceData.ApplyDrivers(sessionInfo.DriverInfo.Drivers ?? new());
             _raceData.ApplyTireCompounds(sessionInfo.DriverInfo.DriverTires ?? new());
-            _lapSectors.UseCar(CarAtTrackReader.Read(sessionInfo));
+            _lapSectors.UseCar(LapSectorsSetupReader.Read(sessionInfo));
             if (sessionInfo.WeekendInfo != null)
             {
                 _sessionSummary = _sessionInfoBuilder.Build(sessionInfo, session);

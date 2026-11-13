@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using IRDCav.BestLaps;
+using IRDCav.LapFiles;
 using IRDCav.Configuration;
 using IRDCav.Layout;
 using IRDCav.Presentation;
@@ -139,9 +139,9 @@ namespace IRDCav
             return new UiTestFeed(scenario, publisher, inputs);
         }
 
-        /// <summary>Best laps are kept per track and car next to config.json.</summary>
+        /// <summary>The best laps and their sectors come from the lap files iRacing keeps.</summary>
         private static LapSectorTracker CreateLapSectorTracker() =>
-            new(new PersonalBest(new JsonBestLapStore(JsonBestLapStore.DefaultDirectory)));
+            new(new ReferenceLap(new IRacingLapFileLibrary(IRacingLapFileLibrary.DefaultDirectory)), new SectorClock());
 
         private static RelativeListBuilder CreateRelativeBuilder() => new(RelativeRowCount);
 

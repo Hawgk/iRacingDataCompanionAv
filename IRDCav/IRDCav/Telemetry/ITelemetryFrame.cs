@@ -13,6 +13,7 @@ namespace IRDCav.Telemetry
     {
         InputSample ReadInputs();
         SessionTelemetry ReadSession();
+        PlayerLapTelemetry ReadPlayerLap();
         IReadOnlyList<CarTelemetry> ReadCars();
         bool TryGetSessionInfo([NotNullWhen(true)] out IRacingSdkSessionInfo? sessionInfo);
 

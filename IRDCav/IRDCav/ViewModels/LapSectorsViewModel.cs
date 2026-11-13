@@ -1,8 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRDCav.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace IRDCav.ViewModels
 {
@@ -18,18 +16,29 @@ namespace IRDCav.ViewModels
         [ObservableProperty]
         private float _classBestLapTime;
 
-        public IReadOnlyList<SectorRowViewModel> Sectors { get; } = Enumerable.Range(1, LapSectorsModel.SectorCount)
-            .Select(number => new SectorRowViewModel(number))
-            .ToArray();
+        /// <summary>One row per sector of the track; rows are reused and only added or removed at the end.</summary>
+        public ObservableCollection<SectorRowViewModel> Sectors { get; } = new();
 
         public void Apply(LapSectorsModel lapSectors)
         {
             BestLapTime = lapSectors.BestLapTime;
             ClassBestLapTime = lapSectors.ClassBestLapTime;
-            int count = Math.Min(Sectors.Count, lapSectors.Sectors.Count);
-            for (int i = 0; i < count; i++)
+            Resize(lapSectors.Sectors.Count);
+            for (int i = 0; i < Sectors.Count; i++)
             {
                 Sectors[i].Apply(lapSectors.Sectors[i]);
+            }
+        }
+
+        private void Resize(int count)
+        {
+            while (Sectors.Count > count)
+            {
+                Sectors.RemoveAt(Sectors.Count - 1);
+            }
+            while (Sectors.Count < count)
+            {
+                Sectors.Add(new SectorRowViewModel(Sectors.Count + 1));
             }
         }
     }

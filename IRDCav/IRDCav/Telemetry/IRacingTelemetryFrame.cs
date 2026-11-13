@@ -20,11 +20,16 @@ namespace IRDCav.Telemetry
         private readonly IRacingSdkDatum _sessionTime;
         private readonly IRacingSdkDatum _sessionTimeRemain;
         private readonly IRacingSdkDatum _fuelLevel;
-        private readonly IRacingSdkDatum _bestLapTime;
         private readonly IRacingSdkDatum _isOnTrack;
         private readonly IRacingSdkDatum _windDirection;
         private readonly IRacingSdkDatum _windSpeed;
         private readonly IRacingSdkDatum _heading;
+
+        private readonly IRacingSdkDatum _lapDistPct;
+        private readonly IRacingSdkDatum _currentLapTime;
+        private readonly IRacingSdkDatum _lastLapTime;
+        private readonly IRacingSdkDatum _deltaToBestLap;
+        private readonly IRacingSdkDatum _deltaToBestLapValid;
 
         private readonly IRacingSdkDatum _carLap;
         private readonly IRacingSdkDatum _carLapDistPct;
@@ -63,11 +68,16 @@ namespace IRDCav.Telemetry
             _sessionTime = Resolve("SessionTime");
             _sessionTimeRemain = Resolve("SessionTimeRemain");
             _fuelLevel = Resolve("FuelLevel");
-            _bestLapTime = Resolve("LapBestLapTime");
             _isOnTrack = Resolve("IsOnTrack");
             _windDirection = Resolve("WindDir");
             _windSpeed = Resolve("WindVel");
             _heading = Resolve("YawNorth");
+
+            _lapDistPct = Resolve("LapDistPct");
+            _currentLapTime = Resolve("LapCurrentLapTime");
+            _lastLapTime = Resolve("LapLastLapTime");
+            _deltaToBestLap = Resolve("LapDeltaToBestLap");
+            _deltaToBestLapValid = Resolve("LapDeltaToBestLap_OK");
 
             _carLap = Resolve("CarIdxLap");
             _carLapDistPct = Resolve("CarIdxLapDistPct");
@@ -89,11 +99,20 @@ namespace IRDCav.Telemetry
             SessionTime = _data.GetDouble(_sessionTime),
             TimeRemain = _data.GetDouble(_sessionTimeRemain),
             FuelLevel = _data.GetFloat(_fuelLevel),
-            BestLapTime = _data.GetFloat(_bestLapTime),
             IsOnTrack = _data.GetBool(_isOnTrack),
             WindDirection = _data.GetFloat(_windDirection),
             WindSpeed = _data.GetFloat(_windSpeed),
             Heading = _data.GetFloat(_heading),
+        };
+
+        public PlayerLapTelemetry ReadPlayerLap() => new()
+        {
+            SessionTime = _data.GetDouble(_sessionTime),
+            LapDistPct = _data.GetFloat(_lapDistPct),
+            CurrentLapTime = _data.GetFloat(_currentLapTime),
+            LastLapTime = _data.GetFloat(_lastLapTime),
+            DeltaToBestLap = _data.GetFloat(_deltaToBestLap),
+            IsDeltaToBestLapValid = _data.GetBool(_deltaToBestLapValid),
         };
 
         public IReadOnlyList<CarTelemetry> ReadCars()

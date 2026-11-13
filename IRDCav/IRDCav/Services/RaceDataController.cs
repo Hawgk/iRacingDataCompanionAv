@@ -100,10 +100,6 @@ namespace IRDCav.Services
 
         /// <summary>Live car state. Only valid on the telemetry thread; never hand it to the UI.</summary>
         public IReadOnlyCollection<RaceDataModel> Cars => _cars;
-
-        /// <summary>The player's live car state; the same restrictions as for <see cref="Cars"/> apply.</summary>
-        public RaceDataModel Player => _player;
-
         private void MarkClassFastestLaps()
         {
             foreach (RaceDataModel car in _cars)

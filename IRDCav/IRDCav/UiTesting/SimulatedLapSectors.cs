@@ -10,7 +10,8 @@ namespace IRDCav.UiTesting
     /// </summary>
     internal static class SimulatedLapSectors
     {
-        private static readonly float[] SectorShares = { 0.22f, 0.18f, 0.21f, 0.19f, 0.20f };
+        // Six sectors of different length, like iRacing's sectors of a real track.
+        private static readonly float[] SectorShares = { 0.155f, 0.21f, 0.11f, 0.16f, 0.18f, 0.185f };
         private const float MaxDelta = 0.4f;
         private const int TiedSector = 2;
         private const float ClassAdvantage = 0.613f;
@@ -18,16 +19,30 @@ namespace IRDCav.UiTesting
         public static LapSectorsModel From(SimulatedRace race)
         {
             RaceDataModel player = race.Player;
-            int drivenSector = (int)(player.LapDistPct * LapSectorsModel.SectorCount);
+            int drivenSector = DrivenSector(player.LapDistPct);
             float[] best = SectorShares.Select(share => player.EstLapTime * share).ToArray();
             return new LapSectorsModel
             {
                 BestLapTime = best.Sum(),
                 ClassBestLapTime = best.Sum() - ClassAdvantage,
-                Sectors = Enumerable.Range(0, LapSectorsModel.SectorCount)
+                Sectors = Enumerable.Range(0, SectorShares.Length)
                     .Select(sector => new SectorModel(sector + 1, best[sector], ShownDelta(player.Lap, sector, drivenSector)))
                     .ToArray(),
             };
+        }
+
+        private static int DrivenSector(float lapDistPct)
+        {
+            float sectorEnd = 0;
+            for (int sector = 0; sector < SectorShares.Length; sector++)
+            {
+                sectorEnd += SectorShares[sector];
+                if (lapDistPct < sectorEnd)
+                {
+                    return sector;
+                }
+            }
+            return SectorShares.Length - 1;
         }
 
         /// <summary>Sectors already driven in this lap show its delta, those still ahead the previous lap's.</summary>
