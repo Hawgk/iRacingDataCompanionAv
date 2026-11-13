@@ -110,8 +110,8 @@ namespace IRDCav.Services
             if (_lastSessionTime != NoSessionTime)
             {
                 // Negative or huge steps (session change, replay jump) are rejected by the
-                // microsector model, which then simply restarts its current sector.
-                _intervalCalculator.Update(_cars, _player, sessionTime - _lastSessionTime);
+                // microsector model, which then forgets the pass times and starts afresh.
+                _intervalCalculator.Update(_cars, _player, new TimingTick(sessionTime, sessionTime - _lastSessionTime));
                 MarkClassFastestLaps();
             }
             _lastSessionTime = sessionTime;

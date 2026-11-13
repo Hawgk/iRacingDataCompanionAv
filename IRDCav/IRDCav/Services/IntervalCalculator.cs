@@ -6,23 +6,24 @@ using static IRSDKSharper.IRacingSdkEnum;
 namespace IRDCav.Services
 {
     /// <summary>
-    /// Calculates each car's time interval and lap delta to the player. Uses the car's
-    /// microsectors when available and falls back to a lap-time based estimate.
+    /// Calculates each car's time interval and lap delta to the player. The interval is measured
+    /// the way race timing does it, from when both cars passed the same point (see
+    /// <see cref="MicroSectorModel"/>): for a car ahead, how long ago it passed the player's
+    /// position; for a car behind, how long ago the player passed its position. Where no pass time
+    /// is known yet, e.g. right after a tow, a lap-time based estimate stands in.
     /// </summary>
     internal sealed class IntervalCalculator
     {
-        public void Update(IReadOnlyList<RaceDataModel> cars, RaceDataModel player, double elapsedTime)
+        public void Update(IReadOnlyList<RaceDataModel> cars, RaceDataModel player, TimingTick tick)
         {
+            // Every car first, so the player's pass times are current when the cars behind are measured.
             foreach (RaceDataModel car in cars)
             {
-                if (IsTracked(car))
-                {
-                    UpdateCar(car, player, elapsedTime);
-                }
-                else
-                {
-                    ResetCar(car);
-                }
+                RecordPassTimes(car, tick);
+            }
+            foreach (RaceDataModel car in cars)
+            {
+                UpdateInterval(car, player, tick.SessionTime);
             }
         }
 
@@ -33,31 +34,52 @@ namespace IRDCav.Services
             car.LapsCompleted >= 0 &&
             !car.IsPaceCar;
 
-        private static void UpdateCar(RaceDataModel car, RaceDataModel player, double elapsedTime)
+        private static void RecordPassTimes(RaceDataModel car, TimingTick tick)
         {
-            car.MicroSectors.Record(elapsedTime, car.LapDistPct, car.LastLapDistPct);
-            car.Interval = MathF.Round(CalculateInterval(car, player), 3);
-            car.LapDelta = CalculateLapDelta(car, player);
+            if (IsTracked(car))
+            {
+                car.MicroSectors.Record(tick, car.LapDistPct, car.LastLapDistPct);
+            }
             car.LastLapDistPct = car.LapDistPct;
+        }
+
+        private static void UpdateInterval(RaceDataModel car, RaceDataModel player, double sessionTime)
+        {
+            if (!IsTracked(car))
+            {
+                car.Interval = 0;
+                car.LapDelta = 0;
+                car.ConsiderForRelative = car.IsMe;
+                return;
+            }
+            car.Interval = MathF.Round(CalculateInterval(car, player, sessionTime), 3);
+            car.LapDelta = CalculateLapDelta(car, player);
             car.ConsiderForRelative = true;
         }
 
-        private static void ResetCar(RaceDataModel car)
+        private static float CalculateInterval(RaceDataModel car, RaceDataModel player, double sessionTime) =>
+            TryMeasureInterval(car, player, sessionTime, out float interval) ? interval : EstimateInterval(car, player);
+
+        /// <summary>Positive for a car ahead of the player, negative for one behind.</summary>
+        private static bool TryMeasureInterval(RaceDataModel car, RaceDataModel player, double sessionTime, out float interval)
         {
-            car.Interval = 0;
-            car.LapDelta = 0;
-            car.LastLapDistPct = car.LapDistPct;
-            car.ConsiderForRelative = car.IsMe;
+            if (IsAhead(car, player))
+            {
+                bool isKnown = car.MicroSectors.TrySecondsSincePassing(player.LapDistPct, sessionTime, out float sinceCar);
+                interval = sinceCar;
+                return isKnown;
+            }
+            bool isMeasured = player.MicroSectors.TrySecondsSincePassing(car.LapDistPct, sessionTime, out float sincePlayer);
+            interval = -sincePlayer;
+            return isMeasured;
         }
 
-        private static float CalculateInterval(RaceDataModel car, RaceDataModel player)
+        /// <summary>Ahead on track within half a lap, whatever the lap count.</summary>
+        private static bool IsAhead(RaceDataModel car, RaceDataModel player)
         {
-            if (CanUseMicroSectors(car) &&
-                car.MicroSectors.TryGetInterval(car.LapDistPct, player.LapDistPct, out float interval))
-            {
-                return interval;
-            }
-            return EstimateInterval(car, player);
+            float distance = car.LapDistPct - player.LapDistPct;
+            distance -= MathF.Round(distance);
+            return distance >= 0;
         }
 
         /// <summary>
@@ -70,11 +92,6 @@ namespace IRDCav.Services
             float playerDistance = player.Lap + player.LapDistPct;
             return (int)MathF.Round(carDistance - playerDistance);
         }
-
-        private static bool CanUseMicroSectors(RaceDataModel car) =>
-            car.TrackLocation != TrkLoc.AproachingPits &&
-            car.TrackLocation != TrkLoc.InPitStall &&
-            !car.SessionFlags.HasFlag(Flags.Checkered);
 
         /// <summary>Lap distance difference scaled by a reference lap time.</summary>
         private static float EstimateInterval(RaceDataModel car, RaceDataModel player)
