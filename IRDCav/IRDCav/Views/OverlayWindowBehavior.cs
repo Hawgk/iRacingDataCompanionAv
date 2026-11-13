@@ -53,15 +53,22 @@ namespace IRDCav.Views
             window.Background = FixedBackground;
             // Overlays reappear whenever the player gets into the car; they must not take the focus from the sim.
             window.ShowActivated = false;
-            window.Opened += (_, _) => behavior.ApplyPlacement();
+            // An overlay is never activated, so it can't rely on activation to stay above the sim.
+            window.Topmost = true;
+            window.Opened += (_, _) => behavior.OnOpened();
             window.ScalingChanged += (_, _) => behavior.ApplyPlacement();
             context.Screens.Changed += behavior.ApplyPlacement;
             window.PropertyChanged += (_, args) => behavior.OnPropertyChanged(args);
             window.PositionChanged += (_, _) => behavior.OnPositionChanged();
-            window.Deactivated += (_, _) => window.Topmost = true;
             window.KeyDown += (_, args) => behavior.OnKeyDown(args);
             window.PointerPressed += (_, args) => behavior.OnPointerPressed(args);
             window.PointerWheelChanged += (_, args) => behavior.OnPointerWheelChanged(args);
+        }
+
+        private void OnOpened()
+        {
+            WindowTransparency.BringToTop(_window);
+            ApplyPlacement();
         }
 
         private void ApplyPlacement()
@@ -92,12 +99,19 @@ namespace IRDCav.Views
             }
         }
 
-        /// <summary>Keeps the anchored edge in place when the content changes the window size.</summary>
+        /// <summary>
+        /// Keeps the anchored edge in place when the content changes the window size, and puts a
+        /// window that reappears back on top, as the sim may have come to the front in the meantime.
+        /// </summary>
         private void OnPropertyChanged(AvaloniaPropertyChangedEventArgs args)
         {
             if (args.Property == TopLevel.ClientSizeProperty && TryResolveScreen(out Screen? screen))
             {
                 MoveTo(screen);
+            }
+            else if (args.Property == Visual.IsVisibleProperty && _window.IsVisible)
+            {
+                WindowTransparency.BringToTop(_window);
             }
         }
 
