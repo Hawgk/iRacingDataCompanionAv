@@ -11,9 +11,17 @@ namespace IRDCav.Services
     /// <see cref="MicroSectorModel"/>): for a car ahead, how long ago it passed the player's
     /// position; for a car behind, how long ago the player passed its position. Where no pass time
     /// is known yet, e.g. right after a tow, a lap-time based estimate stands in.
+    /// The intervals change only when the player passes a microsector boundary, like a timing
+    /// screen at each timing loop, so the lists redraw less often; at least once a second when
+    /// the player is slow or stands.
     /// </summary>
     internal sealed class IntervalCalculator
     {
+        private const double MaxSecondsBetweenUpdates = 1.0;
+
+        private long _playerPassCount = -1;
+        private double _updateTime;
+
         public void Update(IReadOnlyList<RaceDataModel> cars, RaceDataModel player, TimingTick tick)
         {
             // Every car first, so the player's pass times are current when the cars behind are measured.
@@ -21,11 +29,22 @@ namespace IRDCav.Services
             {
                 RecordPassTimes(car, tick);
             }
+            if (!IsUpdateDue(player, tick.SessionTime))
+            {
+                return;
+            }
+            _playerPassCount = player.MicroSectors.PassCount;
+            _updateTime = tick.SessionTime;
             foreach (RaceDataModel car in cars)
             {
                 UpdateInterval(car, player, tick.SessionTime);
             }
         }
+
+        // Also due when the session clock went back: a new session or a replay.
+        private bool IsUpdateDue(RaceDataModel player, double sessionTime) =>
+            player.MicroSectors.PassCount != _playerPassCount ||
+            Math.Abs(sessionTime - _updateTime) >= MaxSecondsBetweenUpdates;
 
         private static bool IsTracked(RaceDataModel car) =>
             car.SessionFlags != 0 &&

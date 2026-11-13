@@ -48,6 +48,9 @@ namespace IRDCav.Models
 
         public int Count => _passTimes.Length;
 
+        /// <summary>How many boundaries the car has passed so far; changes whenever it passes one.</summary>
+        public long PassCount { get; private set; }
+
         /// <summary>Feeds one telemetry step and notes the time of every boundary crossed in it.</summary>
         public void Record(TimingTick tick, float lapDistPct, float lastLapDistPct)
         {
@@ -102,6 +105,7 @@ namespace IRDCav.Models
             {
                 double share = (boundary - start) / (end - start);
                 _passTimes[boundary % Count] = tick.PreviousTime + tick.ElapsedTime * share;
+                PassCount++;
             }
         }
 
