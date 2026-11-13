@@ -1,0 +1,124 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:settings="using:IRDCav.ViewModels.Settings"
+        x:Class="IRDCav.Views.Settings.SettingsWindow"
+        x:DataType="settings:SettingsViewModel"
+        Icon="/Assets/icon.ico"
+        Title="iRDCav Settings"
+        Width="520"
+        Height="620"
+        MinWidth="440"
+        MinHeight="480"
+        Topmost="True"
+        WindowStartupLocation="CenterScreen">
+	<Window.Styles>
+		<Style Selector="TextBlock.fieldLabel">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0,0,16,0"/>
+		</Style>
+		<Style Selector="TextBlock.hint">
+			<Setter Property="Opacity" Value="0.7"/>
+			<Setter Property="TextWrapping" Value="Wrap"/>
+		</Style>
+		<Style Selector="TextBlock.status.error">
+			<Setter Property="Foreground" Value="#F0A3A0"/>
+		</Style>
+	</Window.Styles>
+	<Window.Resources>
+		<DataTemplate x:Key="ColumnListTemplate" x:DataType="settings:ColumnListViewModel">
+			<DockPanel Margin="0,12,0,0">
+				<StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,8">
+					<CheckBox Content="Show column titles" IsChecked="{Binding ShowColumnTitles}"/>
+					<TextBlock Classes="hint" Text="Checked columns are shown, from left to right in this order. Select a column and move it up or down."/>
+				</StackPanel>
+				<StackPanel DockPanel.Dock="Right" Spacing="6" Margin="8,0,0,0">
+					<Button Content="Up" Command="{Binding MoveUpCommand}" HorizontalAlignment="Stretch"/>
+					<Button Content="Down" Command="{Binding MoveDownCommand}" HorizontalAlignment="Stretch"/>
+				</StackPanel>
+				<ListBox ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn}">
+					<ListBox.ItemTemplate>
+						<DataTemplate x:DataType="settings:ColumnChoiceViewModel">
+							<CheckBox Content="{Binding Label}" IsChecked="{Binding IsShown}"/>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</DockPanel>
+		</DataTemplate>
+	</Window.Resources>
+
+	<DockPanel Margin="16">
+		<DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+			<StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
+				<Button Content="Reset to defaults" Command="{Binding ResetToDefaultsCommand}"/>
+				<Button Content="Save" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True"/>
+			</StackPanel>
+			<TextBlock
+				Classes="status"
+				Classes.error="{Binding HasError}"
+				Text="{Binding StatusMessage}"
+				TextWrapping="Wrap"
+				VerticalAlignment="Center"
+				Margin="0,0,12,0"/>
+		</DockPanel>
+
+		<TabControl>
+			<TabItem Header="General">
+				<ScrollViewer>
+					<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,12,0,0">
+						<Grid.Styles>
+							<Style Selector="Grid > :is(Control)">
+								<Setter Property="Margin" Value="0,0,0,10"/>
+							</Style>
+						</Grid.Styles>
+						<TextBlock Grid.Row="0" Classes="fieldLabel" Text="Font"/>
+						<ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" ItemsSource="{Binding FontNames}" SelectedItem="{Binding Font}"/>
+
+						<TextBlock Grid.Row="1" Classes="fieldLabel" Text="Small font size"/>
+						<NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SmallFontSize}" Minimum="6" Maximum="60" Increment="1" FormatString="0"/>
+						<TextBlock Grid.Row="2" Classes="fieldLabel" Text="Normal font size"/>
+						<NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding NormalFontSize}" Minimum="6" Maximum="60" Increment="1" FormatString="0"/>
+						<TextBlock Grid.Row="3" Classes="fieldLabel" Text="Large font size"/>
+						<NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding LargeFontSize}" Minimum="6" Maximum="60" Increment="1" FormatString="0"/>
+
+						<TextBlock Grid.Row="4" Classes="fieldLabel" Text="Enlarged refuel estimate"/>
+						<ComboBox Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" ItemsSource="{Binding RefuelEstimates}" SelectedItem="{Binding RefuelEstimate}"/>
+
+						<TextBlock Grid.Row="5" Classes="fieldLabel" Text="Gap decimals"/>
+						<NumericUpDown Grid.Row="5" Grid.Column="1" Value="{Binding GapDecimals}" Minimum="0" Maximum="3" Increment="1" FormatString="0"/>
+						<TextBlock Grid.Row="6" Classes="fieldLabel" Text="Interval decimals"/>
+						<NumericUpDown Grid.Row="6" Grid.Column="1" Value="{Binding IntervalDecimals}" Minimum="0" Maximum="3" Increment="1" FormatString="0"/>
+
+						<TextBlock Grid.Row="7" Grid.ColumnSpan="2" Classes="hint" Text="Font sizes are in pixels on a 1440p screen and must grow from small to large. Overlay positions and scales are set with F6 on the overlays."/>
+					</Grid>
+				</ScrollViewer>
+			</TabItem>
+
+			<TabItem Header="Colors">
+				<DockPanel Margin="0,12,0,0">
+					<TextBlock DockPanel.Dock="Top" Classes="hint" Margin="0,0,0,8" Text="Colors as #RRGGBB or #AARRGGBB, where AA is the opacity from 00 (transparent) to FF (opaque)."/>
+					<ScrollViewer>
+						<ItemsControl ItemsSource="{Binding Colors}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="settings:ColorSettingViewModel">
+									<Grid ColumnDefinitions="*,28,140" Margin="0,0,8,6">
+										<TextBlock Text="{Binding Label}" VerticalAlignment="Center"/>
+										<Border Grid.Column="1" Width="20" Height="20" CornerRadius="4" BorderBrush="#40FFFFFF" BorderThickness="1" Background="{Binding Preview}"/>
+										<TextBox Grid.Column="2" Text="{Binding Hex}" FontFamily="{DynamicResource Overlay.FontFamily}"/>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+				</DockPanel>
+			</TabItem>
+
+			<TabItem Header="Standings">
+				<ContentControl Content="{Binding Standings}" ContentTemplate="{StaticResource ColumnListTemplate}"/>
+			</TabItem>
+
+			<TabItem Header="Relatives">
+				<ContentControl Content="{Binding Relatives}" ContentTemplate="{StaticResource ColumnListTemplate}"/>
+			</TabItem>
+		</TabControl>
+	</DockPanel>
+</Window>

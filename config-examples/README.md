@@ -1,6 +1,6 @@
 # Example configurations
 
-To use one, copy it to `%APPDATA%\iRDCav\config.json` and restart iRDCav. The app creates that file with the defaults on its first start.
+To use one, copy it to `%APPDATA%\iRDCav\config.json` and restart iRDCav. The app creates that file with the defaults on its first start. The settings window (F7 on an overlay, or "Settings" in the tray menu) edits the same file and applies changes right away.
 
 You can leave out any key; whatever is missing keeps its default. If the file can't be read or has an invalid value, the app uses the complete defaults.
 

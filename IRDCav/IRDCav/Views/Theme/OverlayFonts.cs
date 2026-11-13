@@ -1,6 +1,7 @@
 using Avalonia.Media;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IRDCav.Views.Theme
 {
@@ -17,6 +18,12 @@ namespace IRDCav.Views.Theme
             ["Lekton"] = "avares://IRDCav/Assets/Fonts#Lekton",
             ["Inter"] = "fonts:Inter#Inter",
         };
+
+        private static readonly string[] BundledNames = { "RobotoMono", "Lekton", "Inter" };
+
+        /// <summary>The bundled fonts first, then the installed ones.</summary>
+        public static IEnumerable<string> AvailableNames() =>
+            BundledNames.Concat(FontManager.Current.SystemFonts.Select(family => family.Name).Distinct().Order());
 
         public static FontFamily Resolve(string name) =>
             FontFamily.Parse(Bundled.TryGetValue(name, out string? source) ? source : name);

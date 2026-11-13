@@ -11,6 +11,8 @@ using IRDCav.Telemetry;
 using IRDCav.UiTesting;
 using IRDCav.ViewModels;
 using IRDCav.Views;
+using IRDCav.ViewModels.Settings;
+using IRDCav.Views.Settings;
 using IRDCav.Views.Theme;
 using System;
 using System.Text;
@@ -46,8 +48,9 @@ namespace IRDCav
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 OverlayViewModels viewModels = CreateViewModels();
                 LiveOverlayConfiguration configuration = LoadConfiguration(viewModels);
-                DataContext = new ApplicationViewModel();
-                CreateWindows(viewModels);
+                var settings = new SettingsWindowLauncher(() => new SettingsViewModel(configuration, OverlayFonts.AvailableNames()));
+                DataContext = new ApplicationViewModel(settings.Show);
+                CreateWindows(viewModels, settings.Show);
 
                 var store = new OverlayStateStore();
                 var inputs = new InputTraceBuffer(InputTraceSampleCount);
@@ -83,7 +86,7 @@ namespace IRDCav
             new InputGraphViewModel(InputTraceSampleCount));
 
         // Windows show and hide themselves through their IsVisible binding.
-        private void CreateWindows(OverlayViewModels viewModels)
+        private void CreateWindows(OverlayViewModels viewModels, Action openSettings)
         {
             var results = new ResultsWindow { DataContext = viewModels.Results };
             var relatives = new RelativesWindow { DataContext = viewModels.Relatives };
@@ -96,6 +99,10 @@ namespace IRDCav
             OverlayWindowBehavior.Attach(relatives, DefaultLayouts.Relatives, layout);
             OverlayWindowBehavior.Attach(fuel, DefaultLayouts.Fuel, layout);
             OverlayWindowBehavior.Attach(inputGraph, DefaultLayouts.InputGraph, layout);
+            foreach (Window window in new Window[] { results, relatives, fuel, inputGraph })
+            {
+                SettingsHotkey.Attach(window, openSettings);
+            }
         }
 
         private void OnExit()

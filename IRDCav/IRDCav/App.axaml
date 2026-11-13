@@ -50,7 +50,7 @@
 			<Setter Property="Padding" Value="10,7"/>
 		</Style>
 		<!-- Every text is shifted by its font size's share of the font's capital offset, see CapitalCentering. -->
-		<Style Selector="TextBlock">
+		<Style Selector="Window.overlay TextBlock">
 			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Normal}"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
@@ -255,6 +255,7 @@
 			<TrayIcon Icon="/Assets/icon.ico" ToolTipText="iRDCav Overlay">
 				<TrayIcon.Menu>
 					<NativeMenu>
+						<NativeMenuItem Header="Settings (F7)" Command="{Binding OpenSettingsCommand}" />
 						<NativeMenuItem Header="Exit" Command="{Binding ExitCommand}" />
 					</NativeMenu>
 				</TrayIcon.Menu>
