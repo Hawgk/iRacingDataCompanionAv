@@ -99,7 +99,6 @@ Data flows one way: `Telemetry/` → `Services/` → `Presentation/` (state stor
 - Don't return `null` - return empty collections or use Optional/Maybe
 - Don't pass `null` as arguments
 
-
 ### Classes
 
 - Small classes: measured by responsibilities, not lines
@@ -107,7 +106,6 @@ Data flows one way: `Telemetry/` → `Services/` → `Presentation/` (state stor
 - High cohesion: class variables used by many methods
 - Low coupling: minimal dependencies between classes
 - Open/Closed Principle: open for extension, closed for modification
-
 
 ### Concurrency
 
@@ -117,11 +115,16 @@ Data flows one way: `Telemetry/` → `Services/` → `Presentation/` (state stor
 - Keep synchronized sections small
 - Know your execution models and primitives
 
-
 ### System Design
 
 - Separate construction from use (dependency injection)
 - Use factories, builders for complex object creation
 - Program to interfaces, not implementations
-- Favor composition over inheritance
+- Favor composition over inheritance (adapt to external APIs and frameworks that are included in the project)
 - Apply design patterns when they simplify, not to show off
+
+### Commit rules
+
+- Always create meaningful granular commits with small incremental steps
+- Bundle based on behaviour changes
+- Never push commits

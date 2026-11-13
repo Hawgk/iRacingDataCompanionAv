@@ -9,7 +9,7 @@ Also it paints pixels.
 
 All those pixels combined resemble a standings view, relative view and fuel calculator.
 
-Don't look into the code please.
+~Don't look into the code please.~ I don't care now. Claude was used starting from 12.11.2026.
 
 ## Setup
 1. Install the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) on Windows.
