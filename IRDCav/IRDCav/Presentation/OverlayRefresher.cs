@@ -1,5 +1,8 @@
 using Avalonia.Threading;
+using IRDCav.Models;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace IRDCav.Presentation
 {
@@ -12,12 +15,18 @@ namespace IRDCav.Presentation
     {
         private static readonly TimeSpan RefreshInterval = TimeSpan.FromMilliseconds(33);
 
+        // A calmer relative is easier to read at a glance; the data behind it is still computed at full rate.
+        private const double RelativesUpdatesPerSecond = 4;
+
         private readonly OverlayStateStore _store;
         private readonly InputTraceBuffer _inputs;
         private readonly OverlayViewModels _viewModels;
         private readonly DispatcherTimer _timer;
+        private readonly Stopwatch _clock = Stopwatch.StartNew();
+        private readonly RefreshCadence _relativesCadence = new(RelativesUpdatesPerSecond);
 
         private OverlayState? _appliedState;
+        private IReadOnlyList<RaceRow>? _appliedRelatives;
         private long _appliedInputVersion = -1;
 
         public OverlayRefresher(OverlayStateStore store, InputTraceBuffer inputs, OverlayViewModels viewModels)
@@ -35,6 +44,7 @@ namespace IRDCav.Presentation
         private void Refresh()
         {
             RefreshState();
+            RefreshRelatives();
             RefreshInputs();
         }
 
@@ -50,9 +60,22 @@ namespace IRDCav.Presentation
             ApplyVisibility(state.ShowsOverlays);
             _viewModels.Results.SessionInfo = state.Session;
             _viewModels.Results.RaceDataList.Update(state.Standings);
-            _viewModels.Relatives.RaceDataList.Update(state.Relatives);
             _viewModels.Fuel.SessionInfo = state.Session;
             _viewModels.Fuel.FuelData = state.Fuel;
+        }
+
+        private void RefreshRelatives()
+        {
+            TimeSpan now = _clock.Elapsed;
+            IReadOnlyList<RaceRow> rows = _store.Current.Relatives;
+            if (!_relativesCadence.IsDue(now) || ReferenceEquals(rows, _appliedRelatives))
+            {
+                return;
+            }
+
+            _appliedRelatives = rows;
+            _relativesCadence.MarkUpdated(now);
+            _viewModels.Relatives.RaceDataList.Update(rows);
         }
 
         private void RefreshInputs()
