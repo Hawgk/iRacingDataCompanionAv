@@ -26,6 +26,8 @@ namespace IRDCav.Views.Theme
         private const double MixedLineHeightPerLargeSize = 1.2;
         private const double IconSizePerNormalSize = 1.25;
         private const double StripeHeightPerNormalSize = 1.1;
+        private const double BadgeHeightPerSmallSize = 1.6;
+        private const double LetterBadgeWidthPerSmallSize = 2;
 
         public const string DigitWidthKey = "Overlay.DigitWidth";
         public const string TitleCharacterWidthKey = "Overlay.TitleCharacterWidth";
@@ -81,6 +83,8 @@ namespace IRDCav.Views.Theme
             resources["Overlay.MixedLineHeight"] = Math.Ceiling(sizes.Large * MixedLineHeightPerLargeSize);
             resources["Overlay.IconSize"] = Math.Round(sizes.Normal * IconSizePerNormalSize);
             resources["Overlay.StripeHeight"] = Math.Round(sizes.Normal * StripeHeightPerNormalSize);
+            resources["Overlay.BadgeHeight"] = Math.Ceiling(sizes.Small * BadgeHeightPerSmallSize);
+            resources["Overlay.LetterBadgeWidth"] = Math.Ceiling(sizes.Small * LetterBadgeWidthPerSmallSize);
         }
 
         private static void AddFont(IResourceDictionary resources, FontFamily family, FontSizesConfiguration sizes)

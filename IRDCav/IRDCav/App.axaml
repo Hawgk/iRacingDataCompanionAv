@@ -217,9 +217,11 @@
 		</Style>
 
 		<!-- Chips -->
+		<!-- All badges share one height; their widths are fixed per kind, so content never changes their size. -->
 		<Style Selector="Border.chip">
 			<Setter Property="CornerRadius" Value="3"/>
-			<Setter Property="Padding" Value="5,1"/>
+			<Setter Property="Padding" Value="5,0"/>
+			<Setter Property="Height" Value="{DynamicResource Overlay.BadgeHeight}"/>
 		</Style>
 		<Style Selector="Border.chip TextBlock">
 			<Setter Property="RenderTransform" Value="{DynamicResource Overlay.TextShift.Small}"/>
@@ -232,10 +234,11 @@
 		<Style Selector="Border.pitChip > TextBlock">
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.PitRoad}"/>
 			<Setter Property="LetterSpacing" Value="0.6"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
 		</Style>
 		<Style Selector="Border.sessionChip">
 			<Setter Property="Background" Value="{DynamicResource Overlay.Text}"/>
-			<Setter Property="MinWidth" Value="20"/>
+			<Setter Property="Width" Value="{DynamicResource Overlay.LetterBadgeWidth}"/>
 		</Style>
 		<Style Selector="Border.sessionChip > TextBlock">
 			<Setter Property="Foreground" Value="{DynamicResource Overlay.OnText}"/>

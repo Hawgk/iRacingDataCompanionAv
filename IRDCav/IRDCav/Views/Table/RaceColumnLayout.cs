@@ -10,7 +10,8 @@ namespace IRDCav.Views.Table
     /// <summary>
     /// Title, width and alignment of each column. The width fits the longest expected content in
     /// digits of the normal font size plus fixed room for stripes and badges, and the title, so the
-    /// columns fit whichever font is configured.
+    /// columns fit whichever font is configured. Badge columns stretch their badge to the full
+    /// column width, so every badge of a kind has the same size whatever it shows.
     /// </summary>
     internal sealed record RaceColumnLayout(string Title, double Digits, double FixedWidth, HorizontalAlignment Alignment)
     {
@@ -32,8 +33,8 @@ namespace IRDCav.Views.Table
             RaceColumn.CarNumber => new("#", 3, StripeRoom, HorizontalAlignment.Left),
             RaceColumn.CarClass => new("CLASS", 4, 0, HorizontalAlignment.Left),
             RaceColumn.Driver => new("DRIVER", 16, 0, HorizontalAlignment.Left),
-            RaceColumn.Pit => new("PIT", 3, BadgeRoom, HorizontalAlignment.Left),
-            RaceColumn.IRating => new("IR", 8, BadgeRoom, HorizontalAlignment.Left),
+            RaceColumn.Pit => new("PIT", 3, BadgeRoom, HorizontalAlignment.Stretch),
+            RaceColumn.IRating => new("IR", 8, BadgeRoom, HorizontalAlignment.Stretch),
             RaceColumn.Laps => new("LAPS", 3, 0, HorizontalAlignment.Right),
             RaceColumn.FastestLap => new("BEST", 8, 0, HorizontalAlignment.Right),
             RaceColumn.LastLap => new("LAST", 8, 0, HorizontalAlignment.Right),
